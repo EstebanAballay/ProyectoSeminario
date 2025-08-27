@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "orm": "^8.0.1",
+    "reflect-metadata": "^0.2.2",
+    "type": "^2.7.3",
+    "typeorm": "^0.3.26"
+  }
+}
