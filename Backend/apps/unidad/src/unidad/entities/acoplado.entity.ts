@@ -1,8 +1,8 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne} from 'typeorm';
 import { EstadoAcoplado } from './estadoAcoplado.entity';
 
-@Entity()
-export class EstadoSemiremolque {
+@Entity("acoplado")
+export class Acoplado {
     @PrimaryGeneratedColumn()
     id: number;
 

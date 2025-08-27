@@ -1,9 +1,9 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { EstadoSemiremolque } from './estadoSemiremolque.entity';
+import { EstadoSemirremolque } from './estadoSemirremolque.entity';
 import { Tipo } from './tipo.entity';
 
-@Entity()
-export class Semiremolque {
+@Entity("semirremolque")
+export class Semirremolque {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -19,8 +19,8 @@ export class Semiremolque {
     @Column("float")
     precio: number;
 
-    @ManyToOne(() => EstadoSemiremolque, { eager: true })
-    estado: EstadoSemiremolque;
+    @ManyToOne(() => EstadoSemirremolque, { eager: true })
+    estado: EstadoSemirremolque;
 
     @ManyToOne(() => Tipo, { eager: true })
     tipo: Tipo;
