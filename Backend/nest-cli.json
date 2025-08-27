@@ -1,8 +1,32 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "src",
+  "sourceRoot": "apps/proyecto-seminario/src",
   "compilerOptions": {
-    "deleteOutDir": true
+    "deleteOutDir": true,
+    "webpack": true,
+    "tsConfigPath": "apps/proyecto-seminario/tsconfig.app.json"
+  },
+  "monorepo": true,
+  "root": "apps/proyecto-seminario",
+  "projects": {
+    "proyecto-seminario": {
+      "type": "application",
+      "root": "apps/proyecto-seminario",
+      "entryFile": "main",
+      "sourceRoot": "apps/proyecto-seminario/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/proyecto-seminario/tsconfig.app.json"
+      }
+    },
+    "unidad": {
+      "type": "application",
+      "root": "apps/unidad",
+      "entryFile": "main",
+      "sourceRoot": "apps/unidad/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/unidad/tsconfig.app.json"
+      }
+    }
   }
 }
