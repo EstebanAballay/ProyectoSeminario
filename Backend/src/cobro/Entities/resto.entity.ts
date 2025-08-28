@@ -6,9 +6,8 @@ export class resto {
   @PrimaryGeneratedColumn()
   id: number;
 
-
   @OneToOne(() => Cobro)
-    @JoinColumn({ name: 'id' })
-    Cobro : Cobro;
+  @JoinColumn({ name: 'id' })
+  Cobro : Cobro;
  
 }
