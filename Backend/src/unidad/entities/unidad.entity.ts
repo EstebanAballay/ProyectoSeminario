@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { Camion } from './camion.entity';
 import { Semirremolque } from './semirremolque.entity';
 import { Acoplado } from './acoplado.entity';
-import { Transportista } from ; 
+import { Transportista } from './transportista.entity'; 
 import { Viaje } from '../../viaje/entities/viaje.entity';
 
 @Entity('unidad')
