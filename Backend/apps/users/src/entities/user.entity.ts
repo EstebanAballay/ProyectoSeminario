@@ -15,7 +15,10 @@ export class User {
   dni: number;
 
   @Column()
-  celular: number;
+  email: string;
+
+  @Column()
+  telefono: number;
 
   @Column()
   CUIT: string;
