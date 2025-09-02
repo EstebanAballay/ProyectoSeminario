@@ -23,3 +23,4 @@ export class User {
   @Column()
   direccion: string;
 }
+
