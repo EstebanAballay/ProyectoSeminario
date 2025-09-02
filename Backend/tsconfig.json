@@ -1,23 +1,17 @@
 {
-  // "$schema": "https://json.schemastore.org/tsconfig.json", // optional: update to a valid schema or remove
   "compilerOptions": {
     "module": "commonjs",
-    "declaration": true,
-    "removeComments": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
-    "target": "ES2023",
+    "target": "es2017",
+    "lib": ["es2017", "dom"],
+    "declaration": false,
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./",
+    "removeComments": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "incremental": true,
-    "skipLibCheck": true,
-    "strictNullChecks": true,
-    "forceConsistentCasingInFileNames": true,
-    "noImplicitAny": false,
-    "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false,
-    "types": ["node", "express"]
+    "skipLibCheck": true
   }
 }
