@@ -8,18 +8,18 @@ export class User {
   @Column()
   nombre: string;
 
-@Column()
+  @Column()
   apellido: string;
 
   @Column()
   dni: number;
 
-    @Column()
+  @Column()
   celular: number;
 
   @Column()
   CUIT: string;
 
-    @Column()
+  @Column()
   direccion: string;
 }

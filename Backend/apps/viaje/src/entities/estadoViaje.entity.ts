@@ -7,10 +7,6 @@ export class EstadoViaje {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column()
   nombre: string; 
-
-  // Relación inversa: un estado puede tener muchos viajes
-  @OneToMany(() => Viaje, (viaje) => viaje.estadoViaje)
-  viajes: Viaje[];
 }

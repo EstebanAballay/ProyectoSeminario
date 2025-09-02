@@ -12,7 +12,6 @@ export class Cobro {
   @Column()
   metodoDeCobro: string;
 
-  @OneToOne(() => abonante)
-  @JoinColumn({ name: 'abonante_id' })
+  @Column()
   abonante: abonante;
 }

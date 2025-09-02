@@ -1,8 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColumn, OneToOne, } from 'typeorm';
-import { Unidad } from '../../../unidad/src/entities/unidad.entity';
-import { EstadoViaje } from './estadoViaje.entity';
-import { seña } from '../../cobro/Entities/seña.entity';
-import { resto } from '../../cobro/Entities/resto.entity';
+import { Entity, PrimaryGeneratedColumn, Column} from 'typeorm';
 
 @Entity()
 export class Viaje {
@@ -30,21 +26,20 @@ export class Viaje {
   @Column({ type: 'time' })
   horaLlegada: string;
 
-  @OneToOne(() => seña, { cascade: true, eager: true })
-  seña: seña;
+  @Column()
+  seña: number;
 
-  @OneToOne(() => resto, { cascade: true, eager: true })
-  resto: resto;
+  @Column()
+  resto: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column()
   total: number;
 
-  //Relación: un viaje puede tener varias unidades
-  @OneToMany(() => Unidad, Unidad => Unidad.viaje, { cascade: true })
-  unidades: Unidad[];
+  //Relación: Guardo los id de las unidades
+  @Column()
+  idUnidades: number[];
 
-  //EstadosViajes
-  @ManyToOne(() => EstadoViaje, (estado) => estado.viajes, { eager: true })
-  @JoinColumn({ name: 'estadoViajeId' })
-  estadoViaje: EstadoViaje;
+  //id viaje
+  @Column()
+  idEstadoViaje: number;
 }

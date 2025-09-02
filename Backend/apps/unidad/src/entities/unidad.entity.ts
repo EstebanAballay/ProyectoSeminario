@@ -1,31 +1,26 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { Camion } from './camion.entity';
-import { Semirremolque } from './semirremolque.entity';
-import { Acoplado } from './acoplado.entity';
-import { Transportista } from './transportista.entity'; 
-import { Viaje } from '../../../viaje/src/entities/viaje.entity';
+import { Entity, PrimaryGeneratedColumn, Column} from 'typeorm';
 
 @Entity('unidad')
 export class Unidad {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Camion, { eager: true })
-  Camion: Camion;
+  @Column()
+  idCamion: number;
 
-  @ManyToOne(() => Semirremolque, { eager: true })
-  semiremolque: Semirremolque;
+  @Column()
+  idSemiremolque: number;
 
-  @ManyToOne(() => Acoplado, { eager: true })
-  acoplado: Acoplado;
+  @Column()
+  idAcoplado: number;
 
-  @ManyToOne(() => Transportista, { eager: true })
-  transportista: Transportista;
+  @Column()
+  idTransportista: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  @Column()
   subtotal: number;
 
-  @ManyToOne(() => Viaje, { eager: true })
-  viaje: Viaje;
+  @Column()
+  idViaje: number;
 
 }

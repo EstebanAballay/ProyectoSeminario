@@ -7,7 +7,7 @@
     "sourceMap": true,
     "outDir": "./dist",
     "removeComments": true,
-    "strict": true,
+    "strict": false,
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,

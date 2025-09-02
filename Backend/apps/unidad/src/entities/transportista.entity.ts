@@ -1,19 +1,17 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToOne } from 'typeorm';
-import { User } from '../../../users/src/entities/user.entity';
-import { estadoTransportista } from './estadoTransportista.entity';
-import { Especializacion } from './especializacion.entity';
+import { Entity, PrimaryGeneratedColumn, Column} from 'typeorm';
 
 @Entity("transportista")
-export class Transportista extends User{
+export class Transportista{
     //Deberia tener su propio id o el mismo de user?
+    @Column()
+    idUsuario: number;
 
     @Column()
     legajo: string;
 
-    @ManyToOne(()=>estadoTransportista)
-    estado: estadoTransportista;
+    @Column()
+    estado: number;
 
-    @ManyToOne(()=>Especializacion)
-    especializacion: Especializacion;
-
+    @Column()
+    especializacion: number;
 }
