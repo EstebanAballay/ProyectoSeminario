@@ -12,6 +12,6 @@ export class Cobro {
   @Column()
   metodoDeCobro: string;
 
-  @Column()
-  abonante: abonante;
+  @Column() 
+  idAbonante: number;
 }
