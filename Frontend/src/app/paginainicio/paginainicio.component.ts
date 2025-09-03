@@ -5,4 +5,4 @@ import { Component } from '@angular/core';
   templateUrl: './paginainicio.component.html',
   styleUrls: ['./paginainicio.component.css']
 })
-export class PaginainicioComponent {}
+export class PaginainicioComponent { }

@@ -1,14 +1,2 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { AppComponent } from './app.component';
-import { PaginainicioComponent } from './paginainicio/paginainicio.component';
-
-@NgModule({
-  imports: [
-    BrowserModule,
-    PaginainicioComponent  // 🔹 Importar, no declarar
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
-})
-export class AppModule { }
+// This file is no longer needed when using standalone components and bootstrapApplication.
+// You can safely delete this file or leave it empty.
