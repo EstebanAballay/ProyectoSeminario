@@ -7,6 +7,7 @@
   padding: 16px;
   font-family: Arial, sans-serif;
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  position: relative; 
 }
 
 .card-header {
@@ -61,4 +62,18 @@ video {
 
 .btn-access:hover {
   background-color: #e0e0e0;
+}
+
+
+.perfil-icono {
+  position: absolute;
+  top: 25px;    
+  right: 24px;  
+  font-size: 1.5rem;
+  background-color: #0b1e3a;
+  color: white;
+  padding: 10px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 10;
 }
