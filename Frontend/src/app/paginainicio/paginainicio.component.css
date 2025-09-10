@@ -48,7 +48,7 @@ video {
 
 .btn-access {
   display: block;
-  width: 100%;
+  width: 90%;
   text-align: center;
   background-color: #ffffff;
   color: #0b1e3a;
@@ -75,5 +75,5 @@ video {
   padding: 10px;
   border-radius: 50%;
   cursor: pointer;
-  z-index: 10;
+  z-index: 10;
 }

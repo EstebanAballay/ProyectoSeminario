@@ -1,0 +1,94 @@
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background-image: url("/assets/camiones.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+
+.card {
+    width: 350px;
+    margin: 20px auto;
+    background-color: #0b1e3a;
+    color: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    height: 80vh;
+    font-family: Arial, sans-serif;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+}
+
+
+.card-header {
+    display: flex;
+    justify-content: center; /* Centramos el logo */
+    align-items: center;
+    margin-bottom: 20px;
+    width: 100%; /* Aseguramos que tome todo el ancho */
+}
+
+.logo {
+    margin-top: -85px;
+    width: 95%; /* Tamaño del logo */
+}
+
+/* Estilos para los campos de entrada */
+input[type="email"]
+{
+    margin-top: 30px;
+    width: 89%;
+    padding: 20px;
+    margin-bottom: 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+}
+input[type="password"] {
+    margin-top: 20px;
+    width: 89%;
+    padding: 20px;
+    margin-bottom: 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+/* Estilos para el botón de inicio de sesión */
+.btn-access {
+    display: block;
+    width: 92%;
+    margin-top: 50px;
+    text-align: center;
+    background-color: #ffffff;
+    color: #0b1e3a;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.btn-access:hover {
+    background-color: #e0e0e0;
+}
+
+/* Estilos para el enlace de registro */
+.register-link {
+    display: block;
+    margin-top: 12px;
+    text-align: center;
+    color: #ffffff;
+    text-decoration: underline;
+    font-weight: bold;
+    cursor: pointer;
+}

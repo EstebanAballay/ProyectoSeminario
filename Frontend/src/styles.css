@@ -1,1 +1,9 @@
-/* You can add global styles to this file, and also import other style files */
+/* src/styles.css */
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background: 
+    linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), /* capa oscura */
+    url("/assets/camiones.jpg") no-repeat center center / cover;
+}
