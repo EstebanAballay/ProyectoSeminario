@@ -1,8 +1,11 @@
 import { NestFactory } from '@nestjs/core';
-import { ViajeModule } from './viaje.module';
+import { ViajeService } from './viaje.service';
+import {AppModule} from '../app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(ViajeModule);
-  await app.listen(3004); // este microservicio escucha en 3001
+  const app = await NestFactory.create(AppModule);
+  const usersService = app.get(ViajeService);
+  await usersService.testConnection();
+  await app.listen(process.env.PORT || 3004);
 }
 bootstrap();

@@ -1,8 +1,8 @@
 import { NestFactory } from '@nestjs/core';
-import { CobroModule } from './cobro.module';
+import { AppModule } from '../app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(CobroModule);
-  await app.listen(3001); // este microservicio escucha en 3001
+  const app = await NestFactory.create(AppModule);
+  await app.listen(process.env.PORT || 3001);
 }
 bootstrap();

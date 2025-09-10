@@ -1,0 +1,51 @@
+version: '3.9'
+
+services:
+  users:
+    build: ./apps/users             # ruta al Dockerfile del microservicio
+    container_name: users-service   # nombre del contenedor
+    env_file: .env                  # variables de entorno
+    ports:
+      - "3003:3003"                # host:contenedor
+    networks:
+      - backend-network
+    restart: always                 # reinicia si falla
+
+  cobro:
+    build: ./apps/cobro
+    container_name: cobro-service
+    env_file: .env
+    ports:
+      - "3001:3001"
+    networks:
+      - backend-network
+    restart: always
+    depends_on:                      # espera que 'users' se inicie primero
+      - users
+
+  unidad:
+    build: ./apps/unidad
+    container_name: unidad-service
+    env_file: .env
+    ports:
+      - "3002:3002"
+    networks:
+      - backend-network
+    restart: always
+
+  viaje:
+    build: ./apps/viaje
+    container_name: viaje-service
+    env_file: .env
+    ports:
+      - "3004:3004"
+    networks:
+      - backend-network
+    restart: always
+    depends_on:
+      - users
+      - unidad
+
+networks:
+  backend-network:
+    driver: bridge

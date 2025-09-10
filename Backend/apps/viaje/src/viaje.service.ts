@@ -1,12 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { CreateViajeDto } from './dto/create-viaje.dto';
-//import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { EstadoViaje } from './entities/estadoViaje.entity'
+import { Viaje } from './entities/viaje.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class ViajeService {
-
+    constructor(
+    @InjectRepository(Viaje)
+    private readonly viajeRepo: Repository<Viaje>,
+    ) {}
+        async testConnection() {
+    try {
+      const count = await this.viajeRepo.count();
+      console.log('DB connection works, Viaje count:', count);
+    } catch (error) {
+      console.error('DB connection failed:', error);
+    }
+  }
   //constructor(@InjectRepository(EstadoViaje) private estadoViajeRepository: Repository<EstadoViaje>) {}
 
   create(createViajeDto: CreateViajeDto) {
