@@ -1,9 +1,11 @@
 import { Entity, PrimaryGeneratedColumn, Column} from 'typeorm';
+import { CreateViajeDto } from '../dto/create-viaje.dto';
 
 @Entity()
 export class Viaje {
+
   @PrimaryGeneratedColumn()
-  id: number;
+  ViajeId: number;
 
   @Column({ type: 'date' })
   fechaReserva: Date;
@@ -12,7 +14,7 @@ export class Viaje {
   fechaInicio: Date;
 
   @Column({ type: 'date' })
-  fechaFin: Date;
+  fechaFin?: Date;
 
   @Column()
   destinoInicio: string;
@@ -24,20 +26,20 @@ export class Viaje {
   horaSalida: string;
 
   @Column({ type: 'time' })
-  horaLlegada: string;
+  horaLlegada?: string;
 
   @Column()
-  seña: number;
+  seña?: number;
 
   @Column()
-  resto: number;
+  resto?: number;
 
   @Column()
-  total: number;
+  total?: number;
 
-  //Relación: Guardo los id de las unidades
+  //Relación: Guardo los id de las unidades 
   @Column()
-  idUnidades: number[];
+  idUnidades: number[];  
 
   //id viaje
   @Column()

@@ -8,8 +8,10 @@ export class ViajeController {
 
 
   //crear
-  @Post()
+  @Post('nuevo')
   create(@Body() createViajeDto: CreateViajeDto) {
+
+    
     return this.viajeService.create(createViajeDto);
   }
 
