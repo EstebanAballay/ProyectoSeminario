@@ -1,0 +1,81 @@
+/* Contenedor general */
+.viaje-container {
+    width: 100%;
+    height: 100vh;
+    background-color: #0c2d48; /* azul oscuro */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Encabezado */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8f9fa;
+    padding: 10px 20px;
+}
+
+.logo {
+    height: 40px;
+}
+
+.user-icon {
+    font-size: 24px;
+    color: #0c2d48;
+}
+
+/* Formulario */
+.form-container {
+    flex: 1;
+    padding: 30px;
+    color: white;
+}
+
+.form-container h2 {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    background: white;
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+
+.input-group input {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 8px;
+}
+
+.input-group i {
+    color: #0c2d48;
+    margin-left: 8px;
+}
+
+/* Botón */
+.btn-submit {
+    margin-top: 20px;
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    background: #f8f9fa;
+    color: #0c2d48;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-submit:hover {
+    background: #d9d9d9;
+}
