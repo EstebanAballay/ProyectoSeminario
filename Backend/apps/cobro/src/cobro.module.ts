@@ -7,6 +7,7 @@ import { abonante } from './Entities/abonante.entity';
 import { seña } from './Entities/seña.entity';
 import { resto } from './Entities/resto.entity';
 
+
 @Module({
   imports: [TypeOrmModule.forFeature([Cobro,
     abonante,
