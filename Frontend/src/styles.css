@@ -1,9 +1,14 @@
 /* src/styles.css */
-body {
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    background: 
-    linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), /* capa oscura */
-    url("/assets/camiones.jpg") no-repeat center center / cover;
+/* Solo para login y registro */
+body.login,
+body.registro {
+  background: url("/assets/camiones.jpg") no-repeat center center / cover;
 }
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #0B1E3A; /* tu azul */
+}
+
+
