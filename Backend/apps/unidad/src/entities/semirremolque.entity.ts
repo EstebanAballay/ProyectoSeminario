@@ -1,4 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn,ManyToOne } from 'typeorm';
+import { EstadoSemirremolque } from './estadoSemirremolque.entity';
+import { Tipo } from './tipo.entity';
 
 @Entity("semirremolque")
 export class Semirremolque {
@@ -18,10 +20,10 @@ export class Semirremolque {
     precio: number;
 
     //id estado unidad
-    @Column()
-    estado: number;
+    @ManyToOne(() => EstadoSemirremolque, { eager: true })
+    estado: EstadoSemirremolque;
 
     //id tipo semirremolque
-    @Column()
-    tipo: number;
+    @ManyToOne(() => Tipo, { eager: true })
+    tipo: Tipo;
 }

@@ -1,4 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne} from 'typeorm';
+import { estadoTransportista } from './estadoTransportista.entity';
+import { Especializacion } from './especializacion.entity';
 
 @Entity("transportista")
 export class Transportista{
@@ -9,9 +11,9 @@ export class Transportista{
     @Column()
     legajo: string;
 
-    @Column()
-    estado: number;
+    @ManyToOne(()=>estadoTransportista)
+    estado: estadoTransportista;
 
-    @Column()
-    especializacion: number;
+    @ManyToOne(()=>Especializacion)
+    especializacion: Especializacion;
 }

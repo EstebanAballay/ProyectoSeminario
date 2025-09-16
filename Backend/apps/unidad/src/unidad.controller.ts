@@ -8,8 +8,8 @@ export class UnidadController {
   constructor(private readonly unidadService: UnidadService) {}
 
   @Post()
-  create(@Body() createUnidadDto: CreateUnidadDto) {
-    return this.unidadService.create(createUnidadDto);
+  create(@Body() createUnidadDto: CreateUnidadDto): Promise<any> {
+    return this.unidadService.createUnidad(createUnidadDto);
   }
 
   @Get()

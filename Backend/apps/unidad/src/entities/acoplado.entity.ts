@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn,ManyToOne} from 'typeorm';
+import { EstadoAcoplado } from './estadoAcoplado.entity';
 
 @Entity("acoplado")
 export class Acoplado {
@@ -17,7 +18,7 @@ export class Acoplado {
     @Column()
     cantidadDeEjes: number;
 
-    //id estado unidad
-    @Column()
-    estado: number;
+
+    @ManyToOne(() => EstadoAcoplado, { eager: true })
+    estado: EstadoAcoplado;
 }

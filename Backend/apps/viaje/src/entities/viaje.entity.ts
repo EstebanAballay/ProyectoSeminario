@@ -1,9 +1,12 @@
 import { Entity, PrimaryGeneratedColumn, Column} from 'typeorm';
+import { ManyToOne, JoinColumn } from 'typeorm';
+import { EstadoViaje } from './estadoViaje.entity';
 
 @Entity()
 export class Viaje {
+
   @PrimaryGeneratedColumn()
-  id: number;
+  ViajeId: number;
 
   @Column({ type: 'date' })
   fechaReserva: Date;
@@ -12,7 +15,7 @@ export class Viaje {
   fechaInicio: Date;
 
   @Column({ type: 'date' })
-  fechaFin: Date;
+  fechaFin?: Date;
 
   @Column()
   destinoInicio: string;
@@ -24,22 +27,23 @@ export class Viaje {
   horaSalida: string;
 
   @Column({ type: 'time' })
-  horaLlegada: string;
+  horaLlegada?: string;
 
   @Column()
-  seña: number;
+  seña?: number;
 
   @Column()
-  resto: number;
+  resto?: number;
 
   @Column()
-  total: number;
+  total?: number;
 
-  //Relación: Guardo los id de las unidades
-  @Column('int', { array: true })
-  idUnidades: number[];
+  //Relación: Guardo los id de las unidades 
+  @Column()
+  idUnidades: number[]; 
 
   //id viaje
-  @Column('int', { array: true })
-  idEstadoViaje: number;
+  @ManyToOne(() => EstadoViaje, (estado) => estado.viajes, { eager: true })
+  @JoinColumn({ name: 'estadoViajeId' })
+  estadoViaje: EstadoViaje;
 }
