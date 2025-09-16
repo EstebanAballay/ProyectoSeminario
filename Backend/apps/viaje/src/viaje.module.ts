@@ -6,7 +6,9 @@ import { EstadoViaje } from './entities/estadoViaje.entity';
 import { Viaje } from './entities/viaje.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Viaje,EstadoViaje])],
+  imports: [TypeOrmModule.forFeature([Viaje,EstadoViaje,
+    EstadoViaje
+  ])],
   controllers: [ViajeController],
   providers: [ViajeService],
 })
