@@ -12,7 +12,6 @@ export class ViajeService {
   constructor(@InjectRepository(EstadoViaje) private estadoViajeRepository: Repository<EstadoViaje>,
               @InjectRepository(Viaje) private viajeRepository: Repository<Viaje>,
               private readonly httpService: HttpService) {}
-  
 
   async testConnection() {
           try {
