@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column} from 'typeorm';
-import { CreateViajeDto } from '../dto/create-viaje.dto';
+import { ManyToOne, JoinColumn } from 'typeorm';
+import { EstadoViaje } from './estadoViaje.entity';
 
 @Entity()
 export class Viaje {
@@ -42,6 +43,7 @@ export class Viaje {
   idUnidades: number[];  
 
   //id viaje
-  @Column()
-  idEstadoViaje: number;
+  @ManyToOne(() => EstadoViaje, (estado) => estado.viajes, { eager: true })
+  @JoinColumn({ name: 'estadoViajeId' })
+  estadoViaje: EstadoViaje;
 }

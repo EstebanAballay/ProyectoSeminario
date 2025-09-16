@@ -31,6 +31,8 @@ export class UnidadService {
     return items[randomIndex];
   }
 
+
+  
   async createUnidad(createUnidadDto: CreateUnidadDto) {
     let Semirremolque: any = null;
     let Camion: any = null;
@@ -93,6 +95,8 @@ export class UnidadService {
     return this.UnidadRepository.save(unidadNueva);
 
   }
+
+
 
   findAll() {
     return `This action returns all unidad`;

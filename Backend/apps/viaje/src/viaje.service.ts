@@ -4,7 +4,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { EstadoViaje } from './entities/estadoViaje.entity';
 import { Viaje } from './entities/viaje.entity';
-import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 
 @Injectable()
@@ -15,7 +14,8 @@ export class ViajeService {
               private readonly httpService: HttpService) {}
 
 
-  createViaje(data: CreateViajeDto) {
+  async createViaje(data: CreateViajeDto) {
+    const estadoDefault = await this.estadoViajeRepository.findOne({ where: { nombre: 'PreCargado' } });
     const viaje = this.viajeRepository.create({
       //asignar fecha reserva
       //calcular fecha hora hora llegada
@@ -25,7 +25,7 @@ export class ViajeService {
     destinoInicio: data.destinoInicio.toString(),
     destinoFin: data.destinoFin.toString(),
     horaSalida: data.horaSalida.toString(),
-    idEstadoViaje: 1 // lo creo en estado precargado
+    estadoViaje: estadoDefault // lo creo en estado precargado
     });
 
     //Json dto para unidades
