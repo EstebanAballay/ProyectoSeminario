@@ -49,4 +49,23 @@ export class ViajeService {
   remove(id: number) {
     return `This action removes a #${id} viaje`;
   }
+
+async ConfirmTravel(id: number, confirmarViaje: string){
+      const viaje = await this.viajeRepository.findOne({ 
+        where: { idViaje: id }
+       });
+      
+      if (!Viaje) {
+        throw new NotFoundException(`No se encontró el viaje ${id}`);
+      }
+      
+      const estadoviaje = await this.estadoViajeRepository.findOne({ 
+        where: { nombre: "pendienteDePago" }
+       });
+      viaje.estadoViaje = estadoviaje;
+      return this.viajeRepository.save(viaje);
+
+      
+    }
+
 }
