@@ -1,10 +1,18 @@
 export class CreateViajeDto 
 {
-    fechaDeReserva: String; //el dia que se reservo
-    fechaDeInicio: String;  //el dia que tiene que ir el camion
-    fechaDeFin: number;     //el dia que el el camion llega a planta
+    fechaInicio: String;  //el dia que tiene que ir el camion
     destinoInicio: number; //donde tiene que recoger la carga
     destinoFin: number;     //a donde lleva la acarga
     horaSalida: String;     //hora a la que sale
-    horaLlegada:String      //hora a la que llega
+
+    //unidadesg
+    unidades: {
+        camionId: string;
+        transportistaId: number;
+        semiremolqueId?: string;
+        acopladoId?: string;
+        tipo: string; // mixto, frigorífico, etc.
+        //subtotal se calcula en el back, en unidad.service
+  }[];
 }
+

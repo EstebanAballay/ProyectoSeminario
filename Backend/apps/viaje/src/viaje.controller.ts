@@ -6,11 +6,10 @@ import { CreateViajeDto } from './dto/create-viaje.dto';
 export class ViajeController {
   constructor(private readonly viajeService: ViajeService) {}
 
-
   //crear
-  @Post()
-  create(@Body() createViajeDto: CreateViajeDto) {
-    return this.viajeService.create(createViajeDto);
+  @Post('nuevo')
+  create(@Body() createViajeDto: CreateViajeDto):Promise<any> {
+    return this.viajeService.createViaje(createViajeDto);
   }
 
   //consulta
