@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { UnidadService } from './unidad.service';
 import { CreateUnidadDto } from './dto/create-unidad.dto';
 import { UpdateUnidadDto } from './dto/update-unidad.dto';
+import { promises } from 'dns';
 
 @Controller('unidad')
 export class UnidadController {
@@ -12,9 +13,9 @@ export class UnidadController {
     return this.unidadService.create(createUnidadDto);
   }
 
-  @Get()
-  findAll() {
-    return this.unidadService.findAll();
+  @Get(':id/')
+  async findAll(@Param('id') id: String): Promise<any> {
+    return this.unidadService.findUnityByDriver(Number(id))
   }
 
   @Get(':id')
