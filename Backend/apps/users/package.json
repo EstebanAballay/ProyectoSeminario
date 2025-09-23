@@ -14,6 +14,7 @@
   "type": "commonjs",
   "dependencies": {
     "@nestjs/common": "^11.1.6",
+    "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.1.6",
     "@nestjs/platform-express": "^11.1.6",
     "@nestjs/typeorm": "^11.0.0",

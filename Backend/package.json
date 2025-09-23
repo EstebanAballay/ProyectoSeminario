@@ -8,6 +8,7 @@
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
+     "start:all": "concurrently \"npm run start:dev:cobro\" \"npm run start:dev:unidad\" \"npm run start:dev:users\" \"npm run start:dev:viaje\"",
     "start:dev:cobro": "node dist/apps/cobro/main",
     "start:dev:unidad": "node dist/apps/unidad/main",
     "start:dev:users": "node dist/apps/users/main",
