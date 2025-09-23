@@ -1,24 +1,30 @@
-version: '3.9'
-
 services:
   users:
     build: ./apps/users             # ruta al Dockerfile del microservicio
+    command: npm run start:dev
     container_name: users-service   # nombre del contenedor
     env_file: .env                  # variables de entorno
     ports:
       - "3003:3003"                # host:contenedor
     networks:
       - backend-network
+    volumes:
+      - ./apps/users:/app
+      - /app/node_modules
     restart: always                 # reinicia si falla
 
   cobro:
     build: ./apps/cobro
     container_name: cobro-service
+    command: npm run start:dev
     env_file: .env
     ports:
       - "3001:3001"
     networks:
       - backend-network
+    volumes:
+      - ./apps/cobro:/app
+      - /app/node_modules
     restart: always
     depends_on:                      # espera que 'users' se inicie primero
       - users
@@ -26,21 +32,29 @@ services:
   unidad:
     build: ./apps/unidad
     container_name: unidad-service
+    command: npm run start:dev
     env_file: .env
     ports:
       - "3002:3002"
     networks:
       - backend-network
+    volumes:
+      - ./apps/unidad:/app
+      - /app/node_modules
     restart: always
 
   viaje:
     build: ./apps/viaje
     container_name: viaje-service
+    command: npm run start:dev
     env_file: .env
     ports:
       - "3004:3004"
     networks:
       - backend-network
+    volumes:
+      - ./apps/viaje:/app
+      - /app/node_modules
     restart: always
     depends_on:
       - users
