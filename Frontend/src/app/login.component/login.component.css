@@ -1,17 +1,22 @@
 body {
     margin: 0;
     padding: 0;
-    height: 100vh;
+    /* Elimina el background-image de aquí, ya que lo pondremos en el contenedor principal */
+}
+
+.main-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
     background-image: url("/assets/camiones.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
 }
 
-
 .card {
     width: 350px;
-    margin: 20px auto;
     background-color: #0b1e3a;
     color: #fff;
     border-radius: 12px;
@@ -24,26 +29,24 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-
 }
 
-
+/* El resto de tu CSS es correcto y no necesita cambios */
 .card-header {
     display: flex;
-    justify-content: center; /* Centramos el logo */
+    justify-content: center;
     align-items: center;
     margin-bottom: 20px;
-    width: 100%; /* Aseguramos que tome todo el ancho */
+    width: 100%;
 }
 
 .logo {
     margin-top: -85px;
-    width: 95%; /* Tamaño del logo */
+    width: 95%;
 }
 
-/* Estilos para los campos de entrada */
-input[type="email"]
-{
+input[type="email"],
+input[type="password"] {
     margin-top: 30px;
     width: 89%;
     padding: 20px;
@@ -52,17 +55,7 @@ input[type="email"]
     border-radius: 6px;
     font-size: 14px;
 }
-input[type="password"] {
-    margin-top: 20px;
-    width: 89%;
-    padding: 20px;
-    margin-bottom: 12px;
-    border: none;
-    border-radius: 6px;
-    font-size: 14px;
-}
 
-/* Estilos para el botón de inicio de sesión */
 .btn-access {
     display: block;
     width: 92%;
@@ -82,7 +75,6 @@ input[type="password"] {
     background-color: #e0e0e0;
 }
 
-/* Estilos para el enlace de registro */
 .register-link {
     display: block;
     margin-top: 12px;

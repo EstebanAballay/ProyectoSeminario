@@ -6,7 +6,7 @@ import { MenuComponent } from './menu.component/menu.component';
 import { NuevoViajeComponent } from './nuevo-viaje.component/nuevo-viaje.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '', redirectTo: 'paginainicio', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'paginainicio', component: PaginainicioComponent },
