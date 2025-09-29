@@ -1,5 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToOne, JoinColumn } from 'typeorm';
-import { abonante } from './abonante.entity';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn} from 'typeorm';
 
 @Entity()
 export class Cobro {
@@ -12,6 +11,6 @@ export class Cobro {
   @Column()
   metodoDeCobro: string;
 
-  @Column()
-  abonante: abonante;
+  @Column() 
+  idAbonante: number;
 }

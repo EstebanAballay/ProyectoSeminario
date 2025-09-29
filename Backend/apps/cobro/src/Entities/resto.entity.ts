@@ -1,5 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn } from 'typeorm';
-import { Cobro } from './cobro.entity';
+import { Entity, Column, PrimaryGeneratedColumn} from 'typeorm';
+
 
 @Entity()
 export class resto {
@@ -7,6 +7,5 @@ export class resto {
   id: number;
 
   @Column()
-  Cobro : Cobro;
- 
+  idCobro : number;
 }
