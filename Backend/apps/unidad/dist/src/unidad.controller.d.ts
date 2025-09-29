@@ -4,7 +4,7 @@ import { UpdateUnidadDto } from './dto/update-unidad.dto';
 export declare class UnidadController {
     private readonly unidadService;
     constructor(unidadService: UnidadService);
-    create(createUnidadDto: CreateUnidadDto): string;
+    create(createUnidadDto: CreateUnidadDto): Promise<any>;
     findAll(): string;
     findOne(id: string): string;
     update(id: string, updateUnidadDto: UpdateUnidadDto): string;

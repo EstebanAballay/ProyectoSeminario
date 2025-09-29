@@ -21,7 +21,7 @@ let ViajeController = class ViajeController {
         this.viajeService = viajeService;
     }
     create(createViajeDto) {
-        return this.viajeService.create(createViajeDto);
+        return this.viajeService.createViaje(createViajeDto);
     }
     findAll() {
         return this.viajeService.findAll();
@@ -35,11 +35,11 @@ let ViajeController = class ViajeController {
 };
 exports.ViajeController = ViajeController;
 __decorate([
-    (0, common_1.Post)(),
+    (0, common_1.Post)('nuevoViaje'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_viaje_dto_1.CreateViajeDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], ViajeController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),

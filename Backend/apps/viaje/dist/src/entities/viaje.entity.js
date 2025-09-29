@@ -11,13 +11,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Viaje = void 0;
 const typeorm_1 = require("typeorm");
+const typeorm_2 = require("typeorm");
+const estadoViaje_entity_1 = require("./estadoViaje.entity");
 let Viaje = class Viaje {
 };
 exports.Viaje = Viaje;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
-], Viaje.prototype, "id", void 0);
+], Viaje.prototype, "ViajeId", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'date' }),
     __metadata("design:type", Date)
@@ -59,13 +61,14 @@ __decorate([
     __metadata("design:type", Number)
 ], Viaje.prototype, "total", void 0);
 __decorate([
-    (0, typeorm_1.Column)('int', { array: true }),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", Array)
 ], Viaje.prototype, "idUnidades", void 0);
 __decorate([
-    (0, typeorm_1.Column)('int', { array: true }),
-    __metadata("design:type", Number)
-], Viaje.prototype, "idEstadoViaje", void 0);
+    (0, typeorm_2.ManyToOne)(() => estadoViaje_entity_1.EstadoViaje, (estado) => estado.viajes, { eager: true }),
+    (0, typeorm_2.JoinColumn)({ name: 'estadoViajeId' }),
+    __metadata("design:type", estadoViaje_entity_1.EstadoViaje)
+], Viaje.prototype, "estadoViaje", void 0);
 exports.Viaje = Viaje = __decorate([
     (0, typeorm_1.Entity)()
 ], Viaje);

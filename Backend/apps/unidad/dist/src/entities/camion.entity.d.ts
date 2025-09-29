@@ -1,6 +1,8 @@
+import { EstadoCamion } from './estadoCamion.entity';
+import { TipoCamion } from './tipoCamion.entity';
 export declare class Camion {
     id: number;
-    EstadoCamion: number;
+    EstadoCamion: EstadoCamion;
     patente: string;
-    tipoCamion: number;
+    tipoCamion: TipoCamion;
 }

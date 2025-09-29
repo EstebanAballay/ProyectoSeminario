@@ -7,7 +7,7 @@ export class ViajeController {
   constructor(private readonly viajeService: ViajeService) {}
 
   //crear
-  @Post('nuevo')
+  @Post('nuevoViaje')
   create(@Body() createViajeDto: CreateViajeDto):Promise<any> {
     return this.viajeService.createViaje(createViajeDto);
   }

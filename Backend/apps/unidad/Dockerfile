@@ -7,6 +7,7 @@ RUN npm install
 
 COPY . .
 
-RUN npm run build
+RUN npm install -g typescript @nestjs/cli
+RUN tsc -p tsconfig.build.json
 
 CMD ["node", "dist/main.js"]

@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "nest build",
+    "build": "tsc -p tsconfig.build.json",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
      "start:all": "concurrently \"npm run start:dev:cobro\" \"npm run start:dev:unidad\" \"npm run start:dev:users\" \"npm run start:dev:viaje\"",
     "start:dev:cobro": "node dist/apps/cobro/main",

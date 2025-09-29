@@ -22,7 +22,7 @@ let UnidadController = class UnidadController {
         this.unidadService = unidadService;
     }
     create(createUnidadDto) {
-        return this.unidadService.create(createUnidadDto);
+        return this.unidadService.createUnidad(createUnidadDto);
     }
     findAll() {
         return this.unidadService.findAll();
@@ -43,7 +43,7 @@ __decorate([
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_unidad_dto_1.CreateUnidadDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], UnidadController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),

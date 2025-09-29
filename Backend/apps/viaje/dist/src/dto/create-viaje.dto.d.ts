@@ -1,9 +1,13 @@
 export declare class CreateViajeDto {
-    fechaDeReserva: String;
-    fechaDeInicio: String;
-    fechaDeFin: number;
+    fechaInicio: String;
     destinoInicio: number;
     destinoFin: number;
     horaSalida: String;
-    horaLlegada: String;
+    unidades: {
+        camionId: string;
+        transportistaId: number;
+        semiremolqueId?: string;
+        acopladoId?: string;
+        tipo: string;
+    }[];
 }

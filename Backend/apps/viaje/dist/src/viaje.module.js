@@ -11,14 +11,14 @@ const common_1 = require("@nestjs/common");
 const viaje_service_1 = require("./viaje.service");
 const viaje_controller_1 = require("./viaje.controller");
 const typeorm_1 = require("@nestjs/typeorm");
-const viaje_entity_1 = require("./entities/viaje.entity");
 const estadoViaje_entity_1 = require("./entities/estadoViaje.entity");
+const viaje_entity_1 = require("./entities/viaje.entity");
 let ViajeModule = class ViajeModule {
 };
 exports.ViajeModule = ViajeModule;
 exports.ViajeModule = ViajeModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([viaje_entity_1.Viaje,
+        imports: [typeorm_1.TypeOrmModule.forFeature([viaje_entity_1.Viaje, estadoViaje_entity_1.EstadoViaje,
                 estadoViaje_entity_1.EstadoViaje
             ])],
         controllers: [viaje_controller_1.ViajeController],

@@ -14,24 +14,45 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ViajeService = void 0;
 const common_1 = require("@nestjs/common");
-const typeorm_1 = require("typeorm");
+const typeorm_1 = require("@nestjs/typeorm");
+const typeorm_2 = require("typeorm");
+const estadoViaje_entity_1 = require("./entities/estadoViaje.entity");
 const viaje_entity_1 = require("./entities/viaje.entity");
-const typeorm_2 = require("@nestjs/typeorm");
+const axios_1 = require("@nestjs/axios");
 let ViajeService = class ViajeService {
-    constructor(viajeRepo) {
-        this.viajeRepo = viajeRepo;
+    constructor(estadoViajeRepository, viajeRepository, httpService) {
+        this.estadoViajeRepository = estadoViajeRepository;
+        this.viajeRepository = viajeRepository;
+        this.httpService = httpService;
     }
     async testConnection() {
         try {
-            const count = await this.viajeRepo.count();
+            const count = await this.viajeRepository.count();
             console.log('DB connection works, Viaje count:', count);
         }
         catch (error) {
             console.error('DB connection failed:', error);
         }
     }
-    create(createViajeDto) {
-        return 'This action adds a new viaje';
+    async createViaje(data) {
+        const estadoDefault = await this.estadoViajeRepository.findOne({ where: { nombre: 'PreCargado' } });
+        const viaje = this.viajeRepository.create({
+            fechaReserva: new Date(),
+            fechaInicio: data.fechaInicio,
+            destinoInicio: data.destinoInicio.toString(),
+            destinoFin: data.destinoFin.toString(),
+            horaSalida: data.horaSalida.toString(),
+            estadoViaje: estadoDefault
+        });
+        const unidades = data.unidades;
+        for (const unidad of unidades) {
+            this.agregarUnidad(unidad, viaje.ViajeId);
+        }
+        return this.viajeRepository.save(viaje);
+    }
+    async agregarUnidad(unidad, viajeId) {
+        const unidadCompleta = { ...unidad, viajeId };
+        const nuevaUnidad = await this.httpService.post('http://localhost:3003/unidad', unidadCompleta);
     }
     findAll() {
         return `This action returns all viaje`;
@@ -46,7 +67,10 @@ let ViajeService = class ViajeService {
 exports.ViajeService = ViajeService;
 exports.ViajeService = ViajeService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, typeorm_2.InjectRepository)(viaje_entity_1.Viaje)),
-    __metadata("design:paramtypes", [typeorm_1.Repository])
+    __param(0, (0, typeorm_1.InjectRepository)(estadoViaje_entity_1.EstadoViaje)),
+    __param(1, (0, typeorm_1.InjectRepository)(viaje_entity_1.Viaje)),
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository,
+        axios_1.HttpService])
 ], ViajeService);
 //# sourceMappingURL=viaje.service.js.map
