@@ -15,6 +15,7 @@ const cobro_entity_1 = require("./Entities/cobro.entity");
 const abonante_entity_1 = require("./Entities/abonante.entity");
 const se_a_entity_1 = require("./Entities/se\u00F1a.entity");
 const resto_entity_1 = require("./Entities/resto.entity");
+const axios_1 = require("@nestjs/axios");
 let CobroModule = class CobroModule {
 };
 exports.CobroModule = CobroModule;
@@ -24,7 +25,7 @@ exports.CobroModule = CobroModule = __decorate([
                 abonante_entity_1.abonante,
                 resto_entity_1.resto,
                 se_a_entity_1.seña
-            ])],
+            ]), axios_1.HttpModule],
         controllers: [cobro_controller_1.CobroController],
         providers: [cobro_service_1.CobroService]
     })

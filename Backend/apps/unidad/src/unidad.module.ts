@@ -14,6 +14,7 @@ import { estadoTransportista } from './entities/estadoTransportista.entity';
 import { Tipo } from './entities/tipo.entity';
 import { TipoCamion } from './entities/tipoCamion.entity';
 import { Especializacion } from './entities/especializacion.entity';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
@@ -31,7 +32,7 @@ import { Especializacion } from './entities/especializacion.entity';
       TipoCamion,
       Especializacion,
     ]),
-  ],
+  HttpModule],
   controllers: [UnidadController],
   providers: [UnidadService],
 })

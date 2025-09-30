@@ -8,7 +8,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
-     "start:all": "concurrently \"npm run start:dev:cobro\" \"npm run start:dev:unidad\" \"npm run start:dev:users\" \"npm run start:dev:viaje\"",
+    "start:all": "concurrently \"npm run start:dev:cobro\" \"npm run start:dev:unidad\" \"npm run start:dev:users\" \"npm run start:dev:viaje\"",
     "start:dev:cobro": "node dist/apps/cobro/main",
     "start:dev:unidad": "node dist/apps/unidad/main",
     "start:dev:users": "node dist/apps/users/main",
@@ -34,7 +34,7 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/typeorm": "^11.0.0",
-    "axios": "^1.11.0",
+    "axios": "^1.12.2",
     "concurrently": "^9.0.0",
     "pg": "^8.16.3",
     "reflect-metadata": "^0.2.2",
@@ -44,7 +44,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.18.0",
-    "@nestjs/cli": "^11.0.0",
+    "@nestjs/cli": "^11.0.10",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
     "@types/express": "^5.0.0",
