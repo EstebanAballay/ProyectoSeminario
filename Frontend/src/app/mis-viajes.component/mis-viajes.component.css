@@ -1,0 +1,96 @@
+/* Fondo general */
+.container {
+    background-color: #072a4e;
+    min-height: 100vh;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    color: white;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f9f6ee;
+    padding: 10px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+.header .logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.header img {
+    height: 36px;
+}
+.header h1 {
+    color: #072a4e;
+    font-size: 18px;
+    margin: 0;
+}
+.header h1 span {
+    font-weight: normal;
+}
+.user-icon img {
+    height: 36px;
+    border-radius: 50%;
+}
+
+/* Título */
+.titulo {
+    margin: 10px 0 20px 0;
+    font-size: 20px;
+    text-align: center;
+}
+
+/* Tarjeta de viaje */
+.card {
+    background: #ffffff;
+    color: #072a4e;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    padding: 12px;
+    box-shadow: 0px 2px 6px rgba(0,0,0,0.2);
+}
+
+.card-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.info h3 {
+    margin: 0;
+}
+.info p {
+    margin: 2px 0;
+    font-size: 14px;
+}
+.destino {
+    font-weight: bold;
+}
+
+/* Botón de desplegar */
+.btn-toggle {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #072a4e;
+}
+
+/* Sección de detalles */
+.detalles {
+    margin-top: 10px;
+}
+
+.btn-descargar {
+    background: #072a4e;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
