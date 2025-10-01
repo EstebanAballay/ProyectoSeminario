@@ -41,7 +41,7 @@ body {
 }
 
 .logo {
-    margin-top: -85px;
+    margin-top: -100px;
     width: 95%;
 }
 
@@ -59,7 +59,7 @@ input[type="password"] {
 .btn-access {
     display: block;
     width: 92%;
-    margin-top: 50px;
+    margin-top: px;
     text-align: center;
     background-color: #ffffff;
     color: #0b1e3a;
@@ -83,4 +83,60 @@ input[type="password"] {
     text-decoration: underline;
     font-weight: bold;
     cursor: pointer;
+}
+/* Aplica un contenedor con display flex para mantener el formulario de una sola columna */
+.form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 400px;  /* Ajusta el ancho máximo */
+    margin: 0 auto;
+}
+
+/* Define un tamaño constante para los campos de entrada */
+input[type="email"], input[type="password"] {
+    width: 150%;
+    height: 40px; /* Asegura una altura constante */
+    padding: 10px;
+    box-sizing: border-box;
+    margin-bottom: 10px; /* Espaciado entre campos */
+}
+
+/* Mensajes de error con un tamaño fijo */
+.error {
+  color: red;
+  font-size: 12px;
+  height: 16px;  /* Establece una altura fija para el mensaje de error */
+  visibility: hidden;  /* El mensaje de error no debe ocupar espacio cuando no se muestra */
+}
+
+/* Muestra el mensaje de error solo cuando el campo es inválido */
+input.ng-invalid.ng-touched + .error {
+  visibility: visible;  /* Muestra el mensaje solo cuando el campo ha sido tocado y es inválido */
+}
+
+/* Evita que los campos cambien de tamaño */
+input.ng-invalid {
+  border-color: red;  /* Cambia el borde del campo si es inválido */
+  background-color: #f8d7da;  /* Fondo para indicar que el campo es inválido */
+}
+
+input.ng-valid {
+  border-color: green;  /* Cambia el borde del campo si es válido */
+  background-color: #d4edda;  /* Fondo para indicar que el campo es válido */
+}
+.extra-link {
+  margin-top: 20px;       /* lo baja un poco más */
+  text-align: center;     /* lo centra */
+}
+
+.extra-link a {
+  color: #ffffff;         /* texto en blanco */
+  text-decoration: none;  /* sin subrayado */
+  font-size: 14px;
+}
+
+.extra-link a:hover {
+  text-decoration: underline; /* subrayado solo al pasar el mouse */
 }

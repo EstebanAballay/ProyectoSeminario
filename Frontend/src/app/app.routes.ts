@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+// Update the path below to the correct location of login.component.ts
 import { LoginComponent } from './login.component/login.component';
 import { RegisterComponent } from './register.component/register.component'; 
 import { PaginainicioComponent } from './paginainicio/paginainicio.component';  

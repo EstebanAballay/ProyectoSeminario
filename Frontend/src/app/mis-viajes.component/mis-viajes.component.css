@@ -5,13 +5,19 @@
     min-height: 100vh;
 }
 
+/* Encabezado */
 .header {
     background-color: #F5EFE3;
-    padding: 10px 20px;
+    padding: 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     border-bottom: 2px solid #eee;
+}
+.titulo {
+    color: #ffffff;
+    font-size: 24px;
+    margin: 0;
 }
 
 .logo img {

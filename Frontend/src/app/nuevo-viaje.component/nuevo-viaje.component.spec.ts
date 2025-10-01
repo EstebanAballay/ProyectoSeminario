@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet-routing-machine';
 
@@ -11,88 +11,92 @@ export class NuevoViajeComponent implements AfterViewInit {
   private map!: L.Map;
   private routingControl: any;
 
-  @ViewChild('origenInput') origenInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('destinoInput') destinoInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('fechaSalidaInput') fechaSalidaInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('camionInput') camionInput!: ElementRef<HTMLInputElement>;
+  // Coordenadas y marcadores
+  origenCoords: { lat: number, lon: number } | null = null;
+  destinoCoords: { lat: number, lon: number } | null = null;
+  origenMarker: L.Marker | null = null;
+  destinoMarker: L.Marker | null = null;
+
+  // Flag para saber qué marcar
+  marcandoDestino: boolean = false;
 
   ngAfterViewInit(): void {
     this.initMap();
   }
 
   private initMap(): void {
-    this.map = L.map('map').setView([-34.6037, -58.3816], 6); // Mapa centrado en Buenos Aires
+    this.map = L.map('map').setView([-34.61, -58.38], 13); // vista inicial (Buenos Aires)
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors',
-      maxZoom: 19
+      attribution: '© OpenStreetMap contributors'
     }).addTo(this.map);
+
+    // Evento click en el mapa
+    this.map.on('click', (e: any) => {
+      const lat = e.latlng.lat;
+      const lon = e.latlng.lng;
+
+      if (!this.marcandoDestino) {
+        this.setOrigen(lat, lon);
+      } else {
+        this.setDestino(lat, lon);
+      }
+    });
   }
 
-  async crearViaje(event: Event): Promise<void> {
-    event.preventDefault();
+  setOrigen(lat: number, lon: number): void {
+    if (this.origenMarker) {
+      this.map.removeLayer(this.origenMarker);
+    }
 
-    const origen = this.origenInput.nativeElement.value;
-    const destino = this.destinoInput.nativeElement.value;
-    const fecha = this.fechaSalidaInput.nativeElement.value;
-    const camion = this.camionInput.nativeElement.value;
+    const origenIcon = L.divIcon({
+      className: 'custom-icon',
+      html: '🟢',
+      iconSize: [30, 30],
+      iconAnchor: [15, 30]
+    });
 
-    console.log("🚚 Datos del viaje:", { origen, destino, fecha, camion });
+    this.origenMarker = L.marker([lat, lon], { icon: origenIcon }).addTo(this.map);
+    this.origenCoords = { lat, lon };
 
-    // Geocodificación de Origen y Destino usando Nominatim (OpenStreetMap)
-    const origenCoords = await this.getCoords(origen);
-    const destinoCoords = await this.getCoords(destino);
+    console.log("Origen marcado:", this.origenCoords);
+    this.updateRoute();
+  }
 
-    if (origenCoords && destinoCoords) {
-      console.log("Origen coordenadas:", origenCoords);
-      console.log("Destino coordenadas:", destinoCoords);
+  setDestino(lat: number, lon: number): void {
+    if (this.destinoMarker) {
+      this.map.removeLayer(this.destinoMarker);
+    }
 
-      // Si ya existe una ruta previa, la eliminamos
+    const destinoIcon = L.divIcon({
+      className: 'custom-icon',
+      html: '🔴',
+      iconSize: [30, 30],
+      iconAnchor: [15, 30]
+    });
+
+    this.destinoMarker = L.marker([lat, lon], { icon: destinoIcon }).addTo(this.map);
+    this.destinoCoords = { lat, lon };
+
+    console.log("Destino marcado:", this.destinoCoords);
+    this.updateRoute();
+  }
+
+  updateRoute(): void {
+    if (this.origenCoords && this.destinoCoords) {
+      // Si ya había una ruta, la borro
       if (this.routingControl) {
         this.map.removeControl(this.routingControl);
       }
 
-      // Crear la ruta entre los dos puntos
+      // Creo nueva ruta
       this.routingControl = L.Routing.control({
         waypoints: [
-          L.latLng(origenCoords.lat, origenCoords.lon),
-          L.latLng(destinoCoords.lat, destinoCoords.lon)
+          L.latLng(this.origenCoords.lat, this.origenCoords.lon),
+          L.latLng(this.destinoCoords.lat, this.destinoCoords.lon)
         ],
-        routeWhileDragging: true, // Esto permite arrastrar el recorrido en el mapa
-        lineOptions: {
-          styles: [{ color: 'blue', weight: 4, opacity: 0.7 }],
-          extendToWaypoints: true, // Asegura que la línea se extienda hasta los puntos de origen y destino
-          missingRouteTolerance: 1000 // Si no se puede calcular la ruta, usa este valor de tolerancia
-        }
+        routeWhileDragging: false
       }).addTo(this.map);
-
-      // Agregar marcadores manualmente para Origen y Destino
-      const origenMarker = L.marker([origenCoords.lat, origenCoords.lon]).addTo(this.map)
-        .bindPopup('Origen: ' + origen)
-        .openPopup();
-
-      const destinoMarker = L.marker([destinoCoords.lat, destinoCoords.lon]).addTo(this.map)
-        .bindPopup('Destino: ' + destino)
-        .openPopup();
-
-      // Mover el mapa para centrarse en la ruta entre los marcadores
-      this.map.fitBounds([
-        [origenCoords.lat, origenCoords.lon], // Usando LatLngTuple (array [lat, lon])
-        [destinoCoords.lat, destinoCoords.lon]  // Usando LatLngTuple (array [lat, lon])
-      ]);
-    } else {
-      alert("❌ No se pudo encontrar la ubicación. Revisá origen y destino.");
     }
-  }
-
-  private async getCoords(place: string): Promise<{ lat: number; lon: number } | null> {
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(place)}`
-    );
-    const data = await response.json();
-    if (data.length > 0) {
-      return { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) };
-    }
-    return null;
   }
 }
