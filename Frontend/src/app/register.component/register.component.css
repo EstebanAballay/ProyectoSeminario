@@ -1,0 +1,90 @@
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+
+    /* Imagen + oscurecimiento */
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+                url("/assets/camiones.jpg") no-repeat center center fixed;
+    background-size: cover;
+}
+
+
+.card {
+    width: 350px;
+    margin: auto; /* quita los márgenes manuales */
+    background-color: #0b1e3a;
+    color: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    height: auto;  /* para que se ajuste al contenido */
+    min-height: 75vh;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.logo {
+    margin-top: -10px;
+    width: 95%;
+}
+
+input[type="text"],
+input[type="big-int"],
+input[type="String"],
+input[type="email"],
+input[type="password"] {
+    margin-top: 2px;
+    width: 89%;
+    padding: 20px;
+    margin-bottom: 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.btn-access {
+    display: block;
+    width: 100%;
+    margin-top: 2px;
+    text-align: center;
+    background-color: #ffffff;
+    color: #0b1e3a;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.btn-access:hover {
+    background-color: #e0e0e0;
+}
+
+.register-link {
+    display: block;
+    margin-top: 12px;
+    text-align: center;
+    color: #ffffff;
+    text-decoration: underline;
+    font-weight: bold;
+    cursor: pointer;
+}
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: url("/assets/camiones.jpg") no-repeat center center fixed;
+    background-size: cover;
+}
