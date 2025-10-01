@@ -85,7 +85,7 @@ describe('ViajeService - createViaje', () => {
     // Act: llamamos al método real
     const result = await service.createViaje(dto as any);
 
-    // Assert: comparar con el resultado esperado
+    // Assert: compara con el resultado esperado
     expect(result).toEqual({
       fechaReserva: expect.any(Date), 
       fechaInicio: new Date('2025-10-15'),
