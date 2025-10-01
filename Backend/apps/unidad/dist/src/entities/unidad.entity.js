@@ -19,6 +19,10 @@ let Unidad = class Unidad {
 };
 exports.Unidad = Unidad;
 __decorate([
+    (0, typeorm_1.PrimaryGeneratedColumn)(),
+    __metadata("design:type", Number)
+], Unidad.prototype, "UnidadId", void 0);
+__decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
 ], Unidad.prototype, "idViaje", void 0);

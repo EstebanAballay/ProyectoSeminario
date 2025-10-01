@@ -19,10 +19,7 @@ let ViajeModule = class ViajeModule {
 exports.ViajeModule = ViajeModule;
 exports.ViajeModule = ViajeModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([viaje_entity_1.Viaje, estadoViaje_entity_1.EstadoViaje,
-                estadoViaje_entity_1.EstadoViaje
-            ]),
-            axios_1.HttpModule],
+        imports: [typeorm_1.TypeOrmModule.forFeature([viaje_entity_1.Viaje, estadoViaje_entity_1.EstadoViaje]), axios_1.HttpModule],
         controllers: [viaje_controller_1.ViajeController],
         providers: [viaje_service_1.ViajeService],
     })

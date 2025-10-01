@@ -1,16 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ViajeService } from './viaje.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { ViajeService } from './viaje.service';
 import { Viaje } from './entities/viaje.entity';
+import { EstadoViaje } from './entities/estadoViaje.entity';
 import { Repository } from 'typeorm';
-import { HttpService } from '@nestjs/axios';
-import { of } from 'rxjs';
 
-describe('ViajeService', () => {
+describe('ViajeService - createViaje', () => {
+  //Aca debo incluir las entidades que necesito
   let service: ViajeService;
-  let repo: Repository<Viaje>;
-  let httpService: HttpService;
+  let viajeRepo: Repository<Viaje>;
+  let estadoRepo: Repository<EstadoViaje>;
 
+  //module es el modulo de testing que estamos creando,debe incluir las entidades de arriba
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -23,35 +24,84 @@ describe('ViajeService', () => {
           },
         },
         {
-          provide: HttpService,
+          provide: getRepositoryToken(EstadoViaje),
           useValue: {
-            get: jest.fn(),
+            findOne: jest.fn(),
           },
         },
       ],
     }).compile();
-
+    //Incluimos un pedacito del modulo de testing en donde corresponda,con esto ya tenemos listo el modulo de testing
     service = module.get<ViajeService>(ViajeService);
-    repo = module.get(getRepositoryToken(Viaje));
-    httpService = module.get<HttpService>(HttpService);
+    viajeRepo = module.get(getRepositoryToken(Viaje));
+    estadoRepo = module.get(getRepositoryToken(EstadoViaje));
+
+    // Estas son respuestas que debe recibir mi funcionalidad a testear para poder ejecutarse
+    //esta hecho asi para que no haga la peticion al otro microservicio,porque de cualquier manera no me devuelve nada
+    jest.spyOn(service as any, 'agregarUnidad').mockImplementation(() => {});
   });
 
-  it('debería crear un viaje con precio mockeado', async () => {
-    const dto = { ruta: 'A-B' };
+  it('debería crear un viaje con los datos esperados', async () => {
+    // dto de entrada
+    const dto = {
+      fechaInicio: '2025-10-15',
+      destinoInicio: 51651654651,
+      destinoFin: 64563465465,
+      horaSalida: '14:32:00',
+      fechaFin: '2025-10-16',
+      horaLlegada: '23:51:00',
+      unidades: [
+        {
+          camionId: 152,
+          transportistaId: 14,
+          semiremolqueId: 'ABC 123',
+          acopladoId: 'ZXC 497',
+          tipo: 'frigorifico',
+        },
+      ],
+    };
 
-    // Mock del microservicio de precios
-    jest.spyOn(httpService, 'get').mockReturnValue(
-      of({ data: { precio: 100 } }) as any,
-    );
+    // Estado default mockeado, pido que me devuelva este estado falso
+    jest
+      .spyOn(estadoRepo, 'findOne')
+      .mockResolvedValue({ id: 99, nombre: 'creado' } as EstadoViaje);
 
-    // Mock del repo
-    jest.spyOn(repo, 'create').mockReturnValue({ ...dto, precio: 100 } as any);
-    jest.spyOn(repo, 'save').mockResolvedValue({ id: 1, ...dto, precio: 100 } as any);
+    // Mock del viajeRepo.create
+    jest.spyOn(viajeRepo, 'create').mockImplementation((data: any) => ({
+      ...data,
+      ViajeId: 2, // simular id generado
+    }));
 
+    // Mock del viajeRepo.save
+    jest
+      .spyOn(viajeRepo, 'save')
+      .mockImplementation(async (viaje: any) => viaje);
+
+    // Act: llamamos al método real
     const result = await service.createViaje(dto as any);
 
-    expect(httpService.get).toHaveBeenCalledWith('http://precios-ms/precio/A-B');
-    expect(repo.create).toHaveBeenCalledWith({ ruta: 'A-B', precio: 100 });
-    expect(result).toEqual({ id: 1, ruta: 'A-B', precio: 100 });
+    // Assert: comparar con el resultado esperado
+    expect(result).toEqual({
+      fechaReserva: expect.any(Date), // no lo fijamos, pero verificamos que sea una fecha
+      fechaInicio: new Date('2025-10-15'),
+      fechaFin: new Date('2025-10-16'),
+      destinoInicio: 51651654651,
+      destinoFin: 64563465465,
+      horaSalida: '14:32:00',
+      horaLlegada: '23:51:00',
+      sena: 0,
+      resto: 0,
+      total: 0,
+      estadoViaje: { id: 99, nombre: 'creado' },
+      ViajeId: 2,
+    });
+
+    // Asegurarnos que se llamó a los repositorios
+    expect(estadoRepo.findOne).toHaveBeenCalledWith({
+      where: { nombre: 'PreCargado' },
+    });
+    expect(viajeRepo.create).toHaveBeenCalled();
+    expect(viajeRepo.save).toHaveBeenCalled();
   });
 });
+

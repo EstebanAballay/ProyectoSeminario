@@ -38,10 +38,15 @@ let ViajeService = class ViajeService {
         const estadoDefault = await this.estadoViajeRepository.findOne({ where: { nombre: 'PreCargado' } });
         const viaje = this.viajeRepository.create({
             fechaReserva: new Date(),
-            fechaInicio: data.fechaInicio,
-            destinoInicio: data.destinoInicio.toString(),
-            destinoFin: data.destinoFin.toString(),
-            horaSalida: data.horaSalida.toString(),
+            fechaInicio: new Date(data.fechaInicio),
+            destinoInicio: data.destinoInicio,
+            horaSalida: data.horaSalida,
+            fechaFin: new Date(data.fechaFin),
+            horaLlegada: data.horaLlegada,
+            destinoFin: data.destinoFin,
+            sena: 0,
+            resto: 0,
+            total: 0,
             estadoViaje: estadoDefault
         });
         const unidades = data.unidades;
@@ -52,7 +57,7 @@ let ViajeService = class ViajeService {
     }
     async agregarUnidad(unidad, viajeId) {
         const unidadCompleta = { ...unidad, viajeId };
-        const nuevaUnidad = await this.httpService.post('http://localhost:3003/unidad', unidadCompleta);
+        const nuevaUnidad = await this.httpService.post('http://localhost:3002/unidad', unidadCompleta);
     }
     findAll() {
         return `This action returns all viaje`;

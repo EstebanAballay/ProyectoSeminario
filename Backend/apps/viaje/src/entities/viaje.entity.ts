@@ -30,7 +30,7 @@ export class Viaje {
   horaLlegada?: string;
 
   @Column()
-  seña?: number;
+  sena?: number;
 
   @Column()
   resto?: number;
@@ -38,9 +38,11 @@ export class Viaje {
   @Column()
   total?: number;
 
+  /*
   //Relación: Guardo los id de las unidades 
-  @Column()
+  @Column('idUnidades')
   idUnidades: number[]; 
+  */
 
   //id viaje
   @ManyToOne(() => EstadoViaje, (estado) => estado.viajes, { eager: true })

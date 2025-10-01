@@ -51,7 +51,7 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
-], Viaje.prototype, "se\u00F1a", void 0);
+], Viaje.prototype, "sena", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
@@ -60,10 +60,6 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
 ], Viaje.prototype, "total", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", Array)
-], Viaje.prototype, "idUnidades", void 0);
 __decorate([
     (0, typeorm_2.ManyToOne)(() => estadoViaje_entity_1.EstadoViaje, (estado) => estado.viajes, { eager: true }),
     (0, typeorm_2.JoinColumn)({ name: 'estadoViajeId' }),

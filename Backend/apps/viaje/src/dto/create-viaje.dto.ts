@@ -1,11 +1,13 @@
 export class CreateViajeDto 
 {
-    fechaInicio: String;  //el dia que tiene que ir el camion
-    destinoInicio: number; //donde tiene que recoger la carga
-    destinoFin: number;     //a donde lleva la acarga
-    horaSalida: String;     //hora a la que sale
+    fechaInicio: string;  //el dia que tiene que ir el camion
+    destinoInicio: string; //donde tiene que recoger la carga
+    destinoFin: string;     //a donde lleva la acarga
+    horaSalida: string;     //hora a la que sale
+    horaLlegada:string;
+    fechaFin:string;
 
-    //unidadesg
+    //unidades
     unidades: {
         camionId: string;
         transportistaId: number;

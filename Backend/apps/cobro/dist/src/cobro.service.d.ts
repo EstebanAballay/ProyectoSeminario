@@ -4,4 +4,5 @@ export declare class CobroService {
     private readonly cobroRepo;
     constructor(cobroRepo: Repository<Cobro>);
     testConnection(): Promise<void>;
+    findAll(): Promise<string>;
 }

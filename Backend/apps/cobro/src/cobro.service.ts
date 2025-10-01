@@ -18,4 +18,8 @@ export class CobroService {
       console.error('DB connection failed:', error);
     }
   }
+
+  async findAll(){
+    return "This action returns all cobros";
+  }
 }

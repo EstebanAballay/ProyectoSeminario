@@ -30,6 +30,9 @@ let CobroService = class CobroService {
             console.error('DB connection failed:', error);
         }
     }
+    async findAll() {
+        return "This action returns all cobros";
+    }
 };
 exports.CobroService = CobroService;
 exports.CobroService = CobroService = __decorate([

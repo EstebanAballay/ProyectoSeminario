@@ -7,10 +7,7 @@ import { Viaje } from './entities/viaje.entity';
 import { HttpModule } from '@nestjs/axios';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Viaje,EstadoViaje,
-    EstadoViaje
-  ]),
-  HttpModule],
+  imports: [TypeOrmModule.forFeature([Viaje,EstadoViaje]),HttpModule],
   controllers: [ViajeController],
   providers: [ViajeService],
 })

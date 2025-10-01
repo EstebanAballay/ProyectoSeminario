@@ -23,19 +23,26 @@ export class ViajeService {
         }
 
   async createViaje(data: CreateViajeDto) {
+    //busco el estado PreCargado, que es el estado default
     const estadoDefault = await this.estadoViajeRepository.findOne({ where: { nombre: 'PreCargado' } });
     const viaje = this.viajeRepository.create({
       //asignar fecha reserva
       //calcular fecha hora hora llegada
       //calcular total
-    fechaReserva: new Date(),
-    fechaInicio: data.fechaInicio,
-    destinoInicio: data.destinoInicio.toString(),
-    destinoFin: data.destinoFin.toString(),
-    horaSalida: data.horaSalida.toString(),
-    estadoViaje: estadoDefault // lo creo en estado precargado
+      fechaReserva: new Date(),
+      fechaInicio: new Date(data.fechaInicio),
+      destinoInicio: data.destinoInicio,
+      horaSalida: data.horaSalida,
+      fechaFin: new Date(data.fechaFin), //Cambiar esto cuando se integre con el front.Aqui debe ir la fecha de regreso calculada en funcion de la duracion del viaje.
+      horaLlegada: data.horaLlegada, //Cambiar esto cuando se integre con el front.Aqui debe ir la hora de llegada calculada en funcion de la duracion del viaje.
+      destinoFin: data.destinoFin,
+      sena: 0,
+      resto: 0,
+      total: 0,
+      estadoViaje: estadoDefault // lo creo en estado precargado
     });
 
+    
     //Json dto para unidades
     const unidades = data.unidades
     for (const unidad of unidades) {
@@ -46,7 +53,7 @@ export class ViajeService {
 
   async agregarUnidad(unidad: any,viajeId:number) {
     const unidadCompleta = {...unidad, viajeId} //asignar el id del viaje creado
-    const nuevaUnidad = await this.httpService.post('http://localhost:3003/unidad',unidadCompleta);
+    const nuevaUnidad = await this.httpService.post('http://localhost:3002/unidad',unidadCompleta);
   }
 
   findAll() {

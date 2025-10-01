@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nest start",
     "start:dev": "nest start --watch",
-    "build": "nest build"
+    "build": "nest build",
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
@@ -27,6 +28,7 @@
     "typeorm": "^0.3.26"
   },
   "devDependencies": {
-    "@nestjs/cli": "^11.0.10"
+    "@nestjs/cli": "^11.0.10",
+    "jest": "^30.2.0"
   }
 }

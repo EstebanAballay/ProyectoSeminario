@@ -7,7 +7,10 @@ import { Transportista } from './transportista.entity';
 
 @Entity('unidad')
 export class Unidad {
- @Column()
+  @PrimaryGeneratedColumn()
+  UnidadId: number;
+
+  @Column()
   idViaje: number;
 
   @ManyToOne(() => Camion, { eager: true })
