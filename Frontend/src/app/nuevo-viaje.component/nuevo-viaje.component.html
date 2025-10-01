@@ -1,7 +1,7 @@
 <!-- Encabezado -->
 <div class="header">
     <div class="logo">
-        <img src="assets/logo.png" alt="Logo Grafo">
+        <img src="assets/logo.png" alt="Logo Grafo" />
     </div>
     <div class="profile-icon">👤</div>
     </div>
@@ -28,9 +28,15 @@
             <input id="fechaSalida" type="date" #fechaSalidaInput />
         </div>
 
+        <!-- Botón para abrir selector de vehículo -->
         <div>
-            <label for="camion">Camión:</label>
-            <input id="camion" type="text" #camionInput placeholder="Patente o ID" />
+            <label>Vehículo:</label>
+            <button type="button" (click)="abrirSelectorVehiculo()">
+            🚛 Seleccionar vehículo
+            </button>
+            <span *ngIf="vehiculoSeleccionado">
+            ✅ {{ vehiculoSeleccionado }} - {{ remolqueSeleccionado }}
+            </span>
         </div>
 
         <button type="submit" class="btn-submit">🚚 Crear Viaje</button>
@@ -39,4 +45,35 @@
 
     <!-- Contenedor del mapa -->
     <div id="map"></div>
+    </div>
+
+    <!-- Modal de selección de vehículo -->
+    <div *ngIf="mostrarSelector" class="modal">
+    <div class="modal-content">
+        <h3>Seleccionar vehículo</h3>
+
+        <div>
+        <label for="vehiculo">Vehículo:</label>
+        <select id="vehiculo" [(ngModel)]="vehiculoSeleccionado">
+            <option value="">-- Seleccionar --</option>
+            <option value="Camión 1">Camión 1</option>
+            <option value="Camión 2">Camión 2</option>
+        </select>
+        </div>
+
+        <div>
+        <label for="remolque">Remolque:</label>
+        <select id="remolque" [(ngModel)]="remolqueSeleccionado">
+            <option value="">-- Seleccionar --</option>
+            <option value="Remolque 1">Remolque 1</option>
+            <option value="Remolque 2">Remolque 2</option>
+            <option value="Sin remolque">Sin remolque</option>
+        </select>
+        </div>
+
+        <div class="modal-actions">
+        <button type="button" (click)="confirmarVehiculo()">Confirmar</button>
+        <button type="button" (click)="cerrarSelector()">Cancelar</button>
+        </div>
+    </div>
 </div>

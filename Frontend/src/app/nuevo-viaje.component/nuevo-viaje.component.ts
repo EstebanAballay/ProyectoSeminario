@@ -1,9 +1,13 @@
 import { Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common'; // 👈 Importar esto
 import * as L from 'leaflet';
 import 'leaflet-routing-machine';
 
 @Component({
   selector: 'app-nuevo-viaje',
+  standalone: true,
+  imports: [FormsModule, CommonModule], // 👈 Agregar acá
   templateUrl: './nuevo-viaje.component.html',
   styleUrls: ['./nuevo-viaje.component.css']
 })
@@ -14,7 +18,6 @@ export class NuevoViajeComponent implements AfterViewInit {
   @ViewChild('origenInput') origenInput!: ElementRef<HTMLInputElement>;
   @ViewChild('destinoInput') destinoInput!: ElementRef<HTMLInputElement>;
   @ViewChild('fechaSalidaInput') fechaSalidaInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('camionInput') camionInput!: ElementRef<HTMLInputElement>;
 
   // Coordenadas y marcadores
   origenCoords: { lat: number; lon: number } | null = null;
@@ -23,6 +26,11 @@ export class NuevoViajeComponent implements AfterViewInit {
   destinoMarker: L.Marker | null = null;
 
   seleccionandoOrigen: boolean = true;
+
+  // 🚚 Variables del modal de vehículo
+  mostrarSelector = false;
+  vehiculoSeleccionado: string = '';
+  remolqueSeleccionado: string = '';
 
   ngAfterViewInit(): void {
     this.initMap();
@@ -36,24 +44,19 @@ export class NuevoViajeComponent implements AfterViewInit {
       maxZoom: 19
     }).addTo(this.map);
 
-    // Escuchar clicks en el mapa
     this.map.on('click', async (e: L.LeafletMouseEvent) => {
       const lat = e.latlng.lat;
       const lon = e.latlng.lng;
-
-      // Geocodificación inversa para nombre de lugar
       const placeName = await this.reverseGeocode(lat, lon);
 
       if (this.seleccionandoOrigen) {
         this.origenCoords = { lat, lon };
         this.origenInput.nativeElement.value = placeName;
 
-        // Reemplazar marcador existente si ya hay uno
         if (this.origenMarker) this.map.removeLayer(this.origenMarker);
         this.origenMarker = L.marker([lat, lon]).addTo(this.map)
           .bindPopup('Origen: ' + placeName)
           .openPopup();
-
       } else {
         this.destinoCoords = { lat, lon };
         this.destinoInput.nativeElement.value = placeName;
@@ -64,7 +67,6 @@ export class NuevoViajeComponent implements AfterViewInit {
           .openPopup();
       }
 
-      // Si hay ambos puntos, dibujar ruta
       if (this.origenCoords && this.destinoCoords) {
         this.dibujarRuta();
       }
@@ -103,17 +105,41 @@ export class NuevoViajeComponent implements AfterViewInit {
     const origen = this.origenInput.nativeElement.value;
     const destino = this.destinoInput.nativeElement.value;
     const fecha = this.fechaSalidaInput.nativeElement.value;
-    const camion = this.camionInput.nativeElement.value;
 
-    console.log("🚚 Datos del viaje:", { origen, destino, fecha, camion });
+    console.log("🚚 Datos del viaje:", { 
+      origen, 
+      destino, 
+      fecha, 
+      vehiculo: this.vehiculoSeleccionado, 
+      remolque: this.remolqueSeleccionado 
+    });
 
-    // Validar que haya seleccionado ambos puntos
     if (!this.origenCoords || !this.destinoCoords) {
       alert("❌ Debés seleccionar origen y destino en el mapa o con el formulario.");
       return;
     }
 
-    // Aquí enviás los datos al backend
+    if (!this.vehiculoSeleccionado) {
+      alert("❌ Debés seleccionar un vehículo antes de crear el viaje.");
+      return;
+    }
+
+    alert("✅ Viaje creado con éxito");
+  }
+
+  abrirSelectorVehiculo() { this.mostrarSelector = true; }
+  cerrarSelector() { this.mostrarSelector = false; }
+
+  confirmarVehiculo() {
+    if (!this.vehiculoSeleccionado) {
+      alert("Debés seleccionar un vehículo.");
+      return;
+    }
+    if (!this.remolqueSeleccionado) {
+      alert("Debés seleccionar un remolque o indicar 'Sin remolque'.");
+      return;
+    }
+    this.mostrarSelector = false;
   }
 
   private async getCoords(place: string): Promise<{ lat: number; lon: number } | null> {
