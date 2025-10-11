@@ -31,11 +31,11 @@ __decorate([
     __metadata("design:type", camion_entity_1.Camion)
 ], Unidad.prototype, "Camion", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => semirremolque_entity_1.Semirremolque, { eager: true }),
+    (0, typeorm_1.ManyToOne)(() => semirremolque_entity_1.Semirremolque, { eager: true, nullable: true }),
     __metadata("design:type", semirremolque_entity_1.Semirremolque)
 ], Unidad.prototype, "semiremolque", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => acoplado_entity_1.Acoplado, { eager: true }),
+    (0, typeorm_1.ManyToOne)(() => acoplado_entity_1.Acoplado, { eager: true, nullable: true }),
     __metadata("design:type", acoplado_entity_1.Acoplado)
 ], Unidad.prototype, "acoplado", void 0);
 __decorate([
@@ -47,6 +47,6 @@ __decorate([
     __metadata("design:type", Number)
 ], Unidad.prototype, "subtotal", void 0);
 exports.Unidad = Unidad = __decorate([
-    (0, typeorm_1.Entity)('unidad')
+    (0, typeorm_1.Entity)({ name: 'unidad', schema: 'microservice_unidad' })
 ], Unidad);
 //# sourceMappingURL=unidad.entity.js.map

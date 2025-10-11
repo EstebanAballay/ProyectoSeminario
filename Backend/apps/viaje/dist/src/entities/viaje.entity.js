@@ -66,6 +66,6 @@ __decorate([
     __metadata("design:type", estadoViaje_entity_1.EstadoViaje)
 ], Viaje.prototype, "estadoViaje", void 0);
 exports.Viaje = Viaje = __decorate([
-    (0, typeorm_1.Entity)()
+    (0, typeorm_1.Entity)({ name: 'viaje', schema: 'microservice_viaje' })
 ], Viaje);
 //# sourceMappingURL=viaje.entity.js.map

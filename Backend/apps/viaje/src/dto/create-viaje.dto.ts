@@ -9,12 +9,11 @@ export class CreateViajeDto
 
     //unidades
     unidades: {
-        camionId: string;
-        transportistaId: number;
-        semiremolqueId?: string;
-        acopladoId?: string;
-        tipo: string; // mixto, frigorífico, etc.
-        //subtotal se calcula en el back, en unidad.service
+      semiremolque:boolean;   
+      acoplado:boolean;
+      tipoCamion: string;         //tractocamion,cisterna,reparto,frigorifico.
+      tipoSemirremolque?:string;
+      tipoAcoplado?:string;
   }[];
 }
 

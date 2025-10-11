@@ -7,7 +7,7 @@ import { Repository } from 'typeorm';
 import { HttpService } from '@nestjs/axios';
 
 describe('ViajeService - createViaje', () => {
-  //Aca debo incluir las entidades que necesito
+  //Aca debo incluir las entidades que necesito, o que debo mockear
   let service: ViajeService;
   let viajeRepo: Repository<Viaje>;
   let estadoRepo: Repository<EstadoViaje>;
@@ -71,13 +71,13 @@ describe('ViajeService - createViaje', () => {
       .spyOn(estadoRepo, 'findOne')
       .mockResolvedValue({ id: 99, nombre: 'creado' } as EstadoViaje);
 
-    // Mock del viajeRepo.create
+    // Mock del viajeRepo.create,simulo crear
     jest.spyOn(viajeRepo, 'create').mockImplementation((data: any) => ({
       ...data,
       ViajeId: 2, // simular id generado
     }));
 
-    // Mock del viajeRepo.save
+    // Mock del viajeRepo.save, simulo guardar en bd
     jest
       .spyOn(viajeRepo, 'save')
       .mockImplementation(async (viaje: any) => viaje);

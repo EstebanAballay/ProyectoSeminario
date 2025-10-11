@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column} from 'typeorm';
 import { ManyToOne, JoinColumn } from 'typeorm';
 import { EstadoViaje } from './estadoViaje.entity';
 
-@Entity()
+@Entity({name:'viaje', schema: 'microservice_viaje'})
 export class Viaje {
 
   @PrimaryGeneratedColumn()

@@ -5,7 +5,7 @@ import { Acoplado } from './acoplado.entity';
 import { Transportista } from './transportista.entity';
 
 
-@Entity('unidad')
+@Entity({name:'unidad', schema: 'microservice_unidad'})
 export class Unidad {
   @PrimaryGeneratedColumn()
   UnidadId: number;
@@ -16,10 +16,10 @@ export class Unidad {
   @ManyToOne(() => Camion, { eager: true })
   Camion: Camion;
 
-  @ManyToOne(() => Semirremolque, { eager: true })
+  @ManyToOne(() => Semirremolque, { eager: true, nullable: true })
   semiremolque?: Semirremolque;
 
-  @ManyToOne(() => Acoplado, { eager: true })
+  @ManyToOne(() => Acoplado, { eager: true, nullable: true })
   acoplado?: Acoplado;
 
   @ManyToOne(() => Transportista, { eager: true })
@@ -27,4 +27,5 @@ export class Unidad {
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   subtotal: number;
+  
 }

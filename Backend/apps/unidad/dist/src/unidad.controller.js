@@ -22,6 +22,7 @@ let UnidadController = class UnidadController {
         this.unidadService = unidadService;
     }
     create(createUnidadDto) {
+        console.log("llegue al controlador");
         return this.unidadService.createUnidad(createUnidadDto);
     }
     findAll() {

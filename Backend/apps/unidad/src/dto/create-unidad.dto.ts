@@ -1,9 +1,8 @@
 export class CreateUnidadDto{
     viajeId:number;
-    idCamion:number;
-    semiremolque:boolean;
+    semiremolque:boolean;   
     acoplado:boolean;
-    tipoCamion: string;         //tractocamion o entero
+    tipoCamion: string;         //tractocamion,cisterna,reparto,frigorifico.
     tipoSemirremolque?:string;
     tipoAcoplado?:string;
 }

@@ -36,4 +36,4 @@ import { HttpModule } from '@nestjs/axios';
   controllers: [UnidadController],
   providers: [UnidadService],
 })
-export class UnidadModule {}
+export class UnidadModule { }

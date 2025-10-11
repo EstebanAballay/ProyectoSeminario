@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column,OneToOne} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne} from 'typeorm';
 import { EstadoCamion } from './estadoCamion.entity';
 import { TipoCamion } from './tipoCamion.entity';
 
@@ -8,14 +8,14 @@ export class Camion {
     id: number;
 
     //Relación con Semirremolque
-    @OneToOne(() => EstadoCamion, { eager: true })
+    @ManyToOne(() => EstadoCamion, { eager: true })
     EstadoCamion: EstadoCamion;
 
     @Column()
     patente:string;
 
     //id tipo camion
-    @OneToOne(() => TipoCamion, { eager: true })
+    @ManyToOne(() => TipoCamion, { eager: true })
     tipoCamion: TipoCamion;
 
 }

@@ -18,7 +18,6 @@ export class Acoplado {
     @Column()
     cantidadDeEjes: number;
 
-
     @ManyToOne(() => EstadoAcoplado, { eager: true })
     estado: EstadoAcoplado;
 }

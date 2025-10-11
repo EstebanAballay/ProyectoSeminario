@@ -9,6 +9,7 @@ export class UnidadController {
 
   @Post()
   create(@Body() createUnidadDto: CreateUnidadDto): Promise<any> {
+    console.log("llegue al controlador")
     return this.unidadService.createUnidad(createUnidadDto);
   }
 

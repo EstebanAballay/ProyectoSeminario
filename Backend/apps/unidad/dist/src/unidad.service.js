@@ -53,7 +53,9 @@ let UnidadService = class UnidadService {
         let Semirremolque = null;
         let Camion = null;
         let Acoplado = null;
+        console.log("llegue afuera del if");
         if (createUnidadDto.tipoCamion == 'tractoCamion') {
+            console.log("llegue adentro del if");
             const tipoSemi = await this.tipoRepository.findOne({ where: { nombre: createUnidadDto.tipoSemirremolque } });
             if (!tipoSemi) {
                 throw new common_1.NotFoundException('No se encontro el tipo de semiremolque');

@@ -50,9 +50,10 @@ export class UnidadService {
     let Semirremolque: any = null;
     let Camion: any = null;
     let Acoplado: any = null;
-
+    console.log("llegue afuera del if")
     //Seleccionar un semiremolque random que cumpla con el tipo
     if (createUnidadDto.tipoCamion == 'tractoCamion'){
+      console.log("llegue adentro del if")
       //busco el tipo por su nombre
       const tipoSemi = await this.tipoRepository.findOne({ where: { nombre: createUnidadDto.tipoSemirremolque } });
       if (!tipoSemi){
@@ -65,13 +66,13 @@ export class UnidadService {
         if (!semirremolques){
           throw new NotFoundException('No se encontro ninguna unidad de este tipo')
         }
+        //selecciono un semirremolque random
         Semirremolque = this.getRandomItem(semirremolques);
       }
       else{
         throw new NotFoundException('Debe seleccionar un semirremolque si selecciona un tractocamion')
       }
-    }
-    //Si no es un tractocamion, debo encontrar un tipo de camion entero adecuado
+    }    //Si no es un tractocamion, debo encontrar un tipo de camion entero adecuado
     else{
       //Busco el tipo de camion por su nombre
       const tipoCamion = await this.tipoCamionRepository.findOne({where: {nombre: createUnidadDto.tipoCamion}})
@@ -81,7 +82,7 @@ export class UnidadService {
       const camionesEnteros = await this.CamionRepository.find({where: {tipoCamion: tipoCamion }})
       if (!camionesEnteros){
         throw new NotFoundException('No se encontro ningun camion entero de este tipo')
-      }
+      }   
       Camion = this.getRandomItem(camionesEnteros);
     }
 
@@ -106,7 +107,6 @@ export class UnidadService {
       subtotal: subtotal
     });
     return this.UnidadRepository.save(unidadNueva);
-
   }
 
 

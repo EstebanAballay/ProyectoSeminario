@@ -21,7 +21,7 @@ body {
     color: #fff;
     border-radius: 12px;
     padding: 16px;
-    height: 80vh;
+    height: 60vh;
     font-family: Arial, sans-serif;
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     position: relative;
@@ -40,8 +40,12 @@ body {
     width: 100%;
 }
 
+.cartelito {
+  margin-left: -50px;
+}
+  
 .logo {
-    margin-top: -100px;
+    margin-top: -80px;
     width: 95%;
 }
 

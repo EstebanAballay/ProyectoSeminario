@@ -5,7 +5,7 @@ import { CreateViajeDto } from './dto/create-viaje.dto';
 @Controller('viaje')
 export class ViajeController {
   constructor(private readonly viajeService: ViajeService) {}
-
+  //  viaje/nuevoViaje
   //crear
   @Post('nuevoViaje')
   create(@Body() createViajeDto: CreateViajeDto):Promise<any> {
