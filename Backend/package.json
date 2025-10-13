@@ -8,7 +8,7 @@
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
-     "start:all": "concurrently \"npm run start:dev:cobro\" \"npm run start:dev:unidad\" \"npm run start:dev:users\" \"npm run start:dev:viaje\"",
+    "start:all": "concurrently \"npm run start:dev:cobro\" \"npm run start:dev:unidad\" \"npm run start:dev:users\" \"npm run start:dev:viaje\"",
     "start:dev:cobro": "node dist/apps/cobro/main",
     "start:dev:unidad": "node dist/apps/unidad/main",
     "start:dev:users": "node dist/apps/users/main",
@@ -28,12 +28,17 @@
   "dependencies": {
     "@nestjs/common": "^11.1.6",
     "@nestjs/core": "^11.0.1",
+    "@nestjs/jwt": "^11.0.0",
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^11.0.1",
+    "bcrypt": "^6.0.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2",
+    "jsonwebtoken": "^9.0.2",
     "pg": "^8.16.3",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
-    "typeorm": "^0.3.26"
+    "typeorm": "^0.3.27"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
@@ -41,9 +46,10 @@
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
+    "@types/bcrypt": "^6.0.0",
     "@types/express": "^5.0.0",
     "@types/jest": "^30.0.0",
-    "@types/node": "^22.18.0",
+    "@types/node": "^22.18.8",
     "@types/supertest": "^6.0.2",
     "concurrently": "^9.2.1",
     "eslint": "^9.18.0",
@@ -58,7 +64,7 @@
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.9.2",
+    "typescript": "^5.9.3",
     "typescript-eslint": "^8.20.0"
   },
   "jest": {

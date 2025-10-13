@@ -1,6 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn} from 'typeorm';
+import { Role } from '../role.enum';
 
-@Entity()
+@Entity({ name: 'user', schema: 'microservice_usuarios' })
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
@@ -12,18 +13,24 @@ export class User {
   apellido: string;
 
   @Column()
-  dni: number;
+  dni: string;
 
   @Column()
   email: string;
 
   @Column()
-  telefono: number;
+  celular: string;
 
   @Column()
   CUIT: string;
 
   @Column()
   direccion: string;
+
+  @Column({ name: 'password_hash' })
+  password_hash: string;
+
+  @Column({ type: 'enum', enum: Role , default: Role.CLIENT })
+  role: Role;
 }
 

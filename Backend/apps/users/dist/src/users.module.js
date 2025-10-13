@@ -12,14 +12,21 @@ const users_service_1 = require("./users.service");
 const users_controller_1 = require("./users.controller");
 const typeorm_1 = require("@nestjs/typeorm");
 const user_entity_1 = require("./entities/user.entity");
+const jwt_1 = require("@nestjs/jwt");
 let UsuariosModule = class UsuariosModule {
 };
 exports.UsuariosModule = UsuariosModule;
 exports.UsuariosModule = UsuariosModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([user_entity_1.User])],
+        imports: [typeorm_1.TypeOrmModule.forFeature([user_entity_1.User]),
+            jwt_1.JwtModule.register({
+                secret: 'TU_SECRETO_SUPER_SEGURO',
+                signOptions: { expiresIn: '1h' },
+            }),
+        ],
         providers: [users_service_1.UsersService],
-        controllers: [users_controller_1.UsersController]
+        controllers: [users_controller_1.UsersController],
+        exports: [users_service_1.UsersService],
     })
 ], UsuariosModule);
 //# sourceMappingURL=users.module.js.map
