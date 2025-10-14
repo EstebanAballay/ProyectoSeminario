@@ -19,15 +19,14 @@ export class NuevoViajeComponent implements AfterViewInit {
   @ViewChild('destinoInput') destinoInput!: ElementRef<HTMLInputElement>;
   @ViewChild('fechaSalidaInput') fechaSalidaInput!: ElementRef<HTMLInputElement>;
 
-  // Coordenadas y marcadores
   origenCoords: { lat: number; lon: number } | null = null;
   destinoCoords: { lat: number; lon: number } | null = null;
   origenMarker: L.Marker | null = null;
   destinoMarker: L.Marker | null = null;
 
-  seleccionandoOrigen: boolean = true;
+  // 🚦 Control de flujo
+  origenConfirmado: boolean = false; // indica si el usuario confirmó el origen
 
-  // 🚚 Variables del modal de vehículo
   mostrarSelector = false;
   tipoCamionSeleccionado: string = '';
   remolqueSeleccionado: string = '';
@@ -52,7 +51,8 @@ export class NuevoViajeComponent implements AfterViewInit {
       const lon = e.latlng.lng;
       const placeName = await this.reverseGeocode(lat, lon);
 
-      if (this.seleccionandoOrigen) {
+      if (!this.origenCoords) {
+        // Seleccionando origen (antes de confirmar)
         this.origenCoords = { lat, lon };
         this.origenInput.nativeElement.value = placeName;
 
@@ -60,7 +60,13 @@ export class NuevoViajeComponent implements AfterViewInit {
         this.origenMarker = L.marker([lat, lon]).addTo(this.map)
           .bindPopup('Origen: ' + placeName)
           .openPopup();
-      } else {
+
+        alert('Origen seleccionado. Hacé clic en OK para confirmarlo y habilitar el destino.');
+        return;
+      }
+
+      // Selección de destino solo si origen confirmado
+      if (this.origenConfirmado && !this.destinoCoords) {
         this.destinoCoords = { lat, lon };
         this.destinoInput.nativeElement.value = placeName;
 
@@ -68,12 +74,25 @@ export class NuevoViajeComponent implements AfterViewInit {
         this.destinoMarker = L.marker([lat, lon]).addTo(this.map)
           .bindPopup('Destino: ' + placeName)
           .openPopup();
+
+        if (this.origenCoords && this.destinoCoords) {
+          this.dibujarRuta();
+        }
+        return;
       }
 
-      if (this.origenCoords && this.destinoCoords) {
-        this.dibujarRuta();
-      }
+      // Si clickeó después de todo
+      alert('Origen y destino ya seleccionados.');
     });
+  }
+
+  confirmarOrigen(): void {
+    if (!this.origenCoords) {
+      alert('❌ Primero seleccioná el origen en el mapa o en el formulario.');
+      return;
+    }
+    this.origenConfirmado = true;
+    alert('✅ Origen confirmado. Ahora podés seleccionar el destino en el mapa.');
   }
 
   private dibujarRuta(): void {
@@ -152,7 +171,7 @@ export class NuevoViajeComponent implements AfterViewInit {
   toggleSemirremolque(): void {
     this.quiereSemirremolque = !this.quiereSemirremolque;
     if (!this.quiereSemirremolque) {
-      this.tipoSemirremolqueSeleccionado = ''; // Resetear tipo de semirremolque si se deselecciona
+      this.tipoSemirremolqueSeleccionado = '';
     }
   }
 
