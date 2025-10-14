@@ -16,6 +16,7 @@ export class UsersService {
   private readonly jwtService: JwtService,
   ) {}
   async crearUsuario(dto: CreateUserDto) {
+    console.log('Email recibido:', dto.email);
     // 1️⃣ Verificar si ya existe un usuario con ese email
     const existente = await this.userRepo.findOne({
       where: { email: dto.email },

@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
-import axios from 'axios';
+import axiosService from '../../api/axiosClient';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UsersService {
-  private apiUrl = 'http://localhost:3003/users'; 
+  private apiUrl = '/users';
 
   async register(userData: any) {
     try {
-      const response = await axios.post(`${this.apiUrl}/register`, userData);
+      const response = await axiosService.post(`${this.apiUrl}/register`, userData);
       return response.data;
     } catch (error: any) {
       throw error;
@@ -17,13 +17,18 @@ export class UsersService {
   }
 
   async login(email: string, password: string) {
-  try {
-    const response = await axios.post(`${this.apiUrl}/login`, { email, password }, {
-      withCredentials: true
-    });
-    return response.data;
-  } catch (error: any) {
-    throw error;
+    try {
+      const response = await axiosService.post(`${this.apiUrl}/login`, { email, password });
+      
+      // guardar token en localStorage
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+      }
+
+      return response.data;
+    } catch (error: any) {
+      throw error;
+    }
   }
 }
-}
+
