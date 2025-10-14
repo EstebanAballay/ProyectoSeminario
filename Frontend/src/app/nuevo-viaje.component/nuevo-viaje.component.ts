@@ -1,13 +1,13 @@
 import { Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common'; // 👈 Importar esto
+import { CommonModule } from '@angular/common';
 import * as L from 'leaflet';
 import 'leaflet-routing-machine';
 
 @Component({
   selector: 'app-nuevo-viaje',
   standalone: true,
-  imports: [FormsModule, CommonModule], // 👈 Agregar acá
+  imports: [FormsModule, CommonModule],
   templateUrl: './nuevo-viaje.component.html',
   styleUrls: ['./nuevo-viaje.component.css']
 })
@@ -29,8 +29,11 @@ export class NuevoViajeComponent implements AfterViewInit {
 
   // 🚚 Variables del modal de vehículo
   mostrarSelector = false;
-  vehiculoSeleccionado: string = '';
+  tipoCamionSeleccionado: string = '';
   remolqueSeleccionado: string = '';
+  tipoSemirremolqueSeleccionado: string = '';
+  quiereSemirremolque: boolean = false;
+  camionesSeleccionados: { tipo: string, remolque: string, semirremolque: string }[] = [];
 
   ngAfterViewInit(): void {
     this.initMap();
@@ -110,8 +113,7 @@ export class NuevoViajeComponent implements AfterViewInit {
       origen, 
       destino, 
       fecha, 
-      vehiculo: this.vehiculoSeleccionado, 
-      remolque: this.remolqueSeleccionado 
+      camiones: this.camionesSeleccionados, 
     });
 
     if (!this.origenCoords || !this.destinoCoords) {
@@ -119,8 +121,8 @@ export class NuevoViajeComponent implements AfterViewInit {
       return;
     }
 
-    if (!this.vehiculoSeleccionado) {
-      alert("❌ Debés seleccionar un vehículo antes de crear el viaje.");
+    if (this.camionesSeleccionados.length === 0) {
+      alert("❌ Debés seleccionar al menos un camión antes de crear el viaje.");
       return;
     }
 
@@ -130,16 +132,28 @@ export class NuevoViajeComponent implements AfterViewInit {
   abrirSelectorVehiculo() { this.mostrarSelector = true; }
   cerrarSelector() { this.mostrarSelector = false; }
 
-  confirmarVehiculo() {
-    if (!this.vehiculoSeleccionado) {
-      alert("Debés seleccionar un vehículo.");
-      return;
+  agregarCamion(): void {
+    if (this.tipoCamionSeleccionado && this.remolqueSeleccionado) {
+      this.camionesSeleccionados.push({
+        tipo: this.tipoCamionSeleccionado,
+        remolque: this.remolqueSeleccionado,
+        semirremolque: this.quiereSemirremolque ? this.tipoSemirremolqueSeleccionado : 'Sin semirremolque'
+      });
+      this.tipoCamionSeleccionado = '';
+      this.remolqueSeleccionado = '';
+      this.tipoSemirremolqueSeleccionado = '';
+      this.quiereSemirremolque = false;
+      this.cerrarSelector();
+    } else {
+      alert("❌ Debes seleccionar el tipo de camión y remolque.");
     }
-    if (!this.remolqueSeleccionado) {
-      alert("Debés seleccionar un remolque o indicar 'Sin remolque'.");
-      return;
+  }
+
+  toggleSemirremolque(): void {
+    this.quiereSemirremolque = !this.quiereSemirremolque;
+    if (!this.quiereSemirremolque) {
+      this.tipoSemirremolqueSeleccionado = ''; // Resetear tipo de semirremolque si se deselecciona
     }
-    this.mostrarSelector = false;
   }
 
   private async getCoords(place: string): Promise<{ lat: number; lon: number } | null> {

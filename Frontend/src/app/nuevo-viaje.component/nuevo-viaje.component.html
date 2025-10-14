@@ -4,76 +4,89 @@
         <img src="assets/logo.png" alt="Logo Grafo" />
     </div>
     <div class="profile-icon">👤</div>
-    </div>
+</div>
 
-    <!-- Contenido -->
-    <div class="container">
+<!-- Contenido -->
+<div class="container">
     <h2>Crear nuevo viaje</h2>
 
     <!-- Tarjeta del formulario -->
     <div class="form-card">
         <form (submit)="crearViaje($event)">
-        <div>
-            <label for="origen">Origen:</label>
-            <input id="origen" type="text" #origenInput placeholder="Ej: Córdoba" />
-        </div>
+            <div>
+                <label for="origen">Origen:</label>
+                <input id="origen" type="text" #origenInput placeholder="Ej: Córdoba" />
+            </div>
 
-        <div>
-            <label for="destino">Destino:</label>
-            <input id="destino" type="text" #destinoInput placeholder="Ej: Rosario" />
-        </div>
+            <div>
+                <label for="destino">Destino:</label>
+                <input id="destino" type="text" #destinoInput placeholder="Ej: Rosario" />
+            </div>
 
-        <div>
-            <label for="fechaSalida">Fecha de salida:</label>
-            <input id="fechaSalida" type="date" #fechaSalidaInput />
-        </div>
+            <div>
+                <label for="fechaSalida">Fecha de salida:</label>
+                <input id="fechaSalida" type="date" #fechaSalidaInput />
+            </div>
 
-        <!-- Botón para abrir selector de vehículo -->
-        <div>
-            <label>Vehículo:</label>
-            <button type="button" (click)="abrirSelectorVehiculo()">
-            🚛 Seleccionar vehículo
-            </button>
-            <span *ngIf="vehiculoSeleccionado">
-            ✅ {{ vehiculoSeleccionado }} - {{ remolqueSeleccionado }}
-            </span>
-        </div>
+            <!-- Mostrar los camiones agregados -->
+            <div>
+                <label>Camiones agregados:</label>
+                <ul>
+                    <li *ngFor="let camion of camionesSeleccionados">
+                        {{ camion.tipo }} - {{ camion.remolque }} - {{ camion.semirremolque }}
+                    </li>
+                </ul>
+            </div>
 
-        <button type="submit" class="btn-submit">🚚 Crear Viaje</button>
+            <!-- Botón para abrir selector de vehículo -->
+            <div>
+                <button type="button" (click)="abrirSelectorVehiculo()">🚛 Agregar camión</button>
+            </div>
+
+            <button type="submit" class="btn-submit">🚚 Crear Viaje</button>
         </form>
     </div>
 
     <!-- Contenedor del mapa -->
-    <div id="map"></div>
-    </div>
+    <div id="map" style="height: 400px;"></div>
+</div>
 
-    <!-- Modal de selección de vehículo -->
-    <div *ngIf="mostrarSelector" class="modal">
+<!-- Modal de selección de vehículo -->
+<div *ngIf="mostrarSelector" class="modal">
     <div class="modal-content">
-        <h3>Seleccionar vehículo</h3>
+        <h3>Seleccionar camión</h3>
 
         <div>
-        <label for="vehiculo">Vehículo:</label>
-        <select id="vehiculo" [(ngModel)]="vehiculoSeleccionado">
-            <option value="">-- Seleccionar --</option>
-            <option value="Camión 1">Camión 1</option>
-            <option value="Camión 2">Camión 2</option>
-        </select>
+            <label for="tipoCamion">Tipo de camión:</label>
+            <select id="tipoCamion" [(ngModel)]="tipoCamionSeleccionado">
+                <option value="Camión 1">Camión 1</option>
+                <option value="Camión 2">Camión 2</option>
+                <option value="Camión 3">Camión 3</option>
+            </select>
         </div>
 
         <div>
-        <label for="remolque">Remolque:</label>
-        <select id="remolque" [(ngModel)]="remolqueSeleccionado">
-            <option value="">-- Seleccionar --</option>
-            <option value="Remolque 1">Remolque 1</option>
-            <option value="Remolque 2">Remolque 2</option>
-            <option value="Sin remolque">Sin remolque</option>
-        </select>
+            <label for="remolque">¿Con semirremolque?</label>
+            <select id="remolque" [(ngModel)]="remolqueSeleccionado" (change)="toggleSemirremolque()">
+                <option value="Sin remolque">Sin remolque</option>
+                <option value="Remolque 1">Remolque 1</option>
+                <option value="Remolque 2">Remolque 2</option>
+            </select>
+        </div>
+
+        <!-- Campo de tipo de semirremolque, solo visible si elige "Sí" -->
+        <div *ngIf="quiereSemirremolque">
+            <label for="tipoSemirremolque">Tipo de semirremolque:</label>
+            <select id="tipoSemirremolque" [(ngModel)]="tipoSemirremolqueSeleccionado">
+                <option value="Semirremolque 1">Semirremolque 1</option>
+                <option value="Semirremolque 2">Semirremolque 2</option>
+                <option value="Semirremolque 3">Semirremolque 3</option>
+            </select>
         </div>
 
         <div class="modal-actions">
-        <button type="button" (click)="confirmarVehiculo()">Confirmar</button>
-        <button type="button" (click)="cerrarSelector()">Cancelar</button>
+            <button type="button" (click)="agregarCamion()">Agregar camión</button>
+            <button type="button" (click)="cerrarSelector()">Cancelar</button>
         </div>
     </div>
 </div>

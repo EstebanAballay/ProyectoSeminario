@@ -1,0 +1,63 @@
+.pago-container {
+  width: 320px;
+  background-color: #002b4d;
+  color: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  margin: 40px auto;
+  font-family: 'Poppins', sans-serif;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.logo {
+  width: 80px;
+}
+
+.pago-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form-group {
+  text-align: left;
+}
+
+.form-group label {
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+input {
+  width: 100%;
+  padding: 6px;
+  border-radius: 5px;
+  border: none;
+  margin-top: 4px;
+}
+
+input:focus {
+  outline: 2px solid #007bff;
+}
+
+.btn-pagar {
+  background-color: #003d6b;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.btn-pagar:hover {
+  background-color: #005b9f;
+}
