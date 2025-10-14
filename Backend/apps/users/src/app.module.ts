@@ -24,6 +24,7 @@ import { User } from './entities/user.entity';
         password: config.get<string>('DB_PASS', 'postgres'),
         database: config.get<string>('DB_NAME', 'usersdb'),
         entities: [User],
+        autoLoadEntities: true,
         synchronize: true,
       }),
     }),

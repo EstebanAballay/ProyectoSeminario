@@ -32,6 +32,7 @@ exports.AppModule = AppModule = __decorate([
                     password: config.get('DB_PASS', 'postgres'),
                     database: config.get('DB_NAME', 'usersdb'),
                     entities: [user_entity_1.User],
+                    autoLoadEntities: true,
                     synchronize: true,
                 }),
             }),

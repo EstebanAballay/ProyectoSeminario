@@ -15,14 +15,6 @@ export class UsersService {
   private readonly userRepo: Repository<User>,
   private readonly jwtService: JwtService,
   ) {}
-    async testConnection() { //Test de conexion en la base de datos
-    try {
-      const count = await this.userRepo.count();
-      console.log('DB connection works, User count:', count);
-    } catch (error) {
-      console.error('DB connection failed:', error);
-    }
-  }
   async crearUsuario(dto: CreateUserDto) {
     // 1️⃣ Verificar si ya existe un usuario con ese email
     const existente = await this.userRepo.findOne({
@@ -57,15 +49,14 @@ const salt = await bcrypt.genSalt(10);
     // 1️⃣ Buscar el usuario por email
     const usuario = await this.userRepo.findOne({ where: { email: dto.email } });
     if (!usuario) {
-      throw new UnauthorizedException('Email o contraseña incorrectos');
+      throw new UnauthorizedException('Email o contraseña incorrecta'); //Manda el error que despues muestra el login.component.ts con el mensaje 
     }
 
     // 2️⃣ Verificar contraseña
     const isMatch = await bcrypt.compare(dto.password, usuario.password_hash);
     if (!isMatch) {
-      throw new UnauthorizedException('Email o contraseña incorrectos');
+      throw new UnauthorizedException('Email o contraseña incorrecta');
     }
-
     const token = this.jwtService.sign({ id: usuario.id, email: usuario.email, role: usuario.role });
     // 3️⃣ Retornar datos del usuario sin la contraseña
     const { password_hash, ...rest } = usuario;

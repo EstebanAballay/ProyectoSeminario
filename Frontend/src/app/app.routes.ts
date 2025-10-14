@@ -9,8 +9,16 @@ import { MisViajesComponent } from './mis-viajes.component/mis-viajes.component'
 
 export const routes: Routes = [
   { path: '', redirectTo: 'paginainicio', pathMatch: 'full' },
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./login.component/login.component').then(m => m.LoginComponent)
+  },
+  {
+    path: 'register',
+    loadComponent: () =>
+      import('./register.component/register.component').then(m => m.RegisterComponent)
+  },
   { path: 'paginainicio', component: PaginainicioComponent },
   { path: 'menu', component: MenuComponent },
   { path: 'nuevoviaje', component: NuevoViajeComponent },
