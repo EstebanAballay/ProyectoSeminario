@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column} from 'typeorm';
 
-@Entity("tipoCamion")
+//tipo de camion(es decir los que llevan motor)
+@Entity({name:"tipoCamion",schema:'microservice_unidad'})
 export class TipoCamion {
     @PrimaryGeneratedColumn()
     id: number;
@@ -9,5 +10,5 @@ export class TipoCamion {
     nombre: string;
 
     @Column()
-    precio: number;
+    precio: number; 
 }

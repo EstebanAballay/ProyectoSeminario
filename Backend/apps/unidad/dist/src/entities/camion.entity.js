@@ -32,7 +32,19 @@ __decorate([
     (0, typeorm_1.ManyToOne)(() => tipoCamion_entity_1.TipoCamion, { eager: true }),
     __metadata("design:type", tipoCamion_entity_1.TipoCamion)
 ], Camion.prototype, "tipoCamion", void 0);
+__decorate([
+    (0, typeorm_1.Column)("float"),
+    __metadata("design:type", Number)
+], Camion.prototype, "precio", void 0);
+__decorate([
+    (0, typeorm_1.Column)("float"),
+    __metadata("design:type", Number)
+], Camion.prototype, "peso", void 0);
+__decorate([
+    (0, typeorm_1.Column)("float"),
+    __metadata("design:type", Number)
+], Camion.prototype, "cantidadEjes", void 0);
 exports.Camion = Camion = __decorate([
-    (0, typeorm_1.Entity)("camion")
+    (0, typeorm_1.Entity)({ name: "camion", schema: 'microservice_unidad' })
 ], Camion);
 //# sourceMappingURL=camion.entity.js.map

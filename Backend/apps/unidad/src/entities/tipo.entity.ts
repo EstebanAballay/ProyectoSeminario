@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn} from 'typeorm';
 
-@Entity("tipo")
+//tipo de acoplado y semirremolque,es decir los que son tirados
+@Entity({name:"tipo",schema:'microservice_unidad'})
 export class Tipo {
     @PrimaryGeneratedColumn()
     id: number;
@@ -10,7 +11,4 @@ export class Tipo {
 
     @Column()
     descripcion: string;
-
-    @Column("float")
-    precio: number;
 }

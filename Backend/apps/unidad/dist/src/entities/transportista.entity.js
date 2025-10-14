@@ -33,6 +33,6 @@ __decorate([
     __metadata("design:type", especializacion_entity_1.Especializacion)
 ], Transportista.prototype, "especializacion", void 0);
 exports.Transportista = Transportista = __decorate([
-    (0, typeorm_1.Entity)("transportista")
+    (0, typeorm_1.Entity)({ name: "transportista", schema: 'microservice_unidad' })
 ], Transportista);
 //# sourceMappingURL=transportista.entity.js.map

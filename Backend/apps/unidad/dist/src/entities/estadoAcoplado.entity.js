@@ -23,6 +23,6 @@ __decorate([
     __metadata("design:type", String)
 ], EstadoAcoplado.prototype, "nombre", void 0);
 exports.EstadoAcoplado = EstadoAcoplado = __decorate([
-    (0, typeorm_1.Entity)("estadoAcoplado")
+    (0, typeorm_1.Entity)({ name: "estadoAcoplado", schema: 'microservice_unidad' })
 ], EstadoAcoplado);
 //# sourceMappingURL=estadoAcoplado.entity.js.map

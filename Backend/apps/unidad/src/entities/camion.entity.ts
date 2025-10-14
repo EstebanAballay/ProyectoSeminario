@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne} from 'typeorm';
 import { EstadoCamion } from './estadoCamion.entity';
 import { TipoCamion } from './tipoCamion.entity';
 
-@Entity("camion")
+@Entity({name:"camion",schema:'microservice_unidad'})
 export class Camion {
     @PrimaryGeneratedColumn()
     id: number;
@@ -18,4 +18,12 @@ export class Camion {
     @ManyToOne(() => TipoCamion, { eager: true })
     tipoCamion: TipoCamion;
 
+    @Column("float")
+    precio: number;
+
+    @Column("float")
+    peso: number;
+
+    @Column("float")
+    cantidadEjes: number;
 }

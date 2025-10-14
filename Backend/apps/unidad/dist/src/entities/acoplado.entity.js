@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Acoplado = void 0;
 const typeorm_1 = require("typeorm");
 const estadoAcoplado_entity_1 = require("./estadoAcoplado.entity");
+const tipo_entity_1 = require("./tipo.entity");
 let Acoplado = class Acoplado {
 };
 exports.Acoplado = Acoplado;
@@ -39,7 +40,11 @@ __decorate([
     (0, typeorm_1.ManyToOne)(() => estadoAcoplado_entity_1.EstadoAcoplado, { eager: true }),
     __metadata("design:type", estadoAcoplado_entity_1.EstadoAcoplado)
 ], Acoplado.prototype, "estado", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => tipo_entity_1.Tipo, { eager: true }),
+    __metadata("design:type", tipo_entity_1.Tipo)
+], Acoplado.prototype, "tipo", void 0);
 exports.Acoplado = Acoplado = __decorate([
-    (0, typeorm_1.Entity)("acoplado")
+    (0, typeorm_1.Entity)({ name: "acoplado", schema: 'microservice_unidad' })
 ], Acoplado);
 //# sourceMappingURL=acoplado.entity.js.map

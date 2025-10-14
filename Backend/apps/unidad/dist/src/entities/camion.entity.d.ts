@@ -5,4 +5,7 @@ export declare class Camion {
     EstadoCamion: EstadoCamion;
     patente: string;
     tipoCamion: TipoCamion;
+    precio: number;
+    peso: number;
+    cantidadEjes: number;
 }

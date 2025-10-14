@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nest start",
     "start:dev": "nest start --watch",
-    "build": "nest build"
+    "build": "nest build",
+    "typeorm:migration:generate": "typeorm-ts-node-commonjs migration:generate -d ./src/app.module.ts"
   },
   "keywords": [],
   "author": "",

@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn} from 'typeorm';
 
-@Entity()
+@Entity({name:"estadoSemirremolque",schema:'microservice_unidad'})
 export class EstadoSemirremolque {
     @PrimaryGeneratedColumn()
     id: number;

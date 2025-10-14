@@ -1,7 +1,8 @@
 import { Entity, Column, PrimaryGeneratedColumn,ManyToOne} from 'typeorm';
 import { EstadoAcoplado } from './estadoAcoplado.entity';
+import { Tipo } from './tipo.entity';
 
-@Entity("acoplado")
+@Entity({name:"acoplado",schema:'microservice_unidad'})
 export class Acoplado {
     @PrimaryGeneratedColumn()
     id: number;
@@ -20,4 +21,7 @@ export class Acoplado {
 
     @ManyToOne(() => EstadoAcoplado, { eager: true })
     estado: EstadoAcoplado;
+
+    @ManyToOne(() => Tipo, { eager: true })
+    tipo: Tipo;
 }
