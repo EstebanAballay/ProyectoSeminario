@@ -20,6 +20,8 @@ export declare class UnidadService {
     testConnection(): Promise<void>;
     private getRandomItem;
     createUnidad(createUnidadDto: CreateUnidadDto): Promise<Unidad>;
+    consultarTiposAcoplados(): Promise<Tipo[]>;
+    consultarTiposCamiones(): Promise<TipoCamion[]>;
     findAll(): string;
     findOne(id: number): string;
     update(id: number, updateUnidadDto: UpdateUnidadDto): string;

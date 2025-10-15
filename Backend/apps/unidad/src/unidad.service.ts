@@ -112,7 +112,14 @@ export class UnidadService {
     return this.UnidadRepository.save(unidadNueva);
   }
 
+  
+  consultarTiposAcoplados(): Promise<Tipo[]> {
+    return this.tipoRepository.find();
+  }
 
+  consultarTiposCamiones(): Promise<TipoCamion[]> {
+    return this.tipoCamionRepository.find();
+  }
 
   findAll() {
     return `This action returns all unidad`;

@@ -9,13 +9,17 @@ export class UnidadController {
 
   @Post()
   create(@Body() createUnidadDto: CreateUnidadDto): Promise<any> {
-    console.log("llegue al controlador")
     return this.unidadService.createUnidad(createUnidadDto);
   }
 
-  @Get()
-  findAll() {
-    return this.unidadService.findAll();
+  @Get('tiposAcoplados')
+  consultarTiposAcoplados() {
+    return this.unidadService.consultarTiposAcoplados();
+  }
+
+  @Get('tiposCamiones')
+  consultarTiposCamiones() {
+    return this.unidadService.consultarTiposCamiones();
   }
 
   @Get(':id')

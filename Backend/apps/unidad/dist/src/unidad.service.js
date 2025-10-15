@@ -100,6 +100,12 @@ let UnidadService = class UnidadService {
         });
         return this.UnidadRepository.save(unidadNueva);
     }
+    consultarTiposAcoplados() {
+        return this.tipoRepository.find();
+    }
+    consultarTiposCamiones() {
+        return this.tipoCamionRepository.find();
+    }
     findAll() {
         return `This action returns all unidad`;
     }
