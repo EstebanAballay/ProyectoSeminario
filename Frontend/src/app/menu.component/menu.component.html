@@ -1,27 +1,24 @@
-<!-- Encabezado -->
 <div class="header">
   <div class="logo">
-    <!-- Podés reemplazar la imagen por tu logo real -->
     <img src="assets/logo.png" alt="Logo Grafo">
   </div>
   <div class="profile-icon">👤</div>
 </div>
 
-<!-- Contenido -->
 <div class="container">
   <h2>¡Bienvenido/a!</h2>
 
-  <button class="menu-button"  onclick="location.href='/nuevoviaje'">
+  <button class="menu-button" [routerLink]="['/nuevoviaje']">
     <span class="icon"><img src="assets/logomapa.png" alt="Nuevo viaje"></span>
     <span>Nuevo viaje</span>
   </button>
 
-  <button class="menu-button" onclick="location.href='/misviajes'">
+  <button class="menu-button" [routerLink]="['/misviajes']">
     <span class="icon"><img src="assets/logocamion.png" alt="Mis viajes"></span>
     <span>Mis viajes</span>
   </button>
 
-  <button class="menu-button">
+  <button class="menu-button" [routerLink]="['/pagosenia']">
     <span class="icon"><img src="assets/logo$.png" alt="Pagos"></span>
     <span>Pagos</span>
   </button>

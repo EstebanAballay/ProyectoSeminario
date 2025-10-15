@@ -18,5 +18,5 @@ export const routes: Routes = [
   { path: 'nuevoviaje', component: NuevoViajeComponent },
   { path: 'misviajes', component: MisViajesComponent },
   { path: 'pagosenia', component: PagoSeniaComponent },
-  { path: '', redirectTo: '/pago-senia', pathMatch: 'full' }
+  { path: '**', redirectTo: '/pago-senia', pathMatch: 'full' }
 ];

@@ -1,54 +1,61 @@
-<div class="pago-container">
+<div class="header-full-width">
+    <div class="logo-container">
+        <img src="assets/logo.png" alt="Grafo Logística" class="logo-img">
+    </div>
+    <div class="profile-icon-full">
+        👤
+    </div>
+</div>
+
+<div class="main-container"> 
     <div class="pago-container">
-    <div class="header">
-        <img src="/assets/logo.png" alt="Logo Grafo" class="logo" />
-        <h2>Pago de seña</h2>
+        
+        <form class="pago-form">
+            <h2 class="titulo-principal">Pago de seña</h2>
+
+            <div class="form-group">
+                <label for="titular">Nombre del titular</label>
+                <input 
+                    id="titular"
+                    type="text" 
+                    placeholder="Ingrese nombre y apellido" 
+                    class="input-custom"
+                />
+            </div>
+
+            <div class="form-group">
+                <label for="tarjeta">Número de tarjeta</label>
+                <input 
+                    id="tarjeta"
+                    type="text" 
+                    placeholder="Ingrese el número de tarjeta" 
+                    class="input-custom"
+                />
+            </div>
+            
+            <div class="form-group">
+                <label for="vencimiento">Fecha de vencimiento</label>
+                <div class="select-wrapper">
+                    <select id="vencimiento" class="input-custom select-input">
+                        <option value="" disabled selected>Seleccione la fecha</option>
+                        </select>
+                    <span class="dropdown-icon">▼</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="cvc">Número CVC/CVV</label>
+                <input 
+                    id="cvc"
+                    type="text" 
+                    placeholder="Número de CVC/CVV" 
+                    class="input-custom"
+                />
+            </div>
+            
+            <button type="submit" class="btn-pagar">
+                Pagar seña
+            </button>
+        </form>
     </div>
-
-    <form (submit)="onSubmit($event)" class="pago-form">
-        <div class="form-group">
-        <label>Nombre del titular</label>
-        <input
-            #titularInput 
-            type="text"
-            required
-            placeholder="Ingrese nombre y apellido"
-        />
-        </div>
-
-        <div class="form-group">
-        <label>Número de tarjeta</label>
-        <input
-            #tarjetaInput
-            type="text"
-            required
-            maxlength="19"
-            placeholder="Ingrese el número de tarjeta"
-        />
-        </div>
-
-        <div class="form-group">
-        <label>Fecha de vencimiento</label>
-        <input
-            #vencimientoInput
-            type="month"
-            required
-        />
-        </div>
-
-        <div class="form-group">
-        <label>Número CVC/CVV</label>
-        <input
-            #cvvInput
-            type="text"
-            required
-            maxlength="4"
-            placeholder="Número de CVC/CVV"
-        />
-        </div>
-
-        <button type="submit" class="btn-pagar">Pagar seña</button>
-    </form>
-    </div>
-
 </div>

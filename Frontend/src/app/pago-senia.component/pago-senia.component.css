@@ -1,63 +1,133 @@
+/* ========================================================= */
+/* BARRA DE ENCABEZADO DE ANCHO COMPLETO (SOLUCIÓN FINAL) */
+/* ========================================================= */
+.header-full-width {
+    /* Mantener posición, top, left, width, height */
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px; 
+    
+    /* === CAMBIOS CLAVE PARA EL FONDO BLANCO === */
+    background-color:  #f5f5ee; /* El fondo de la franja ahora es blanco */
+    color: #333; /* El color del texto general en el header debe ser oscuro */
+    
+    /* Mantener flexbox y padding */
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    padding: 0 40px; 
+    box-sizing: border-box;
+    z-index: 1000;
+}
+
+.logo-container .logo-img {
+    width: 290px; /* Tamaño del logo */
+    height: auto;
+    display: block;
+}
+
+.profile-icon-full {
+    font-size: 1.5rem;
+    /* Cambiar el color del ícono y el borde a oscuro para que contraste con el fondo blanco */
+    color: #333; 
+    padding: 8px;
+    border: 1px solid #333; /* Borde oscuro */
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* ========================================================= */
+/* CONTENEDOR PRINCIPAL DE LA PANTALLA (Ajuste para la barra) */
+/* ========================================================= */
+.main-container {
+    background-color: #1a3250; /* Azul más claro para el fondo de la ventana */
+    
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    
+    /* El alto debe ser el 100% de la ventana, ajustado a la barra de 60px */
+    min-height: calc(100vh - 60px); 
+    margin-top: 60px; /* Empuja el contenido debajo de la barra fija */
+}
+
+/* ========================================================= */
+/* TARJETA DE PAGO CENTRADA (Formulario) */
+/* ========================================================= */
 .pago-container {
-  width: 320px;
-  background-color: #002b4d;
-  color: #fff;
-  border-radius: 10px;
-  padding: 20px;
-  text-align: center;
-  margin: 40px auto;
-  font-family: 'Poppins', sans-serif;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    width: 320px; 
+    background-color: #0b1e3a; /* Fondo azul oscuro para la tarjeta */
+    color: #fff;
+    border-radius: 12px; 
+    padding: 30px 30px 40px 30px; 
+    text-align: center;
+    font-family: Arial, sans-serif; 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
 
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-
-.logo {
-  width: 80px;
+/* ========================================================= */
+/* TÍTULO Y FORMULARIO (Estilos que ya funcionaban bien) */
+/* ========================================================= */
+.titulo-principal {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 35px; 
+    text-align: left;
 }
 
 .pago-form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 0; 
 }
 
 .form-group {
-  text-align: left;
+    text-align: left;
+    margin-bottom: 20px; 
 }
 
 .form-group label {
-  font-weight: bold;
-  font-size: 0.9rem;
+    font-weight: bold;
+    font-size: 1rem; 
+    margin-bottom: 8px; 
+    display: block; 
 }
 
-input {
-  width: 100%;
-  padding: 6px;
-  border-radius: 5px;
-  border: none;
-  margin-top: 4px;
+
+.input-custom { 
+    width: 100%;
+    padding: 12px;
+    background-color: #f5f5f5; 
+    color: #333;
+    border-radius: 5px;
+    border: none;
+    margin-top: 4px;
+    box-sizing: border-box; 
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
 }
 
-input:focus {
-  outline: 2px solid #007bff;
+.select-wrapper {
+    position: relative;
+    width: 100%;
 }
+/* ... (Resto de estilos de select-input y dropdown-icon) ... */
 
 .btn-pagar {
-  background-color: #003d6b;
-  color: white;
-  border: none;
-  padding: 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 10px;
+    background-color: #f5f5f5; 
+    color: #0b1e3a; 
+    border: none;
+    padding: 14px 10px; 
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    margin-top: 30px; 
+    width: 100%; 
 }
 
 .btn-pagar:hover {
-  background-color: #005b9f;
+    background-color: #e0e0e0;
 }
