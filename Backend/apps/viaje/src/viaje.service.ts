@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { EstadoViaje } from './entities/estadoViaje.entity';
 import { Viaje } from './entities/viaje.entity';
 import { HttpService } from '@nestjs/axios';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class ViajeService {
@@ -42,18 +43,28 @@ export class ViajeService {
       estadoViaje: estadoDefault // lo creo en estado precargado
     });
 
-    
+    const savedViaje = await this.viajeRepository.save(viaje);
     //Json dto para unidades
     const unidades = data.unidades
+    //console.log(viaje.ViajeId);
     for (const unidad of unidades) {
-      this.agregarUnidad(unidad,viaje.ViajeId);
+      await this.agregarUnidad(unidad,savedViaje.ViajeId);
     }
-    return this.viajeRepository.save(viaje);
+    
+    return savedViaje;
   }
 
   async agregarUnidad(unidad: any,viajeId:number) {
     const unidadCompleta = {...unidad, viajeId} //asignar el id del viaje creado
-    const nuevaUnidad = await this.httpService.post('http://localhost:3002/unidad',unidadCompleta);
+    try {
+    const response = await firstValueFrom(
+      this.httpService.post('http://unidad-service:3002/unidad', unidadCompleta)
+    );
+    console.log('Unidad creada:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error al crear la unidad:', error.message);
+  }
   }
 
   findAll() {

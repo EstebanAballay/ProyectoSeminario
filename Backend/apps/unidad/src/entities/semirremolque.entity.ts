@@ -19,7 +19,7 @@ export class Semirremolque {
     @Column("float")
     precio: number;
 
-    //id estado unidad
+    
     @ManyToOne(() => EstadoSemirremolque, { eager: true })
     estado: EstadoSemirremolque;
 

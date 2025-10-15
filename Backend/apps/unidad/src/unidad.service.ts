@@ -50,10 +50,12 @@ export class UnidadService {
     let Semirremolque: any = null;
     let Camion: any = null;
     let Acoplado: any = null;
-    console.log("llegue afuera del if")
+
     //Seleccionar un semiremolque random que cumpla con el tipo
     if (createUnidadDto.tipoCamion == 'tractoCamion'){
-      console.log("llegue adentro del if")
+      //buscar los camiones del tipo tractocamion y seleccionar uno random
+      Camion = this.getRandomItem(await this.CamionRepository.find({where: {tipoCamion: {id: 1}}}));
+
       //busco el tipo por su nombre
       const tipoSemi = await this.tipoRepository.findOne({ where: { nombre: createUnidadDto.tipoSemirremolque } });
       if (!tipoSemi){
@@ -97,11 +99,12 @@ export class UnidadService {
     //Consultar el precio de los detalles y calcular subtotal
     const subtotal = Semirremolque?.precio + Camion?.precio + Acoplado?.precio;
     //Consultar carga
-    const cargaTotal = Semirremolque.capacidad + Acoplado.capacidad;
+    const cargaTotal = Camion?.peso + Semirremolque?.capacidad + Acoplado?.capacidad;
     //Crear y guardar la unidad
+    console.log(createUnidadDto.viajeId)
     const unidadNueva = this.UnidadRepository.create({
       idViaje: createUnidadDto.viajeId,
-      Camion: Camion,
+      camion: Camion,
       semiremolque: Semirremolque,
       acoplado: Acoplado,
       subtotal: subtotal

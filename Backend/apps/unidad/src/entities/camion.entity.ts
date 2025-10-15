@@ -9,7 +9,7 @@ export class Camion {
 
     //Relación con Semirremolque
     @ManyToOne(() => EstadoCamion, { eager: true })
-    EstadoCamion: EstadoCamion;
+    estadoCamion: EstadoCamion;
 
     @Column()
     patente:string;
@@ -24,6 +24,6 @@ export class Camion {
     @Column("float")
     peso: number;
 
-    @Column("float")
+    @Column()
     cantidadEjes: number;
 }

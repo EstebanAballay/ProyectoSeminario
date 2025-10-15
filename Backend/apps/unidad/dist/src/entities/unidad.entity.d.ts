@@ -5,7 +5,7 @@ import { Transportista } from './transportista.entity';
 export declare class Unidad {
     UnidadId: number;
     idViaje: number;
-    Camion: Camion;
+    camion: Camion;
     semiremolque?: Semirremolque;
     acoplado?: Acoplado;
     transportista: Transportista;

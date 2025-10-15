@@ -29,7 +29,7 @@ __decorate([
 __decorate([
     (0, typeorm_1.ManyToOne)(() => camion_entity_1.Camion, { eager: true }),
     __metadata("design:type", camion_entity_1.Camion)
-], Unidad.prototype, "Camion", void 0);
+], Unidad.prototype, "camion", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => semirremolque_entity_1.Semirremolque, { eager: true, nullable: true }),
     __metadata("design:type", semirremolque_entity_1.Semirremolque)

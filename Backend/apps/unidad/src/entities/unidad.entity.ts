@@ -14,7 +14,7 @@ export class Unidad {
   idViaje: number;
 
   @ManyToOne(() => Camion, { eager: true })
-  Camion: Camion;
+  camion: Camion;
 
   @ManyToOne(() => Semirremolque, { eager: true, nullable: true })
   semiremolque?: Semirremolque;

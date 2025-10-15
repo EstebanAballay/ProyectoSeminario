@@ -9,6 +9,4 @@ export class TipoCamion {
     @Column()
     nombre: string;
 
-    @Column()
-    precio: number; 
 }

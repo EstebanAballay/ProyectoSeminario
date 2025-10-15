@@ -23,7 +23,7 @@ __decorate([
 __decorate([
     (0, typeorm_1.ManyToOne)(() => estadoCamion_entity_1.EstadoCamion, { eager: true }),
     __metadata("design:type", estadoCamion_entity_1.EstadoCamion)
-], Camion.prototype, "EstadoCamion", void 0);
+], Camion.prototype, "estadoCamion", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
@@ -41,7 +41,7 @@ __decorate([
     __metadata("design:type", Number)
 ], Camion.prototype, "peso", void 0);
 __decorate([
-    (0, typeorm_1.Column)("float"),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
 ], Camion.prototype, "cantidadEjes", void 0);
 exports.Camion = Camion = __decorate([

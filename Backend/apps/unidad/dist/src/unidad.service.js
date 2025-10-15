@@ -53,9 +53,8 @@ let UnidadService = class UnidadService {
         let Semirremolque = null;
         let Camion = null;
         let Acoplado = null;
-        console.log("llegue afuera del if");
         if (createUnidadDto.tipoCamion == 'tractoCamion') {
-            console.log("llegue adentro del if");
+            Camion = this.getRandomItem(await this.CamionRepository.find({ where: { tipoCamion: { id: 1 } } }));
             const tipoSemi = await this.tipoRepository.findOne({ where: { nombre: createUnidadDto.tipoSemirremolque } });
             if (!tipoSemi) {
                 throw new common_1.NotFoundException('No se encontro el tipo de semiremolque');
@@ -90,10 +89,11 @@ let UnidadService = class UnidadService {
             Acoplado = this.getRandomItem(acoplados);
         }
         const subtotal = Semirremolque?.precio + Camion?.precio + Acoplado?.precio;
-        const cargaTotal = Semirremolque.capacidad + Acoplado.capacidad;
+        const cargaTotal = Camion?.peso + Semirremolque?.capacidad + Acoplado?.capacidad;
+        console.log(createUnidadDto.viajeId);
         const unidadNueva = this.UnidadRepository.create({
             idViaje: createUnidadDto.viajeId,
-            Camion: Camion,
+            camion: Camion,
             semiremolque: Semirremolque,
             acoplado: Acoplado,
             subtotal: subtotal

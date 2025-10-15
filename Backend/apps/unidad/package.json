@@ -7,7 +7,9 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "build": "nest build",
-    "typeorm:migration:generate": "typeorm-ts-node-commonjs migration:generate -d ./src/app.module.ts"
+    "typeorm:migration:generate": "typeorm-ts-node-commonjs migration:generate -d src/data-source.ts",
+    "typeorm:migration:run": "typeorm-ts-node-commonjs migration:run -d src/data-source.ts",
+    "typeorm:migration:revert": "typeorm-ts-node-commonjs migration:revert -d src/data-source.ts"
   },
   "keywords": [],
   "author": "",
@@ -28,6 +30,7 @@
     "typeorm": "^0.3.26"
   },
   "devDependencies": {
-    "@nestjs/cli": "^11.0.10"
+    "@nestjs/cli": "^11.0.10",
+    "supabase": "^2.51.0"
   }
 }

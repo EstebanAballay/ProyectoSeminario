@@ -19,6 +19,7 @@ const typeorm_2 = require("typeorm");
 const estadoViaje_entity_1 = require("./entities/estadoViaje.entity");
 const viaje_entity_1 = require("./entities/viaje.entity");
 const axios_1 = require("@nestjs/axios");
+const rxjs_1 = require("rxjs");
 let ViajeService = class ViajeService {
     constructor(estadoViajeRepository, viajeRepository, httpService) {
         this.estadoViajeRepository = estadoViajeRepository;
@@ -49,15 +50,23 @@ let ViajeService = class ViajeService {
             total: 0,
             estadoViaje: estadoDefault
         });
+        const savedViaje = await this.viajeRepository.save(viaje);
         const unidades = data.unidades;
         for (const unidad of unidades) {
-            this.agregarUnidad(unidad, viaje.ViajeId);
+            await this.agregarUnidad(unidad, savedViaje.ViajeId);
         }
-        return this.viajeRepository.save(viaje);
+        return savedViaje;
     }
     async agregarUnidad(unidad, viajeId) {
         const unidadCompleta = { ...unidad, viajeId };
-        const nuevaUnidad = await this.httpService.post('http://localhost:3002/unidad', unidadCompleta);
+        try {
+            const response = await (0, rxjs_1.firstValueFrom)(this.httpService.post('http://unidad-service:3002/unidad', unidadCompleta));
+            console.log('Unidad creada:', response.data);
+            return response.data;
+        }
+        catch (error) {
+            console.error('Error al crear la unidad:', error.message);
+        }
     }
     findAll() {
         return `This action returns all viaje`;
