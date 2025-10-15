@@ -1,12 +1,16 @@
 // estado-viaje.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany} from 'typeorm';
+import { Viaje } from './viaje.entity';
 
-
-@Entity('estadoViaje')
+@Entity({name:'estadoViaje',schema:'microservice_viaje'})
 export class EstadoViaje {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ unique: true })
   nombre: string; 
+
+  // Relación inversa: un estado puede tener muchos viajes
+  @OneToMany(() => Viaje, (viaje) => viaje.estadoViaje)
+  viajes: Viaje[]; 
 }

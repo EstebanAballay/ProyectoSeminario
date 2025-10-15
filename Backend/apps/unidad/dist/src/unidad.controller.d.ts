@@ -4,8 +4,9 @@ import { UpdateUnidadDto } from './dto/update-unidad.dto';
 export declare class UnidadController {
     private readonly unidadService;
     constructor(unidadService: UnidadService);
-    create(createUnidadDto: CreateUnidadDto): string;
-    findAll(): string;
+    create(createUnidadDto: CreateUnidadDto): Promise<any>;
+    consultarTiposAcoplados(): Promise<import("./entities/tipo.entity").Tipo[]>;
+    consultarTiposCamiones(): Promise<import("./entities/tipoCamion.entity").TipoCamion[]>;
     findOne(id: string): string;
     update(id: string, updateUnidadDto: UpdateUnidadDto): string;
     remove(id: string): string;

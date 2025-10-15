@@ -22,10 +22,13 @@ let UnidadController = class UnidadController {
         this.unidadService = unidadService;
     }
     create(createUnidadDto) {
-        return this.unidadService.create(createUnidadDto);
+        return this.unidadService.createUnidad(createUnidadDto);
     }
-    findAll() {
-        return this.unidadService.findAll();
+    consultarTiposAcoplados() {
+        return this.unidadService.consultarTiposAcoplados();
+    }
+    consultarTiposCamiones() {
+        return this.unidadService.consultarTiposCamiones();
     }
     findOne(id) {
         return this.unidadService.findOne(+id);
@@ -43,14 +46,20 @@ __decorate([
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_unidad_dto_1.CreateUnidadDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], UnidadController.prototype, "create", null);
 __decorate([
-    (0, common_1.Get)(),
+    (0, common_1.Get)('tiposAcoplados'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
-], UnidadController.prototype, "findAll", null);
+], UnidadController.prototype, "consultarTiposAcoplados", null);
+__decorate([
+    (0, common_1.Get)('tiposCamiones'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], UnidadController.prototype, "consultarTiposCamiones", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),

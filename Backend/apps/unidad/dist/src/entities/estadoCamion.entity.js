@@ -23,6 +23,6 @@ __decorate([
     __metadata("design:type", String)
 ], EstadoCamion.prototype, "nombre", void 0);
 exports.EstadoCamion = EstadoCamion = __decorate([
-    (0, typeorm_1.Entity)("estadoCamion")
+    (0, typeorm_1.Entity)({ name: "estadoCamion", schema: 'microservice_unidad' })
 ], EstadoCamion);
 //# sourceMappingURL=estadoCamion.entity.js.map

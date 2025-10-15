@@ -1,6 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne} from 'typeorm';
+import { estadoTransportista } from './estadoTransportista.entity';
+import { Especializacion } from './especializacion.entity';
 
-@Entity("transportista")
+@Entity({name:"transportista",schema:'microservice_unidad'})
 export class Transportista{
     //Deberia tener su propio id o el mismo de user?
   @PrimaryGeneratedColumn()
@@ -9,9 +11,9 @@ export class Transportista{
     @Column()
     legajo: string;
 
-    @Column()
-    estado: number;
+    @ManyToOne(()=>estadoTransportista)
+    estado: estadoTransportista;
 
-    @Column()
-    especializacion: number;
+    @ManyToOne(()=>Especializacion)
+    especializacion: Especializacion;
 }

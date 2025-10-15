@@ -22,11 +22,7 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], TipoCamion.prototype, "nombre", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", Number)
-], TipoCamion.prototype, "precio", void 0);
 exports.TipoCamion = TipoCamion = __decorate([
-    (0, typeorm_1.Entity)("tipoCamion")
+    (0, typeorm_1.Entity)({ name: "tipoCamion", schema: 'microservice_unidad' })
 ], TipoCamion);
 //# sourceMappingURL=tipoCamion.entity.js.map

@@ -1,20 +1,29 @@
-import { Entity, PrimaryGeneratedColumn, Column} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne} from 'typeorm';
+import { EstadoCamion } from './estadoCamion.entity';
+import { TipoCamion } from './tipoCamion.entity';
 
-
-@Entity("camion")
+@Entity({name:"camion",schema:'microservice_unidad'})
 export class Camion {
     @PrimaryGeneratedColumn()
     id: number;
 
-    //id estado camion
-    @Column()
-    EstadoCamion: number;
+    //Relación con Semirremolque
+    @ManyToOne(() => EstadoCamion, { eager: true })
+    estadoCamion: EstadoCamion;
 
     @Column()
     patente:string;
 
     //id tipo camion
-    @Column()
-    tipoCamion: number;
+    @ManyToOne(() => TipoCamion, { eager: true })
+    tipoCamion: TipoCamion;
 
+    @Column("float")
+    precio: number;
+
+    @Column("float")
+    peso: number;
+
+    @Column()
+    cantidadEjes: number;
 }

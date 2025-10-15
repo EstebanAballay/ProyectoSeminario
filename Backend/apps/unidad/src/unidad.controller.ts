@@ -8,13 +8,18 @@ export class UnidadController {
   constructor(private readonly unidadService: UnidadService) {}
 
   @Post()
-  create(@Body() createUnidadDto: CreateUnidadDto) {
-    return this.unidadService.create(createUnidadDto);
+  create(@Body() createUnidadDto: CreateUnidadDto): Promise<any> {
+    return this.unidadService.createUnidad(createUnidadDto);
   }
 
-  @Get()
-  findAll() {
-    return this.unidadService.findAll();
+  @Get('tiposAcoplados')
+  consultarTiposAcoplados() {
+    return this.unidadService.consultarTiposAcoplados();
+  }
+
+  @Get('tiposCamiones')
+  consultarTiposCamiones() {
+    return this.unidadService.consultarTiposCamiones();
   }
 
   @Get(':id')

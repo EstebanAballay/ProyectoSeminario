@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EstadoViaje = void 0;
 const typeorm_1 = require("typeorm");
+const viaje_entity_1 = require("./viaje.entity");
 let EstadoViaje = class EstadoViaje {
 };
 exports.EstadoViaje = EstadoViaje;
@@ -19,10 +20,14 @@ __decorate([
     __metadata("design:type", Number)
 ], EstadoViaje.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ unique: true }),
     __metadata("design:type", String)
 ], EstadoViaje.prototype, "nombre", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => viaje_entity_1.Viaje, (viaje) => viaje.estadoViaje),
+    __metadata("design:type", Array)
+], EstadoViaje.prototype, "viajes", void 0);
 exports.EstadoViaje = EstadoViaje = __decorate([
-    (0, typeorm_1.Entity)('estadoViaje')
+    (0, typeorm_1.Entity)({ name: 'estadoViaje', schema: 'microservice_viaje' })
 ], EstadoViaje);
 //# sourceMappingURL=estadoViaje.entity.js.map

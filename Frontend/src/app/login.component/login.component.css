@@ -63,6 +63,10 @@ body {
     width: 100%;
 }
 
+.cartelito {
+  margin-left: -50px;
+}
+  
 .logo {
     /* === MODIFICACIÓN CLAVE PARA EL LOGO === */
     /* Reducimos el margen negativo para que el logo se mantenga centrado en el alto padding-top (90px) */

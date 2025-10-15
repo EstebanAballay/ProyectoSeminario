@@ -23,6 +23,7 @@ const estadoTransportista_entity_1 = require("./entities/estadoTransportista.ent
 const tipo_entity_1 = require("./entities/tipo.entity");
 const tipoCamion_entity_1 = require("./entities/tipoCamion.entity");
 const especializacion_entity_1 = require("./entities/especializacion.entity");
+const axios_1 = require("@nestjs/axios");
 let UnidadModule = class UnidadModule {
 };
 exports.UnidadModule = UnidadModule;
@@ -43,6 +44,7 @@ exports.UnidadModule = UnidadModule = __decorate([
                 tipoCamion_entity_1.TipoCamion,
                 especializacion_entity_1.Especializacion,
             ]),
+            axios_1.HttpModule
         ],
         controllers: [unidad_controller_1.UnidadController],
         providers: [unidad_service_1.UnidadService],

@@ -13,6 +13,7 @@ const users_controller_1 = require("./users.controller");
 const typeorm_1 = require("@nestjs/typeorm");
 const user_entity_1 = require("./entities/user.entity");
 const jwt_1 = require("@nestjs/jwt");
+const axios_1 = require("@nestjs/axios");
 let UsuariosModule = class UsuariosModule {
 };
 exports.UsuariosModule = UsuariosModule;

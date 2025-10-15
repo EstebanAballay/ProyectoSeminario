@@ -11,38 +11,42 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Unidad = void 0;
 const typeorm_1 = require("typeorm");
+const camion_entity_1 = require("./camion.entity");
+const semirremolque_entity_1 = require("./semirremolque.entity");
+const acoplado_entity_1 = require("./acoplado.entity");
+const transportista_entity_1 = require("./transportista.entity");
 let Unidad = class Unidad {
 };
 exports.Unidad = Unidad;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
-], Unidad.prototype, "id", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", Number)
-], Unidad.prototype, "idCamion", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", Number)
-], Unidad.prototype, "idSemiremolque", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", Number)
-], Unidad.prototype, "idAcoplado", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", Number)
-], Unidad.prototype, "idTransportista", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", Number)
-], Unidad.prototype, "subtotal", void 0);
+], Unidad.prototype, "UnidadId", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
 ], Unidad.prototype, "idViaje", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => camion_entity_1.Camion, { eager: true }),
+    __metadata("design:type", camion_entity_1.Camion)
+], Unidad.prototype, "camion", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => semirremolque_entity_1.Semirremolque, { eager: true, nullable: true }),
+    __metadata("design:type", semirremolque_entity_1.Semirremolque)
+], Unidad.prototype, "semiremolque", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => acoplado_entity_1.Acoplado, { eager: true, nullable: true }),
+    __metadata("design:type", acoplado_entity_1.Acoplado)
+], Unidad.prototype, "acoplado", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => transportista_entity_1.Transportista, { eager: true }),
+    __metadata("design:type", transportista_entity_1.Transportista)
+], Unidad.prototype, "transportista", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 2 }),
+    __metadata("design:type", Number)
+], Unidad.prototype, "subtotal", void 0);
 exports.Unidad = Unidad = __decorate([
-    (0, typeorm_1.Entity)('unidad')
+    (0, typeorm_1.Entity)({ name: 'unidad', schema: 'microservice_unidad' })
 ], Unidad);
 //# sourceMappingURL=unidad.entity.js.map

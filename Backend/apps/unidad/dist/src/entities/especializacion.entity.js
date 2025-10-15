@@ -23,6 +23,6 @@ __decorate([
     __metadata("design:type", String)
 ], Especializacion.prototype, "nombre", void 0);
 exports.Especializacion = Especializacion = __decorate([
-    (0, typeorm_1.Entity)("especializacion")
+    (0, typeorm_1.Entity)({ name: "especializacion", schema: 'microservice_unidad' })
 ], Especializacion);
 //# sourceMappingURL=especializacion.entity.js.map

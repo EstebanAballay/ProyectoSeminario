@@ -11,6 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Semirremolque = void 0;
 const typeorm_1 = require("typeorm");
+const estadoSemirremolque_entity_1 = require("./estadoSemirremolque.entity");
+const tipo_entity_1 = require("./tipo.entity");
 let Semirremolque = class Semirremolque {
 };
 exports.Semirremolque = Semirremolque;
@@ -35,14 +37,14 @@ __decorate([
     __metadata("design:type", Number)
 ], Semirremolque.prototype, "precio", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", Number)
+    (0, typeorm_1.ManyToOne)(() => estadoSemirremolque_entity_1.EstadoSemirremolque, { eager: true }),
+    __metadata("design:type", estadoSemirremolque_entity_1.EstadoSemirremolque)
 ], Semirremolque.prototype, "estado", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", Number)
+    (0, typeorm_1.ManyToOne)(() => tipo_entity_1.Tipo, { eager: true }),
+    __metadata("design:type", tipo_entity_1.Tipo)
 ], Semirremolque.prototype, "tipo", void 0);
 exports.Semirremolque = Semirremolque = __decorate([
-    (0, typeorm_1.Entity)("semirremolque")
+    (0, typeorm_1.Entity)({ name: "semirremolque", schema: 'microservice_unidad' })
 ], Semirremolque);
 //# sourceMappingURL=semirremolque.entity.js.map

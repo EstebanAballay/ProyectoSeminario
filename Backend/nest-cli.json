@@ -15,13 +15,13 @@
         "tsConfigPath": "apps/cobro/tsconfig.app.json"
       }
     },
-    "viaje": {
+    "maps": {
       "type": "application",
-      "root": "apps/viaje",
+      "root": "apps/maps",
       "entryFile": "main",
-      "sourceRoot": "apps/viaje/src",
+      "sourceRoot": "apps/maps/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/viaje/tsconfig.app.json"
+        "tsConfigPath": "apps/maps/tsconfig.app.json"
       }
     },
     "unidad": {
@@ -40,6 +40,15 @@
       "sourceRoot": "apps/users/src",
       "compilerOptions": {
         "tsConfigPath": "apps/users/tsconfig.app.json"
+      }
+    },
+    "viaje": {
+      "type": "application",
+      "root": "apps/viaje",
+      "entryFile": "main",
+      "sourceRoot": "apps/viaje/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/viaje/tsconfig.app.json"
       }
     }
   }

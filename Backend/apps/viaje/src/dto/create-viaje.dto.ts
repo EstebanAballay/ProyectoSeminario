@@ -1,10 +1,19 @@
 export class CreateViajeDto 
 {
-    fechaDeReserva: String; //el dia que se reservo
-    fechaDeInicio: String;  //el dia que tiene que ir el camion
-    fechaDeFin: number;     //el dia que el el camion llega a planta
-    destinoInicio: number; //donde tiene que recoger la carga
-    destinoFin: number;     //a donde lleva la acarga
-    horaSalida: String;     //hora a la que sale
-    horaLlegada:String      //hora a la que llega
+    fechaInicio: string;  //el dia que tiene que ir el camion
+    destinoInicio: string; //donde tiene que recoger la carga
+    destinoFin: string;     //a donde lleva la acarga
+    horaSalida: string;     //hora a la que sale
+    horaLlegada:string;
+    fechaFin:string;
+
+    //unidades
+    unidades: {
+      semiremolque:boolean;   
+      acoplado:boolean;
+      tipoCamion: string;         //tractocamion,cisterna,reparto,frigorifico.
+      tipoSemirremolque?:string;
+      tipoAcoplado?:string;
+  }[];
 }
+
