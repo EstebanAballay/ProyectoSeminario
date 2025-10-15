@@ -1,18 +1,15 @@
 body {
     margin: 0;
     padding: 0;
-    /* Elimina el background-image de aquí, ya que lo pondremos en el contenedor principal */
+    font-family: Arial, sans-serif;
 }
 
 .main-container {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-image: url("/assets/camiones.jpg");
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
+    justify-content: center; /* Centrado Horizontal: OK */
+    align-items: center; /* Centrado Vertical: OK */
+    min-height: 100vh; 
+    /* ... otros estilos de fondo ... */
 }
 
 .card {
@@ -20,18 +17,44 @@ body {
     background-color: #0b1e3a;
     color: #fff;
     border-radius: 12px;
-    padding: 16px;
-    height: 60vh;
+    
+    /* === MODIFICACIÓN CLAVE PARA EL CENTRADO === */
+    /* 1. Usamos un padding más pequeño para que la tarjeta no desborde la pantalla. */
+    /* 2. Damos un alto padding-top para empujar el contenido hacia abajo. */
+    padding: 90px 30px 40px 30px; /* [Top: 90px] [Right: 30px] [Bottom: 40px] [Left: 30px] */
+    
+    /* 3. Agregamos margin auto para ayudar en el centrado vertical si hay desborde. */
+    margin: 20px auto; 
+
     font-family: Arial, sans-serif;
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
 }
 
-/* El resto de tu CSS es correcto y no necesita cambios */
+.form-container {
+    display: flex;
+    flex-direction: column;
+    /* CLAVE: Alinea todos los ítems a la izquierda del contenedor */
+    align-items: flex-start; 
+    width: 100%; 
+    margin: 0 auto; 
+}
+
+/* CLAVE: Alinea el texto "Bienvenido" a la izquierda */
+.titulo-bienvenido {
+    width: 100%; 
+    text-align: left; 
+    font-size: 24px; 
+    font-weight: bold;
+    color: white;
+    margin-bottom: 20px; 
+}
+
+
+/* ========================================================= */
+/* ESTILOS DE COMPONENTES */
+/* ========================================================= */
+
 .card-header {
     display: flex;
     justify-content: center;
@@ -45,25 +68,28 @@ body {
 }
   
 .logo {
-    margin-top: -80px;
+    /* === MODIFICACIÓN CLAVE PARA EL LOGO === */
+    /* Reducimos el margen negativo para que el logo se mantenga centrado en el alto padding-top (90px) */
+    margin-top: -80px; 
     width: 95%;
 }
 
 input[type="email"],
 input[type="password"] {
-    margin-top: 30px;
-    width: 89%;
+    width: 100%; 
     padding: 20px;
-    margin-bottom: 12px;
+    margin-top: 5px; 
+    margin-bottom: 12px; 
     border: none;
     border-radius: 6px;
     font-size: 14px;
+    box-sizing: border-box;
 }
 
 .btn-access {
+    width: 100%; 
     display: block;
-    width: 92%;
-    margin-top: px;
+    margin-top: 20px;
     text-align: center;
     background-color: #ffffff;
     color: #0b1e3a;
@@ -79,68 +105,26 @@ input[type="password"] {
     background-color: #e0e0e0;
 }
 
-.register-link {
-    display: block;
-    margin-top: 12px;
-    text-align: center;
-    color: #ffffff;
-    text-decoration: underline;
-    font-weight: bold;
-    cursor: pointer;
-}
-/* Aplica un contenedor con display flex para mantener el formulario de una sola columna */
-.form-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    max-width: 400px;  /* Ajusta el ancho máximo */
-    margin: 0 auto;
-}
-
-/* Define un tamaño constante para los campos de entrada */
-input[type="email"], input[type="password"] {
-    width: 150%;
-    height: 40px; /* Asegura una altura constante */
-    padding: 10px;
-    box-sizing: border-box;
-    margin-bottom: 10px; /* Espaciado entre campos */
-}
-
-/* Mensajes de error con un tamaño fijo */
-.error {
-  color: red;
-  font-size: 12px;
-  height: 16px;  /* Establece una altura fija para el mensaje de error */
-  visibility: hidden;  /* El mensaje de error no debe ocupar espacio cuando no se muestra */
-}
-
-/* Muestra el mensaje de error solo cuando el campo es inválido */
-input.ng-invalid.ng-touched + .error {
-  visibility: visible;  /* Muestra el mensaje solo cuando el campo ha sido tocado y es inválido */
-}
-
-/* Evita que los campos cambien de tamaño */
-input.ng-invalid {
-  border-color: red;  /* Cambia el borde del campo si es inválido */
-  background-color: #f8d7da;  /* Fondo para indicar que el campo es inválido */
-}
-
-input.ng-valid {
-  border-color: green;  /* Cambia el borde del campo si es válido */
-  background-color: #d4edda;  /* Fondo para indicar que el campo es válido */
-}
 .extra-link {
-  margin-top: 20px;       /* lo baja un poco más */
-  text-align: center;     /* lo centra */
+    width: 100%; 
+    margin-top: 15px; 
+    text-align: center;
 }
 
 .extra-link a {
-  color: #ffffff;         /* texto en blanco */
-  text-decoration: none;  /* sin subrayado */
-  font-size: 14px;
+    color: #ffffff; 
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
 }
 
 .extra-link a:hover {
-  text-decoration: underline; /* subrayado solo al pasar el mouse */
+    text-decoration: underline;
+}
+
+.error {
+    color: red;
+    font-size: 12px;
+    text-align: left;
+    margin-bottom: 5px;
 }

@@ -6,6 +6,8 @@ import { PaginainicioComponent } from './paginainicio/paginainicio.component';
 import { MenuComponent } from './menu.component/menu.component';  
 import { NuevoViajeComponent } from './nuevo-viaje.component/nuevo-viaje.component';
 import { MisViajesComponent } from './mis-viajes.component/mis-viajes.component';
+import { PagoSeniaComponent } from './pago-senia.component/pago-senia.component';
+import { Path } from 'leaflet';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'paginainicio', pathMatch: 'full' },
@@ -14,5 +16,7 @@ export const routes: Routes = [
   { path: 'paginainicio', component: PaginainicioComponent },
   { path: 'menu', component: MenuComponent },
   { path: 'nuevoviaje', component: NuevoViajeComponent },
-  { path: 'misviajes', component: MisViajesComponent }
+  { path: 'misviajes', component: MisViajesComponent },
+  { path: 'pagosenia', component: PagoSeniaComponent },
+  { path: '**', redirectTo: '/pago-senia', pathMatch: 'full' }
 ];

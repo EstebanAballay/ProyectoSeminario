@@ -13,6 +13,11 @@ import { RouterModule } from '@angular/router';
 export class RegisterComponent {
   user = {
     nombre: '',
+    apellido: '',
+    dni: '',
+    cel: '',
+    cuit: '',
+    direccion: '',
     email: '',
     password: '',
     confirmPassword: ''
@@ -26,5 +31,7 @@ export class RegisterComponent {
 
     console.log('✅ Usuario registrado:', this.user);
     // Acá podés llamar a tu servicio de backend para guardar el usuario
+    // Ejemplo:
+    // this.authService.register(this.user).subscribe(...)
   }
 }
