@@ -16,7 +16,7 @@ export class UsersService {
   private readonly jwtService: JwtService,
   ) {}
   async crearUsuario(dto: CreateUserDto) {
-    console.log('Email recibido:', dto.email);
+
     // 1️⃣ Verificar si ya existe un usuario con ese email
     const existente = await this.userRepo.findOne({
       where: { email: dto.email },
@@ -47,15 +47,19 @@ const salt = await bcrypt.genSalt(10);
   }
 
   async login(dto: LoginDto) {
+    console.log('intentando login');
     // 1️⃣ Buscar el usuario por email
     const usuario = await this.userRepo.findOne({ where: { email: dto.email } });
     if (!usuario) {
+      console.log('no encuentra el usuario');
       throw new UnauthorizedException('Email o contraseña incorrecta'); //Manda el error que despues muestra el login.component.ts con el mensaje 
     }
 
     // 2️⃣ Verificar contraseña
     const isMatch = await bcrypt.compare(dto.password, usuario.password_hash);
+    console.log('verificando contraseña');
     if (!isMatch) {
+      console.log('no coinciden');
       throw new UnauthorizedException('Email o contraseña incorrecta');
     }
     const token = this.jwtService.sign({ id: usuario.id, email: usuario.email, role: usuario.role });

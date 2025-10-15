@@ -26,7 +26,6 @@ let UsersService = class UsersService {
         this.jwtService = jwtService;
     }
     async crearUsuario(dto) {
-        console.log('Email recibido:', dto.email);
         const existente = await this.userRepo.findOne({
             where: { email: dto.email },
         });
@@ -51,17 +50,30 @@ let UsersService = class UsersService {
         return guardado;
     }
     async login(dto) {
+        console.log('intentando login');
         const usuario = await this.userRepo.findOne({ where: { email: dto.email } });
         if (!usuario) {
+            console.log('no encuentra el usuario');
             throw new common_1.UnauthorizedException('Email o contraseña incorrecta');
         }
         const isMatch = await bcrypt.compare(dto.password, usuario.password_hash);
+        console.log('verificando contraseña');
         if (!isMatch) {
+            console.log('no coinciden');
             throw new common_1.UnauthorizedException('Email o contraseña incorrecta');
         }
         const token = this.jwtService.sign({ id: usuario.id, email: usuario.email, role: usuario.role });
         const { password_hash, ...rest } = usuario;
         return { ...rest, token };
+    }
+    async findOneByEmail(email) {
+        return await this.userRepo.findOneBy({ email });
+    }
+    findOneByEmailWithPassword(email) {
+        return this.userRepo.findOne({
+            where: { email },
+            select: ['id', 'nombre', 'email', 'password_hash', 'role'],
+        });
     }
 };
 exports.UsersService = UsersService;

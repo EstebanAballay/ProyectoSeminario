@@ -21,4 +21,6 @@ export declare class UsersService {
         direccion: string;
         role: Role;
     }>;
+    findOneByEmail(email: string): Promise<User>;
+    findOneByEmailWithPassword(email: string): Promise<User>;
 }
