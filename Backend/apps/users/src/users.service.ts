@@ -63,5 +63,14 @@ const salt = await bcrypt.genSalt(10);
     const { password_hash, ...rest } = usuario;
     return { ...rest, token };
   }
+  async findOneByEmail(email: string) {
+    return await this.userRepo.findOneBy({ email });
+  }
 
+  findOneByEmailWithPassword(email: string) {
+    return this.userRepo.findOne({
+      where: { email },
+      select: ['id', 'nombre', 'email', 'password_hash', 'role'],
+  });
+}
 }

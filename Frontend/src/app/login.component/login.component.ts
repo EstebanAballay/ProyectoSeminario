@@ -3,6 +3,12 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';  
 import { Router, RouterModule } from '@angular/router';
 import { UsersService } from '../services/users.service';
+import * as jwtDecode from 'jwt-decode';
+
+interface TokenData {
+  email: string;
+  role: string;
+}
 
 @Component({
   selector: 'app-login',
@@ -35,14 +41,27 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     try {
-      const result = await this.usersService.login(this.email.trim(), this.password.trim()); //Trim para que no agregue espacios
+      const result = await this.usersService.login(this.email.trim(), this.password.trim());
+
       // Guardar JWT en localStorage
       localStorage.setItem('token', result.token);
 
-      this.router.navigate(['/menu']);
+      // Decodificar token para obtener el rol
+      const decoded: TokenData = (jwtDecode as any).default(result.token);
+
+      // Redirigir según el rol
+      switch (decoded.role) {
+        case 'admin':
+          this.router.navigate(['/admin']);
+          break;
+        case 'chofer':
+          this.router.navigate(['/chofer']);
+          break;
+        default:
+          this.router.navigate(['/menu']); 
+      }
     } catch (error: any) {
       alert('Email o contraseña incorrecta');
     }
   }
 }
-

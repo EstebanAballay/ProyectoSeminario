@@ -6,4 +6,5 @@ export class RegisterDto {
   celular: string;
   CUIT: string;
   direccion: string;
+  password: string;
 }
