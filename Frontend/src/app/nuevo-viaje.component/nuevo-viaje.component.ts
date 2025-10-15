@@ -1,40 +1,47 @@
 import { Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common'; // 👈 Importar esto
+import { CommonModule } from '@angular/common';
+import { ApiService } from '../services/api.service';
+
 import * as L from 'leaflet';
 import 'leaflet-routing-machine';
 
 @Component({
   selector: 'app-nuevo-viaje',
   standalone: true,
-  imports: [FormsModule, CommonModule], // 👈 Agregar acá
+  imports: [FormsModule, CommonModule],
   templateUrl: './nuevo-viaje.component.html',
   styleUrls: ['./nuevo-viaje.component.css']
 })
 export class NuevoViajeComponent implements AfterViewInit {
   private map!: L.Map;
   private routingControl: any;
+  constructor(private apiService: ApiService) {}
 
   @ViewChild('origenInput') origenInput!: ElementRef<HTMLInputElement>;
   @ViewChild('destinoInput') destinoInput!: ElementRef<HTMLInputElement>;
   @ViewChild('fechaSalidaInput') fechaSalidaInput!: ElementRef<HTMLInputElement>;
 
-  // Coordenadas y marcadores
   origenCoords: { lat: number; lon: number } | null = null;
   destinoCoords: { lat: number; lon: number } | null = null;
   origenMarker: L.Marker | null = null;
   destinoMarker: L.Marker | null = null;
 
-  seleccionandoOrigen: boolean = true;
+  // 🚦 Control de flujo
+  origenConfirmado: boolean = false; // indica si el usuario confirmó el origen
 
-  // 🚚 Variables del modal de vehículo
   mostrarSelector = false;
-  vehiculoSeleccionado: string = '';
+  tipoCamionSeleccionado: string = '';
   remolqueSeleccionado: string = '';
+  tipoSemirremolqueSeleccionado: string = '';
+  quiereSemirremolque: boolean = false;
+  camionesSeleccionados: { tipo: string, remolque: string, semirremolque: string }[] = [];
 
   ngAfterViewInit(): void {
     this.initMap();
   }
+
+
 
   private initMap(): void {
     this.map = L.map('map').setView([-34.6037, -58.3816], 6);
@@ -49,7 +56,8 @@ export class NuevoViajeComponent implements AfterViewInit {
       const lon = e.latlng.lng;
       const placeName = await this.reverseGeocode(lat, lon);
 
-      if (this.seleccionandoOrigen) {
+      if (!this.origenCoords) {
+        // Seleccionando origen (antes de confirmar)
         this.origenCoords = { lat, lon };
         this.origenInput.nativeElement.value = placeName;
 
@@ -57,7 +65,13 @@ export class NuevoViajeComponent implements AfterViewInit {
         this.origenMarker = L.marker([lat, lon]).addTo(this.map)
           .bindPopup('Origen: ' + placeName)
           .openPopup();
-      } else {
+
+        alert('Origen seleccionado. Hacé clic en OK para confirmarlo y habilitar el destino.');
+        return;
+      }
+
+      // Selección de destino solo si origen confirmado
+      if (this.origenConfirmado && !this.destinoCoords) {
         this.destinoCoords = { lat, lon };
         this.destinoInput.nativeElement.value = placeName;
 
@@ -65,12 +79,25 @@ export class NuevoViajeComponent implements AfterViewInit {
         this.destinoMarker = L.marker([lat, lon]).addTo(this.map)
           .bindPopup('Destino: ' + placeName)
           .openPopup();
+
+        if (this.origenCoords && this.destinoCoords) {
+          this.dibujarRuta();
+        }
+        return;
       }
 
-      if (this.origenCoords && this.destinoCoords) {
-        this.dibujarRuta();
-      }
+      // Si clickeó después de todo
+      alert('Origen y destino ya seleccionados.');
     });
+  }
+
+  confirmarOrigen(): void {
+    if (!this.origenCoords) {
+      alert('❌ Primero seleccioná el origen en el mapa o en el formulario.');
+      return;
+    }
+    this.origenConfirmado = true;
+    alert('✅ Origen confirmado. Ahora podés seleccionar el destino en el mapa.');
   }
 
   private dibujarRuta(): void {
@@ -110,8 +137,7 @@ export class NuevoViajeComponent implements AfterViewInit {
       origen, 
       destino, 
       fecha, 
-      vehiculo: this.vehiculoSeleccionado, 
-      remolque: this.remolqueSeleccionado 
+      camiones: this.camionesSeleccionados, 
     });
 
     if (!this.origenCoords || !this.destinoCoords) {
@@ -119,8 +145,8 @@ export class NuevoViajeComponent implements AfterViewInit {
       return;
     }
 
-    if (!this.vehiculoSeleccionado) {
-      alert("❌ Debés seleccionar un vehículo antes de crear el viaje.");
+    if (this.camionesSeleccionados.length === 0) {
+      alert("❌ Debés seleccionar al menos un camión antes de crear el viaje.");
       return;
     }
 
@@ -130,16 +156,28 @@ export class NuevoViajeComponent implements AfterViewInit {
   abrirSelectorVehiculo() { this.mostrarSelector = true; }
   cerrarSelector() { this.mostrarSelector = false; }
 
-  confirmarVehiculo() {
-    if (!this.vehiculoSeleccionado) {
-      alert("Debés seleccionar un vehículo.");
-      return;
+  agregarCamion(): void {
+    if (this.tipoCamionSeleccionado && this.remolqueSeleccionado) {
+      this.camionesSeleccionados.push({
+        tipo: this.tipoCamionSeleccionado,
+        remolque: this.remolqueSeleccionado,
+        semirremolque: this.quiereSemirremolque ? this.tipoSemirremolqueSeleccionado : 'Sin semirremolque'
+      });
+      this.tipoCamionSeleccionado = '';
+      this.remolqueSeleccionado = '';
+      this.tipoSemirremolqueSeleccionado = '';
+      this.quiereSemirremolque = false;
+      this.cerrarSelector();
+    } else {
+      alert("❌ Debes seleccionar el tipo de camión y remolque.");
     }
-    if (!this.remolqueSeleccionado) {
-      alert("Debés seleccionar un remolque o indicar 'Sin remolque'.");
-      return;
+  }
+
+  toggleSemirremolque(): void {
+    this.quiereSemirremolque = !this.quiereSemirremolque;
+    if (!this.quiereSemirremolque) {
+      this.tipoSemirremolqueSeleccionado = '';
     }
-    this.mostrarSelector = false;
   }
 
   private async getCoords(place: string): Promise<{ lat: number; lon: number } | null> {
