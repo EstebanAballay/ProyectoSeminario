@@ -16,11 +16,13 @@
             <div>
                 <label for="origen">Origen:</label>
                 <input id="origen" type="text" #origenInput placeholder="Ej: Córdoba" />
+                <!-- Botón para confirmar origen -->
+                <button type="button" (click)="confirmarOrigen()">OK</button>
             </div>
 
             <div>
                 <label for="destino">Destino:</label>
-                <input id="destino" type="text" #destinoInput placeholder="Ej: Rosario" />
+                <input id="destino" type="text" #destinoInput placeholder="Seleccioná en el mapa" readonly />
             </div>
 
             <div>
