@@ -25,10 +25,14 @@ let UnidadController = class UnidadController {
         return this.unidadService.createUnidad(createUnidadDto);
     }
     consultarTiposAcoplados() {
-        return this.unidadService.consultarTiposAcoplados();
+        const tipos = this.unidadService.consultarTiposAcoplados();
+        const nombres = tipos.then(tiposArray => tiposArray.map(tipo => tipo.nombre));
+        return nombres;
     }
     consultarTiposCamiones() {
-        return this.unidadService.consultarTiposCamiones();
+        const tiposCamiones = this.unidadService.consultarTiposCamiones();
+        const nombres = tiposCamiones.then(tiposArray => tiposArray.map(tipo => tipo.nombre));
+        return nombres;
     }
     findOne(id) {
         return this.unidadService.findOne(+id);

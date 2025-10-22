@@ -14,12 +14,16 @@ export class UnidadController {
 
   @Get('tiposAcoplados')
   consultarTiposAcoplados() {
-    return this.unidadService.consultarTiposAcoplados();
+    const tipos = this.unidadService.consultarTiposAcoplados();
+    const nombres = tipos.then(tiposArray => tiposArray.map(tipo => tipo.nombre));
+    return nombres;
   }
 
   @Get('tiposCamiones')
   consultarTiposCamiones() {
-    return this.unidadService.consultarTiposCamiones();
+    const tiposCamiones = this.unidadService.consultarTiposCamiones();
+    const nombres = tiposCamiones.then(tiposArray => tiposArray.map(tipo => tipo.nombre));
+    return nombres;
   }
 
   @Get(':id')
