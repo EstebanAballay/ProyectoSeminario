@@ -14,16 +14,17 @@ export class UnidadController {
 
   @Get('tiposAcoplados')
   consultarTiposAcoplados() {
-    const tipos = this.unidadService.consultarTiposAcoplados();
-    const nombres = tipos.then(tiposArray => tiposArray.map(tipo => tipo.nombre));
-    return nombres;
+    return this.unidadService.consultarTiposAcoplados();
   }
 
   @Get('tiposCamiones')
   consultarTiposCamiones() {
-    const tiposCamiones = this.unidadService.consultarTiposCamiones();
-    const nombres = tiposCamiones.then(tiposArray => tiposArray.map(tipo => tipo.nombre));
-    return nombres;
+    return this.unidadService.consultarTiposCamiones();
+  }
+
+  @Get('unidadesDisponibles')
+  consultarUnidadesDisponibles(unidadesOcupadas: number[]) {
+    return this.unidadService.findDisponibles(unidadesOcupadas);
   }
 
   @Get(':id')

@@ -23,6 +23,7 @@ const tipo_entity_1 = require("./entities/tipo.entity");
 const tipoCamion_entity_1 = require("./entities/tipoCamion.entity");
 const camion_entity_1 = require("./entities/camion.entity");
 const unidad_entity_1 = require("./entities/unidad.entity");
+const typeorm_3 = require("typeorm");
 let UnidadService = class UnidadService {
     constructor(httpService, semirremolqueRepository, acopladoRepository, tipoRepository, tipoCamionRepository, CamionRepository, UnidadRepository) {
         this.httpService = httpService;
@@ -105,6 +106,29 @@ let UnidadService = class UnidadService {
     }
     consultarTiposCamiones() {
         return this.tipoCamionRepository.find();
+    }
+    async findDisponibles(unidadesOcupadas) {
+        const unidades = await this.UnidadRepository.find({
+            where: { UnidadId: (0, typeorm_3.In)(unidadesOcupadas) },
+            relations: ['camion', 'acoplado', 'semirremolque'],
+        });
+        const camionesOcupados = unidades.map(u => u.camion?.id).filter(Boolean);
+        const acopladosOcupados = unidades.map(u => u.acoplado?.id).filter(Boolean);
+        const semirremolquesOcupados = unidades.map(u => u.semiremolque?.id).filter(Boolean);
+        const camionesDisponibles = await this.CamionRepository.find({
+            where: { id: (0, typeorm_3.Not)((0, typeorm_3.In)(camionesOcupados)) },
+        });
+        const acopladosDisponibles = await this.acopladoRepository.find({
+            where: { id: (0, typeorm_3.Not)((0, typeorm_3.In)(acopladosOcupados)) },
+        });
+        const semirremolquesDisponibles = await this.semirremolqueRepository.find({
+            where: { id: (0, typeorm_3.Not)((0, typeorm_3.In)(semirremolquesOcupados)) },
+        });
+        return {
+            camiones: camionesDisponibles,
+            acoplados: acopladosDisponibles,
+            semirremolques: semirremolquesDisponibles,
+        };
     }
     findAll() {
         return `This action returns all unidad`;

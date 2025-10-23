@@ -10,7 +10,7 @@ import { Tipo } from './entities/tipo.entity';
 import { TipoCamion } from './entities/tipoCamion.entity';
 import { Camion } from './entities/camion.entity';
 import { Unidad } from './entities/unidad.entity'
-
+import { In, Not } from 'typeorm';
 
 @Injectable()
 export class UnidadService {
@@ -120,6 +120,41 @@ export class UnidadService {
   consultarTiposCamiones(): Promise<TipoCamion[]> {
     return this.tipoCamionRepository.find();
   }
+
+  //Busca las unidades disponibles
+  async findDisponibles(unidadesOcupadas: number[]): Promise<{
+    camiones: Camion[];
+    acoplados: Acoplado[];
+    semirremolques: Semirremolque[];}> 
+    {
+      const unidades = await this.UnidadRepository.find({
+        where: { UnidadId: In(unidadesOcupadas) },
+        relations: ['camion', 'acoplado', 'semirremolque'],
+      });
+
+      const camionesOcupados = unidades.map(u => u.camion?.id).filter(Boolean);
+      const acopladosOcupados = unidades.map(u => u.acoplado?.id).filter(Boolean);
+      const semirremolquesOcupados = unidades.map(u => u.semiremolque?.id).filter(Boolean);
+
+      const camionesDisponibles = await this.CamionRepository.find({
+        where: { id: Not(In(camionesOcupados)) },
+      });
+
+      const acopladosDisponibles = await this.acopladoRepository.find({
+        where: { id: Not(In(acopladosOcupados)) },
+      });
+
+      const semirremolquesDisponibles = await this.semirremolqueRepository.find({
+        where: { id: Not(In(semirremolquesOcupados)) },
+      });
+
+      return {
+        camiones: camionesDisponibles,
+        acoplados: acopladosDisponibles,
+        semirremolques: semirremolquesDisponibles,
+      };
+    }
+
 
   findAll() {
     return `This action returns all unidad`;

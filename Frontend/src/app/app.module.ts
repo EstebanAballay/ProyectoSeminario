@@ -7,8 +7,8 @@ import { FormsModule } from '@angular/forms';
 
 import { LoginComponent } from './login.component/login.component'; 
 import { RegisterComponent } from './register.component/register.component'; 
-import { PaginainicioComponent } from './paginainicio/paginainicio.component';  
-import { MenuComponent } from './menu.component/menu.component';  
+import { PaginainicioComponent } from './paginainicio/paginainicio.component';
+import { MenuComponent } from './menu.component/menu.component';
 import { NuevoViajeComponent } from './nuevo-viaje.component/nuevo-viaje.component';
 import { MisViajesComponent } from './mis-viajes.component/mis-viajes.component';
 import { PagoSeniaComponent } from './pago-senia.component/pago-senia.component';
@@ -44,4 +44,5 @@ import { PagoSeniaComponent } from './pago-senia.component/pago-senia.component'
 ],
 providers: [],
 })
+
 export class AppModule { }

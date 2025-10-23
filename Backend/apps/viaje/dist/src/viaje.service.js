@@ -53,8 +53,11 @@ let ViajeService = class ViajeService {
         const savedViaje = await this.viajeRepository.save(viaje);
         const unidades = data.unidades;
         for (const unidad of unidades) {
-            await this.agregarUnidad(unidad, savedViaje.ViajeId);
+            const nuevaUnidadId = await this.agregarUnidad(unidad, savedViaje.ViajeId);
+            savedViaje.unidades.push(nuevaUnidadId);
         }
+        await this.viajeRepository.save(savedViaje);
+        console.log('Viaje creado con unidades:', savedViaje);
         return savedViaje;
     }
     async agregarUnidad(unidad, viajeId) {
@@ -62,6 +65,22 @@ let ViajeService = class ViajeService {
         try {
             const response = await (0, rxjs_1.firstValueFrom)(this.httpService.post('http://unidad-service:3002/unidad', unidadCompleta));
             console.log('Unidad creada:', response.data);
+            return response.data.UnidadId;
+        }
+        catch (error) {
+            console.error('Error al crear la unidad:', error.message);
+        }
+    }
+    async buscarUnidadesDisponibles(fechaInicio, fechaFin) {
+        const viajesEnRango = await this.viajeRepository.find({
+            where: [
+                { fechaInicio: (0, typeorm_2.LessThanOrEqual)(fechaFin), fechaFin: (0, typeorm_2.MoreThanOrEqual)(fechaInicio) },
+            ]
+        });
+        const unidadesOcupadas = viajesEnRango.flatMap(v => v.unidades);
+        try {
+            const response = await (0, rxjs_1.firstValueFrom)(this.httpService.post('http://unidad-service:3002/unidadesDisponibles', unidadesOcupadas));
+            console.log('UnidadesDisponibles:', response.data);
             return response.data;
         }
         catch (error) {

@@ -11,6 +11,7 @@ export declare class ViajeService {
     testConnection(): Promise<void>;
     createViaje(data: CreateViajeDto): Promise<Viaje>;
     agregarUnidad(unidad: any, viajeId: number): Promise<any>;
+    buscarUnidadesDisponibles(fechaInicio: Date, fechaFin: Date): Promise<any>;
     findAll(): string;
     findOne(id: number): string;
     remove(id: number): string;

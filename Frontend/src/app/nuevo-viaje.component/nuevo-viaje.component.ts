@@ -1,8 +1,7 @@
 import { Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ApiService } from '../services/api.service';
-
+import { UnidadService } from '../services/unidad.service';
 import * as L from 'leaflet';
 import 'leaflet-routing-machine';
 
@@ -10,13 +9,30 @@ import 'leaflet-routing-machine';
   selector: 'app-nuevo-viaje',
   standalone: true,
   imports: [FormsModule, CommonModule],
+  providers: [UnidadService],
   templateUrl: './nuevo-viaje.component.html',
   styleUrls: ['./nuevo-viaje.component.css']
 })
+
 export class NuevoViajeComponent implements AfterViewInit {
   private map!: L.Map;
   private routingControl: any;
-  constructor(private apiService: ApiService) {}
+  constructor(private unidadService: UnidadService) {}
+  
+  //variables para que el usuario pueda seleccionar
+  public tiposCamion: string[] = [];
+  public tiposAcoplado : string[] = [];
+  public tiposSemirremolque : string[] = [];
+  
+  //En el init se cargan los datos por unica vez
+  async ngOnInit() {
+    this.tiposCamion = await this.unidadService.consultarCamiones();
+    this.tiposSemirremolque = await this.unidadService.consultarAcoplados();
+    //esto se hace asi porque si solo se usa el =, se asigna a la misma dir de memoria
+    this.tiposAcoplado = [...this.tiposSemirremolque];
+    //los tipos de semi son iguales,pero los de acoplado tienen "sin acoplado"
+    this.tiposAcoplado.push('Sin acoplado');
+  }
 
   @ViewChild('origenInput') origenInput!: ElementRef<HTMLInputElement>;
   @ViewChild('destinoInput') destinoInput!: ElementRef<HTMLInputElement>;
@@ -33,16 +49,17 @@ export class NuevoViajeComponent implements AfterViewInit {
   mostrarSelector = false;
   tipoCamionSeleccionado: string = '';
   remolqueSeleccionado: string = '';
+  acopladoSeleccionado: string = '';
   tipoSemirremolqueSeleccionado: string = '';
   quiereSemirremolque: boolean = false;
+  quiereAcoplado: boolean = false;
   camionesSeleccionados: { tipo: string, remolque: string, semirremolque: string }[] = [];
 
   ngAfterViewInit(): void {
     this.initMap();
   }
 
-
-
+  //Todo esto es del mapa
   private initMap(): void {
     this.map = L.map('map').setView([-34.6037, -58.3816], 6);
 
@@ -91,6 +108,9 @@ export class NuevoViajeComponent implements AfterViewInit {
     });
   }
 
+
+
+
   confirmarOrigen(): void {
     if (!this.origenCoords) {
       alert('❌ Primero seleccioná el origen en el mapa o en el formulario.');
@@ -99,6 +119,8 @@ export class NuevoViajeComponent implements AfterViewInit {
     this.origenConfirmado = true;
     alert('✅ Origen confirmado. Ahora podés seleccionar el destino en el mapa.');
   }
+
+
 
   private dibujarRuta(): void {
     if (!this.origenCoords || !this.destinoCoords) return;
@@ -149,7 +171,7 @@ export class NuevoViajeComponent implements AfterViewInit {
       alert("❌ Debés seleccionar al menos un camión antes de crear el viaje.");
       return;
     }
-
+    //aca deberia empezar a crear el viaje
     alert("✅ Viaje creado con éxito");
   }
 
@@ -180,6 +202,13 @@ export class NuevoViajeComponent implements AfterViewInit {
     }
   }
 
+  toggleAcoplado(): void {
+    this.quiereAcoplado = !this.quiereAcoplado;
+    if (!this.quiereAcoplado) {
+      this.tipoSemirremolqueSeleccionado = '';
+    }
+  }
+
   private async getCoords(place: string): Promise<{ lat: number; lon: number } | null> {
     const response = await fetch(
       `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(place)}`
@@ -196,3 +225,4 @@ export class NuevoViajeComponent implements AfterViewInit {
     return data.display_name || `${lat.toFixed(5)}, ${lon.toFixed(5)}`;
   }
 }
+

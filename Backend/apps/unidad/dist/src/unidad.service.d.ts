@@ -22,6 +22,11 @@ export declare class UnidadService {
     createUnidad(createUnidadDto: CreateUnidadDto): Promise<Unidad>;
     consultarTiposAcoplados(): Promise<Tipo[]>;
     consultarTiposCamiones(): Promise<TipoCamion[]>;
+    findDisponibles(unidadesOcupadas: number[]): Promise<{
+        camiones: Camion[];
+        acoplados: Acoplado[];
+        semirremolques: Semirremolque[];
+    }>;
     findAll(): string;
     findOne(id: number): string;
     update(id: number, updateUnidadDto: UpdateUnidadDto): string;

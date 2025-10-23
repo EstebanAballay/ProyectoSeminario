@@ -25,14 +25,13 @@ let UnidadController = class UnidadController {
         return this.unidadService.createUnidad(createUnidadDto);
     }
     consultarTiposAcoplados() {
-        const tipos = this.unidadService.consultarTiposAcoplados();
-        const nombres = tipos.then(tiposArray => tiposArray.map(tipo => tipo.nombre));
-        return nombres;
+        return this.unidadService.consultarTiposAcoplados();
     }
     consultarTiposCamiones() {
-        const tiposCamiones = this.unidadService.consultarTiposCamiones();
-        const nombres = tiposCamiones.then(tiposArray => tiposArray.map(tipo => tipo.nombre));
-        return nombres;
+        return this.unidadService.consultarTiposCamiones();
+    }
+    consultarUnidadesDisponibles(unidadesOcupadas) {
+        return this.unidadService.findDisponibles(unidadesOcupadas);
     }
     findOne(id) {
         return this.unidadService.findOne(+id);
@@ -64,6 +63,12 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], UnidadController.prototype, "consultarTiposCamiones", null);
+__decorate([
+    (0, common_1.Get)('unidadesDisponibles'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Array]),
+    __metadata("design:returntype", void 0)
+], UnidadController.prototype, "consultarUnidadesDisponibles", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),

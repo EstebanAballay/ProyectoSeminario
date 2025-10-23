@@ -14,6 +14,9 @@ const typeorm_1 = require("typeorm");
 const typeorm_2 = require("typeorm");
 const estadoViaje_entity_1 = require("./estadoViaje.entity");
 let Viaje = class Viaje {
+    constructor() {
+        this.unidades = [];
+    }
 };
 exports.Viaje = Viaje;
 __decorate([
@@ -60,6 +63,10 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
 ], Viaje.prototype, "total", void 0);
+__decorate([
+    (0, typeorm_1.Column)("jsonb", { nullable: true }),
+    __metadata("design:type", Array)
+], Viaje.prototype, "unidades", void 0);
 __decorate([
     (0, typeorm_2.ManyToOne)(() => estadoViaje_entity_1.EstadoViaje, (estado) => estado.viajes, { eager: true }),
     (0, typeorm_2.JoinColumn)({ name: 'estadoViajeId' }),

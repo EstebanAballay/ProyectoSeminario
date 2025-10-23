@@ -61,30 +61,31 @@
         <div>
             <label for="tipoCamion">Tipo de camión:</label>
             <select id="tipoCamion" [(ngModel)]="tipoCamionSeleccionado">
-                <option value="Camión 1">Camión 1</option>
-                <option value="Camión 2">Camión 2</option>
-                <option value="Camión 3">Camión 3</option>
+                <option value="" disabled selected>Seleccione un tipo</option>
+                    <option *ngFor="let tipo of tiposCamion" [value]="tipo">
+                        {{ tipo }}
+                    </option>
             </select>
         </div>
 
         <div>
-            <label for="remolque">¿Con semirremolque?</label>
-            <select id="remolque" [(ngModel)]="remolqueSeleccionado" (change)="toggleSemirremolque()">
-                <option value="Sin remolque">Sin remolque</option>
-                <option value="Remolque 1">Remolque 1</option>
-                <option value="Remolque 2">Remolque 2</option>
+            <label for="remolque">Tipo de semirremolque</label>
+            <select id="remolque" [(ngModel)]="remolqueSeleccionado" (change)="toggleAcoplado()">
+            <option value="" disabled selected>Seleccione un remolque</option>
+                <option *ngFor="let tipo of tiposSemirremolque" [value]="tipo">
+                    {{ tipo }}
+                </option>
             </select>
         </div>
 
         <!-- Campo de tipo de semirremolque, solo visible si elige "Sí" -->
-        <div *ngIf="quiereSemirremolque">
-            <label for="tipoSemirremolque">Tipo de semirremolque:</label>
-            <select id="tipoSemirremolque" [(ngModel)]="tipoSemirremolqueSeleccionado">
-                <option value="Semirremolque 1">Semirremolque 1</option>
-                <option value="Semirremolque 2">Semirremolque 2</option>
-                <option value="Semirremolque 3">Semirremolque 3</option>
-            </select>
-        </div>
+        <label for="acoplado">Tipo de Acoplado</label>
+        <select id="acoplado" [(ngModel)]="acopladoSeleccionado" (change)="toggleSemirremolque()">
+        <option value="" disabled selected>Seleccione un Acoplado</option>
+            <option *ngFor="let tipo of tiposAcoplado" [value]="tipo">
+                {{ tipo }}
+            </option>
+        </select>
 
         <div class="modal-actions">
             <button type="button" (click)="agregarCamion()">Agregar camión</button>

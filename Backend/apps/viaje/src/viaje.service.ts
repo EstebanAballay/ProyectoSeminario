@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateViajeDto } from './dto/create-viaje.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 import { EstadoViaje } from './entities/estadoViaje.entity';
 import { Viaje } from './entities/viaje.entity';
 import { HttpService } from '@nestjs/axios';
@@ -43,14 +43,19 @@ export class ViajeService {
       estadoViaje: estadoDefault // lo creo en estado precargado
     });
 
+    //Guarda el nuevo viaje
     const savedViaje = await this.viajeRepository.save(viaje);
     //Json dto para unidades
     const unidades = data.unidades
     //console.log(viaje.ViajeId);
     for (const unidad of unidades) {
-      await this.agregarUnidad(unidad,savedViaje.ViajeId);
+      //creo la unidad y me quedo con su id
+      const nuevaUnidadId = await this.agregarUnidad(unidad,savedViaje.ViajeId);
+      //asigno el id de la unidad al viaje
+      savedViaje.unidades.push(nuevaUnidadId);
     }
-    
+    await this.viajeRepository.save(savedViaje);
+    console.log('Viaje creado con unidades:', savedViaje);
     return savedViaje;
   }
 
@@ -61,11 +66,35 @@ export class ViajeService {
       this.httpService.post('http://unidad-service:3002/unidad', unidadCompleta)
     );
     console.log('Unidad creada:', response.data);
-    return response.data;
+    return response.data.UnidadId;
   } catch (error) {
     console.error('Error al crear la unidad:', error.message);
   }
   }
+
+  async buscarUnidadesDisponibles(fechaInicio: Date, fechaFin: Date) {
+    //Buscar unidades ocupadas en este rango
+    const viajesEnRango = await this.viajeRepository.find({
+      where: [
+        { fechaInicio: LessThanOrEqual(fechaFin), fechaFin: MoreThanOrEqual(fechaInicio) },
+      ]
+    });
+
+    const unidadesOcupadas = viajesEnRango.flatMap(v => v.unidades);
+
+    // 2. Pedir a microservicio de unidad, las disponibles
+    try {
+      const response = await firstValueFrom(
+        this.httpService.post('http://unidad-service:3002/unidadesDisponibles', unidadesOcupadas)
+      );
+      console.log('UnidadesDisponibles:', response.data);
+      return response.data;} 
+    catch (error) {
+      console.error('Error al crear la unidad:', error.message);
+        }
+
+  }
+
 
   findAll() {
     return `This action returns all viaje`;

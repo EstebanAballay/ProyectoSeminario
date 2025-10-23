@@ -38,11 +38,9 @@ export class Viaje {
   @Column()
   total?: number;
 
-  /*
   //Relación: Guardo los id de las unidades 
-  @Column('idUnidades')
-  idUnidades: number[]; 
-  */
+  @Column("jsonb", { nullable: true })
+  unidades?: number[] = []; 
 
   //id viaje
   @ManyToOne(() => EstadoViaje, (estado) => estado.viajes, { eager: true })
