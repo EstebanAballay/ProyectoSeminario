@@ -54,7 +54,7 @@ async register(registerDto: RegisterDto) {
       throw new UnauthorizedException("Invalid password");
     }
 
-    const payload = { email: user.email, role: user.role }; // info que contiene el token
+    const payload = { id: user.id, email: user.email, role: user.role }; // info que contiene el token
 
     const token = await this.jwtService.signAsync(payload);
 

@@ -1,3 +1,5 @@
+// Este role guard se encarga de proteger las rutas en si, es decir, si yo quiero acceder desde el navegador a la ruta
+// no me va a dejar porque o no tengo el rol o no tengo token directamente.
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 
