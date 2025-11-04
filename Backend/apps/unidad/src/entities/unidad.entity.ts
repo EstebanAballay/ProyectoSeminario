@@ -19,6 +19,8 @@ export class Unidad {
   @ManyToOne(() => Acoplado, { eager: true })
   acoplado?: Acoplado;
 
+  transportistaId: number;
+  
   @ManyToOne(() => Transportista, { eager: true })
   transportista: Transportista;
 

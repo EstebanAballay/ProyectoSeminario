@@ -46,4 +46,5 @@ export class Viaje {
   @ManyToOne(() => EstadoViaje, (estado) => estado.viajes, { eager: true })
   @JoinColumn({ name: 'estadoViajeId' })
   estadoViaje: EstadoViaje;
+  idEstadoViaje: number;
 }

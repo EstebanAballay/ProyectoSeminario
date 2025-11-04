@@ -121,4 +121,10 @@ export class UnidadService {
   remove(id: number) {
     return `This action removes a #${id} unidad`;
   }
+
+  async findUnityByDriver(idusuario: number): Promise<any[]> {
+    return this.UnidadRepository.find({
+      where: { transportistaId: idusuario }, 
+    });
+  }
 }
