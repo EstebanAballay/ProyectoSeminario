@@ -1,19 +1,20 @@
 export class CreateViajeDto 
-{
+{   
     fechaInicio: string;  //el dia que tiene que ir el camion
-    destinoInicio: string; //donde tiene que recoger la carga
-    destinoFin: string;     //a donde lleva la acarga
     horaSalida: string;     //hora a la que sale
-    horaLlegada:string;
+    destinoInicio: string; //donde tiene que recoger la carga
+
+    destinoFin: string;     //a donde lleva la acarga
     fechaFin:string;
+    horaLlegada:string;
 
     //unidades
     unidades: {
-      semiremolque:boolean;   
-      acoplado:boolean;
-      tipoCamion: string;         //tractocamion,cisterna,reparto,frigorifico.
-      tipoSemirremolque?:string;
-      tipoAcoplado?:string;
+      semiremolqueId?:number;   
+      acopladoId?:number;
+      tractoCamionId:number
+      tieneSemirremolque:boolean;
+      tieneAcoplado:boolean;
   }[];
 }
 

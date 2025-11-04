@@ -25,29 +25,30 @@ export class ViajeService {
 
   async createViaje(data: CreateViajeDto) {
     //busco el estado PreCargado, que es el estado default
+    console.log('Creando viaje con datos:', data);
     const estadoDefault = await this.estadoViajeRepository.findOne({ where: { nombre: 'PreCargado' } });
     const viaje = this.viajeRepository.create({
       //asignar fecha reserva
       //calcular fecha hora hora llegada
       //calcular total
       fechaReserva: new Date(),
-      fechaInicio: new Date(data.fechaInicio),
+      fechaInicio: new Date(data.fechaInicio), 
       destinoInicio: data.destinoInicio,
-      horaSalida: data.horaSalida,
+      horaSalida: data.horaSalida.length === 5 ? `${data.horaSalida}:00` : data.horaSalida, //si la long es 5 le agrego :00 para segundos
       fechaFin: new Date(data.fechaFin), //Cambiar esto cuando se integre con el front.Aqui debe ir la fecha de regreso calculada en funcion de la duracion del viaje.
-      horaLlegada: data.horaLlegada, //Cambiar esto cuando se integre con el front.Aqui debe ir la hora de llegada calculada en funcion de la duracion del viaje.
+      horaLlegada: '17:00:00',
       destinoFin: data.destinoFin,
       sena: 0,
       resto: 0,
       total: 0,
       estadoViaje: estadoDefault // lo creo en estado precargado
     });
-
+ 
     //Guarda el nuevo viaje
     const savedViaje = await this.viajeRepository.save(viaje);
     //Json dto para unidades
     const unidades = data.unidades
-    //console.log(viaje.ViajeId);
+    console.log('Unidades a agregar al viaje:', unidades);
     for (const unidad of unidades) {
       //creo la unidad y me quedo con su id
       const nuevaUnidadId = await this.agregarUnidad(unidad,savedViaje.ViajeId);
@@ -55,12 +56,12 @@ export class ViajeService {
       savedViaje.unidades.push(nuevaUnidadId);
     }
     await this.viajeRepository.save(savedViaje);
-    console.log('Viaje creado con unidades:', savedViaje);
     return savedViaje;
   }
 
   async agregarUnidad(unidad: any,viajeId:number) {
     const unidadCompleta = {...unidad, viajeId} //asignar el id del viaje creado
+    console.log('🚀 Enviando unidad a unidad-service:', unidadCompleta);
     try {
     const response = await firstValueFrom(
       this.httpService.post('http://unidad-service:3002/unidad', unidadCompleta)
@@ -72,26 +73,28 @@ export class ViajeService {
   }
   }
 
-  async buscarUnidadesDisponibles(fechaInicio: Date, fechaFin: Date) {
+  async buscarUnidadesDisponibles(fechaInicio: Date, fechaFin: Date, camiones:any) {
     //Buscar unidades ocupadas en este rango
+
     const viajesEnRango = await this.viajeRepository.find({
       where: [
         { fechaInicio: LessThanOrEqual(fechaFin), fechaFin: MoreThanOrEqual(fechaInicio) },
       ]
     });
-
+    console.log('Viajes en el rango:', viajesEnRango);
     const unidadesOcupadas = viajesEnRango.flatMap(v => v.unidades);
-
-    // 2. Pedir a microservicio de unidad, las disponibles
+    console.log('Unidades ocupadas en el rango:', unidadesOcupadas);
+    //Pedir unidades disponibles al microservicio de unidad
     try {
+      const dto = { unidadesOcupadas: unidadesOcupadas, camiones: camiones };
       const response = await firstValueFrom(
-        this.httpService.post('http://unidad-service:3002/unidadesDisponibles', unidadesOcupadas)
+        this.httpService.post('http://unidad-service:3002/unidad/unidadesDisponibles', dto) //uso post porque le mando un body
       );
       console.log('UnidadesDisponibles:', response.data);
-      return response.data;} 
-    catch (error) {
-      console.error('Error al crear la unidad:', error.message);
-        }
+      return response.data;
+    } catch (error) {
+      console.error('Error al buscar la unidad:', error.message);
+    }
 
   }
 

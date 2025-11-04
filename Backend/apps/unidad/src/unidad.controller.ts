@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { UnidadService } from './unidad.service';
 import { CreateUnidadDto } from './dto/create-unidad.dto';
 import { UpdateUnidadDto } from './dto/update-unidad.dto';
+import { ConsultarUnidadesDto } from './dto/datosUnidadesFront.dto';
 
 @Controller('unidad')
 export class UnidadController {
@@ -22,10 +23,12 @@ export class UnidadController {
     return this.unidadService.consultarTiposCamiones();
   }
 
-  @Get('unidadesDisponibles')
-  consultarUnidadesDisponibles(unidadesOcupadas: number[]) {
-    return this.unidadService.findDisponibles(unidadesOcupadas);
-  }
+  @Post('unidadesDisponibles')
+  async consultarUnidadesDisponibles(@Body() dto?: ConsultarUnidadesDto) {
+    const disponiblesPorFecha = await this.unidadService.findDisponibles(dto.unidadesOcupadas);
+    console.log('Unidades disponibles por fecha:', disponiblesPorFecha);
+    return this.unidadService.findUnidadesDisponiblesByTipoRandom(dto.camiones, disponiblesPorFecha);
+  } 
 
   @Get(':id')
   findOne(@Param('id') id: string) {

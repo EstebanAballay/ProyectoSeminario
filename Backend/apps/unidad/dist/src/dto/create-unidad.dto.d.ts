@@ -1,8 +1,8 @@
 export declare class CreateUnidadDto {
     viajeId: number;
-    semiremolque: boolean;
-    acoplado: boolean;
-    tipoCamion: string;
-    tipoSemirremolque?: string;
-    tipoAcoplado?: string;
+    semiremolqueId?: number;
+    acopladoId?: number;
+    tractoCamionId: number;
+    tieneSemirremolque: boolean;
+    tieneAcoplado: boolean;
 }

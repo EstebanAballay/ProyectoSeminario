@@ -19,14 +19,18 @@ export declare class UnidadService {
     constructor(httpService: HttpService, semirremolqueRepository: Repository<Semirremolque>, acopladoRepository: Repository<Acoplado>, tipoRepository: Repository<Tipo>, tipoCamionRepository: Repository<TipoCamion>, CamionRepository: Repository<Camion>, UnidadRepository: Repository<Unidad>);
     testConnection(): Promise<void>;
     private getRandomItem;
-    createUnidad(createUnidadDto: CreateUnidadDto): Promise<Unidad>;
+    createUnidad(dto: CreateUnidadDto): Promise<Unidad>;
     consultarTiposAcoplados(): Promise<Tipo[]>;
     consultarTiposCamiones(): Promise<TipoCamion[]>;
     findDisponibles(unidadesOcupadas: number[]): Promise<{
         camiones: Camion[];
-        acoplados: Acoplado[];
-        semirremolques: Semirremolque[];
+        acoplados: any;
+        semirremolques: any;
     }>;
+    findUnidadesDisponiblesByTipoRandom(camionesPedidos: any[], unidadesDisponibles: any): {
+        unidadesFormadas: any[];
+        errores: string[];
+    };
     findAll(): string;
     findOne(id: number): string;
     update(id: number, updateUnidadDto: UpdateUnidadDto): string;

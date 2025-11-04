@@ -2,14 +2,16 @@ import { Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UnidadService } from '../services/unidad.service';
+import {tiposAcoplado} from '../interfaces/tiposAcoplados';
 import * as L from 'leaflet';
 import 'leaflet-routing-machine';
+import  {ViajeService} from '../services/viaje.service';
 
 @Component({
   selector: 'app-nuevo-viaje',
   standalone: true,
   imports: [FormsModule, CommonModule],
-  providers: [UnidadService],
+  providers: [UnidadService,ViajeService],
   templateUrl: './nuevo-viaje.component.html',
   styleUrls: ['./nuevo-viaje.component.css']
 })
@@ -17,17 +19,48 @@ import 'leaflet-routing-machine';
 export class NuevoViajeComponent implements AfterViewInit {
   private map!: L.Map;
   private routingControl: any;
-  constructor(private unidadService: UnidadService) {}
+  constructor(private unidadService: UnidadService,
+              private viajeService: ViajeService) {}
   
   //variables para que el usuario pueda seleccionar
   public tiposCamion: string[] = [];
   public tiposAcoplado : string[] = [];
   public tiposSemirremolque : string[] = [];
+
+  //Variable que controla si mostrar la pantalla flotante
+  public mostrarResumen = false;
   
+  //Variable que guarda las unidades seleccionadas para el resumen
+  public unidadesSeleccionadas: any[] = [];
+
+  //Una vez que busca las unidades disponibles las carga aca:
+  public camionesDisponibles: any[] = [];
+  public acopladosDisponibles: any[] = [];
+  public semirremolquesDisponibles: any[] = [];
+
+  //variable para hora de salida
+  public horaSalida: string = '';
+
+  //datos primordiales del viaje
+  public data: any = {
+    origen: '',
+    destino: '',
+    fechaInicio: '',
+    fechaFin: '',
+    horaInicio:'',
+    horaFin:'',
+    unidades: []
+  };
+
   //En el init se cargan los datos por unica vez
   async ngOnInit() {
-    this.tiposCamion = await this.unidadService.consultarCamiones();
-    this.tiposSemirremolque = await this.unidadService.consultarAcoplados();
+    const camiones = await this.unidadService.consultarCamiones();
+    const acoplados = await this.unidadService.consultarAcoplados();
+    console.log(camiones);
+    // manejar elementos que pueden ser strings o objetos { nombre: string }
+    this.tiposCamion = camiones.map(c => typeof c === 'string' ? c : (c as any).nombre || String(c));
+    this.tiposSemirremolque = acoplados.map(a => typeof a === 'string' ? a : (a as any).nombre || String(a));
+
     //esto se hace asi porque si solo se usa el =, se asigna a la misma dir de memoria
     this.tiposAcoplado = [...this.tiposSemirremolque];
     //los tipos de semi son iguales,pero los de acoplado tienen "sin acoplado"
@@ -48,12 +81,14 @@ export class NuevoViajeComponent implements AfterViewInit {
 
   mostrarSelector = false;
   tipoCamionSeleccionado: string = '';
-  remolqueSeleccionado: string = '';
+  semirremolqueSeleccionado: string = '';
   acopladoSeleccionado: string = '';
   tipoSemirremolqueSeleccionado: string = '';
   quiereSemirremolque: boolean = false;
   quiereAcoplado: boolean = false;
-  camionesSeleccionados: { tipo: string, remolque: string, semirremolque: string }[] = [];
+  camionesSeleccionados: { tipo: string, semirremolque: string, acoplado: string }[] = [];
+
+
 
   ngAfterViewInit(): void {
     this.initMap();
@@ -148,12 +183,16 @@ export class NuevoViajeComponent implements AfterViewInit {
     ]);
   }
 
-  async crearViaje(event: Event): Promise<void> {
+  async buscarViaje(event: Event): Promise<void> {
     event.preventDefault();
 
     const origen = this.origenInput.nativeElement.value;
     const destino = this.destinoInput.nativeElement.value;
     const fecha = this.fechaSalidaInput.nativeElement.value;
+    const fechaInicio = new Date(fecha);
+    //calculo fecha fin sumando 3 dias
+    const fechaFin = new Date(fecha);
+    fechaFin.setDate(fechaFin.getDate() + 3); // viaje de 3 dias
 
     console.log("🚚 Datos del viaje:", { 
       origen, 
@@ -161,6 +200,17 @@ export class NuevoViajeComponent implements AfterViewInit {
       fecha, 
       camiones: this.camionesSeleccionados, 
     });
+    //creo la hora de llegada mockeada
+    const horaMockeada = new Date();
+    horaMockeada.setHours(17, 0, 0, 0); // 17hs, 0 minutos, 0 segundos, 0 ms
+
+    //rellleno data ahora
+    this.data.destinoInicio = origen;
+    this.data.destinoFin = destino;
+    this.data.fechaInicio = fechaInicio;
+    this.data.fechaFin = fechaFin;
+    this.data.horaSalida = this.horaSalida;
+    this.data.horaLlegada = horaMockeada;
 
     if (!this.origenCoords || !this.destinoCoords) {
       alert("❌ Debés seleccionar origen y destino en el mapa o con el formulario.");
@@ -171,28 +221,41 @@ export class NuevoViajeComponent implements AfterViewInit {
       alert("❌ Debés seleccionar al menos un camión antes de crear el viaje.");
       return;
     }
-    //aca deberia empezar a crear el viaje
-    alert("✅ Viaje creado con éxito");
-  }
 
+    //aca busco el viaje
+    try {
+      const disponibles = await this.viajeService.getUnidadesDisponibles(fechaInicio, fechaFin, this.camionesSeleccionados);
+      console.log("✅ Unidades disponibles encontradas:", disponibles);
+      this.abrirResumen(disponibles);
+    }
+    catch (error) {
+      console.error("❌ Error al buscar unidades disponibles:", error);
+      alert("❌ Ocurrió un error al buscar unidades disponibles. Revisá la consola para más detalles.");
+    }
+
+  }
+  
   abrirSelectorVehiculo() { this.mostrarSelector = true; }
   cerrarSelector() { this.mostrarSelector = false; }
 
   agregarCamion(): void {
-    if (this.tipoCamionSeleccionado && this.remolqueSeleccionado) {
-      this.camionesSeleccionados.push({
-        tipo: this.tipoCamionSeleccionado,
-        remolque: this.remolqueSeleccionado,
-        semirremolque: this.quiereSemirremolque ? this.tipoSemirremolqueSeleccionado : 'Sin semirremolque'
-      });
-      this.tipoCamionSeleccionado = '';
-      this.remolqueSeleccionado = '';
-      this.tipoSemirremolqueSeleccionado = '';
-      this.quiereSemirremolque = false;
-      this.cerrarSelector();
-    } else {
-      alert("❌ Debes seleccionar el tipo de camión y remolque.");
-    }
+    if (this.tipoCamionSeleccionado === 'tractoCamion' && this.semirremolqueSeleccionado === '' || this.tipoCamionSeleccionado === '') {
+        alert("❌ Debes seleccionar las unidades correctamente.");
+        return;
+      }
+    else  {
+        this.camionesSeleccionados.push({
+          tipo: this.tipoCamionSeleccionado,
+          semirremolque: this.semirremolqueSeleccionado,
+          acoplado: this.quiereAcoplado ? this.acopladoSeleccionado : 'Sin Acoplado'
+        });
+        //reiniciar las variables de seleccion
+        this.tipoCamionSeleccionado = '';
+        this.semirremolqueSeleccionado = '';
+        this.tipoSemirremolqueSeleccionado = '';
+        this.quiereSemirremolque = false;
+        this.cerrarSelector();
+      } 
   }
 
   toggleSemirremolque(): void {
@@ -224,5 +287,46 @@ export class NuevoViajeComponent implements AfterViewInit {
     const data = await response.json();
     return data.display_name || `${lat.toFixed(5)}, ${lon.toFixed(5)}`;
   }
+
+
+  //esta funcion simplemente habilita que se muestre la pantalla 
+  abrirResumen(disponibles: any) {
+  this.mostrarResumen = true;
+  this.unidadesSeleccionadas = disponibles.unidadesFormadas || [];
+  console.log('las unidades disponibles son:',this.unidadesSeleccionadas);
+
+  }
+
+  cerrarResumen() {
+    this.mostrarResumen = false;
+  }
+
+  confirmarViaje() {
+    // Aquí iría tu lógica para enviar la creación al backend
+    console.log("Viaje confirmado:");
+    this.mostrarResumen = false;
+    this.data.unidades = this.unidadesSeleccionadas.map((u: any) => {
+    return {
+      tractoCamionId: u.camion?.id || null,
+      semiremolqueId: u.semirremolque?.id || null,
+      acopladoId: u.acoplado?.id || null,
+      tieneSemirremolque: !!u.semirremolque, // true si existe semirremolque
+      tieneAcoplado: !!u.acoplado,           // true si existe acoplado
+      subtotal: u.subtotal
+    };
+  });
+  this.guardarViaje()
+  }
+
+  async guardarViaje() {
+    console.log("pablito", this.data);
+    const response = await this.viajeService.crearViaje(this.data);
+    //reinicio las variables
+    this.data.unidades = [];
+  }
+
+
+
+
 }
 

@@ -12,7 +12,7 @@
 
     <!-- Tarjeta del formulario -->
     <div class="form-card">
-        <form (submit)="crearViaje($event)">
+        <form (submit)="buscarViaje($event)">
             <div>
                 <label for="origen">Origen:</label>
                 <input id="origen" type="text" #origenInput placeholder="Ej: Córdoba" />
@@ -30,22 +30,32 @@
                 <input id="fechaSalida" type="date" #fechaSalidaInput />
             </div>
 
+            <!-- Pedir selección de hora de salida-->
+            <label for="horaSalida">Hora de salida:</label>
+            <input
+            id="horaSalida"
+            type="time"
+            class="form-control"
+            [(ngModel)]="horaSalida"
+            name=horaSalida
+            />
+
             <!-- Mostrar los camiones agregados -->
             <div>
                 <label>Camiones agregados:</label>
                 <ul>
                     <li *ngFor="let camion of camionesSeleccionados">
-                        {{ camion.tipo }} - {{ camion.remolque }} - {{ camion.semirremolque }}
+                        {{ camion.tipo }} - {{ camion.semirremolque }} - {{ camion.acoplado }}
                     </li>
                 </ul>
             </div>
 
             <!-- Botón para abrir selector de vehículo -->
             <div>
-                <button type="button" (click)="abrirSelectorVehiculo()">🚛 Agregar camión</button>
+                <button type="button" (click)="abrirSelectorVehiculo()">🚛 Buscar unidades</button>
             </div>
 
-            <button type="submit" class="btn-submit">🚚 Crear Viaje</button>
+            <button type="submit" class="btn-submit">🚚 Buscar Viaje</button>
         </form>
     </div>
 
@@ -59,8 +69,8 @@
         <h3>Seleccionar camión</h3>
 
         <div>
-            <label for="tipoCamion">Tipo de camión:</label>
-            <select id="tipoCamion" [(ngModel)]="tipoCamionSeleccionado">
+            <label for="tipoCamion">Tipo de camión:  </label>
+            <select id="tipoCamion" [(ngModel)]="tipoCamionSeleccionado" name="tipoCamionSeleccionado">
                 <option value="" disabled selected>Seleccione un tipo</option>
                     <option *ngFor="let tipo of tiposCamion" [value]="tipo">
                         {{ tipo }}
@@ -69,8 +79,8 @@
         </div>
 
         <div>
-            <label for="remolque">Tipo de semirremolque</label>
-            <select id="remolque" [(ngModel)]="remolqueSeleccionado" (change)="toggleAcoplado()">
+            <label for="remolque">Tipo de semirremolque:</label>
+            <select id="remolque" [(ngModel)]="semirremolqueSeleccionado" name="semirremolqueSeleccionado" (change)="toggleAcoplado()">
             <option value="" disabled selected>Seleccione un remolque</option>
                 <option *ngFor="let tipo of tiposSemirremolque" [value]="tipo">
                     {{ tipo }}
@@ -78,9 +88,9 @@
             </select>
         </div>
 
-        <!-- Campo de tipo de semirremolque, solo visible si elige "Sí" -->
-        <label for="acoplado">Tipo de Acoplado</label>
-        <select id="acoplado" [(ngModel)]="acopladoSeleccionado" (change)="toggleSemirremolque()">
+        <!-- Campo de tipo de semirremolque-->
+        <label for="acoplado">Tipo de Acoplado:  </label>
+        <select id="acoplado" [(ngModel)]="acopladoSeleccionado" name="acopladoSeleccionado" (change)="toggleSemirremolque()">
         <option value="" disabled selected>Seleccione un Acoplado</option>
             <option *ngFor="let tipo of tiposAcoplado" [value]="tipo">
                 {{ tipo }}
@@ -92,4 +102,31 @@
             <button type="button" (click)="cerrarSelector()">Cancelar</button>
         </div>
     </div>
+</div>
+
+
+<!-- Modal de confirmación de viaje -->
+<div *ngIf="mostrarResumen" class="overlay">
+  <div class="modal-resumen">
+    <h2>Resumen del viaje</h2>
+
+    <div class="detalle">
+      <h3>Camiones seleccionados:</h3>
+      <ul>
+            <div *ngFor="let unidad of unidadesSeleccionadas" class="card p-3 my-2 shadow rounded">
+                <p><strong>Camión:</strong> {{ unidad.camion?.patente }} ({{ unidad.camion?.tipo }})</p>
+                <p><strong>Semirremolque:</strong> {{ unidad.semirremolque?.patente }} ({{ unidad.semirremolque?.tipo }})</p>
+                <p><strong>Acoplado:</strong> {{ unidad.acoplado?.patente }} ({{ unidad.acoplado?.tipo }})</p>
+                <p><strong>Carga total:</strong> {{ unidad.cargaTotal }} kg</p>
+                <p><strong>Subtotal:</strong> ${{ unidad.subtotal }}</p>
+            </div>
+        <hr>
+      </ul>
+    </div>
+
+    <div class="acciones">
+      <button class="btn-cancelar" (click)="cerrarResumen()">Cancelar</button>
+      <button class="btn-confirmar" (click)="confirmarViaje()">✅ Confirmar creación del viaje</button>
+    </div>
+  </div>
 </div>

@@ -36,14 +36,15 @@ let ViajeService = class ViajeService {
         }
     }
     async createViaje(data) {
+        console.log('Creando viaje con datos:', data);
         const estadoDefault = await this.estadoViajeRepository.findOne({ where: { nombre: 'PreCargado' } });
         const viaje = this.viajeRepository.create({
             fechaReserva: new Date(),
             fechaInicio: new Date(data.fechaInicio),
             destinoInicio: data.destinoInicio,
-            horaSalida: data.horaSalida,
+            horaSalida: data.horaSalida.length === 5 ? `${data.horaSalida}:00` : data.horaSalida,
             fechaFin: new Date(data.fechaFin),
-            horaLlegada: data.horaLlegada,
+            horaLlegada: '17:00:00',
             destinoFin: data.destinoFin,
             sena: 0,
             resto: 0,
@@ -52,16 +53,17 @@ let ViajeService = class ViajeService {
         });
         const savedViaje = await this.viajeRepository.save(viaje);
         const unidades = data.unidades;
+        console.log('Unidades a agregar al viaje:', unidades);
         for (const unidad of unidades) {
             const nuevaUnidadId = await this.agregarUnidad(unidad, savedViaje.ViajeId);
             savedViaje.unidades.push(nuevaUnidadId);
         }
         await this.viajeRepository.save(savedViaje);
-        console.log('Viaje creado con unidades:', savedViaje);
         return savedViaje;
     }
     async agregarUnidad(unidad, viajeId) {
         const unidadCompleta = { ...unidad, viajeId };
+        console.log('🚀 Enviando unidad a unidad-service:', unidadCompleta);
         try {
             const response = await (0, rxjs_1.firstValueFrom)(this.httpService.post('http://unidad-service:3002/unidad', unidadCompleta));
             console.log('Unidad creada:', response.data);
@@ -71,20 +73,23 @@ let ViajeService = class ViajeService {
             console.error('Error al crear la unidad:', error.message);
         }
     }
-    async buscarUnidadesDisponibles(fechaInicio, fechaFin) {
+    async buscarUnidadesDisponibles(fechaInicio, fechaFin, camiones) {
         const viajesEnRango = await this.viajeRepository.find({
             where: [
                 { fechaInicio: (0, typeorm_2.LessThanOrEqual)(fechaFin), fechaFin: (0, typeorm_2.MoreThanOrEqual)(fechaInicio) },
             ]
         });
+        console.log('Viajes en el rango:', viajesEnRango);
         const unidadesOcupadas = viajesEnRango.flatMap(v => v.unidades);
+        console.log('Unidades ocupadas en el rango:', unidadesOcupadas);
         try {
-            const response = await (0, rxjs_1.firstValueFrom)(this.httpService.post('http://unidad-service:3002/unidadesDisponibles', unidadesOcupadas));
+            const dto = { unidadesOcupadas: unidadesOcupadas, camiones: camiones };
+            const response = await (0, rxjs_1.firstValueFrom)(this.httpService.post('http://unidad-service:3002/unidad/unidadesDisponibles', dto));
             console.log('UnidadesDisponibles:', response.data);
             return response.data;
         }
         catch (error) {
-            console.error('Error al crear la unidad:', error.message);
+            console.error('Error al buscar la unidad:', error.message);
         }
     }
     findAll() {

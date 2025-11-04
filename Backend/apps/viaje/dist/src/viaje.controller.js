@@ -16,12 +16,19 @@ exports.ViajeController = void 0;
 const common_1 = require("@nestjs/common");
 const viaje_service_1 = require("./viaje.service");
 const create_viaje_dto_1 = require("./dto/create-viaje.dto");
+const camiones_dto_1 = require("./dto/camiones.dto");
 let ViajeController = class ViajeController {
     constructor(viajeService) {
         this.viajeService = viajeService;
     }
     create(createViajeDto) {
         return this.viajeService.createViaje(createViajeDto);
+    }
+    findDisponibles(fechaInicio, fechaFin, camiones) {
+        const inicio = fechaInicio ? new Date(fechaInicio) : undefined;
+        const fin = fechaFin ? new Date(fechaFin) : undefined;
+        console.log('Fechas recibidas:', inicio, fin);
+        return this.viajeService.buscarUnidadesDisponibles(inicio, fin, camiones);
     }
     findAll() {
         return this.viajeService.findAll();
@@ -41,6 +48,15 @@ __decorate([
     __metadata("design:paramtypes", [create_viaje_dto_1.CreateViajeDto]),
     __metadata("design:returntype", Promise)
 ], ViajeController.prototype, "create", null);
+__decorate([
+    (0, common_1.Post)('viajesRango'),
+    __param(0, (0, common_1.Query)('fechaInicio')),
+    __param(1, (0, common_1.Query)('fechaFin')),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, camiones_dto_1.ConsultarUnidadesDto]),
+    __metadata("design:returntype", void 0)
+], ViajeController.prototype, "findDisponibles", null);
 __decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),

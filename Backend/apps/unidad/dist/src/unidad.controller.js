@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const unidad_service_1 = require("./unidad.service");
 const create_unidad_dto_1 = require("./dto/create-unidad.dto");
 const update_unidad_dto_1 = require("./dto/update-unidad.dto");
+const datosUnidadesFront_dto_1 = require("./dto/datosUnidadesFront.dto");
 let UnidadController = class UnidadController {
     constructor(unidadService) {
         this.unidadService = unidadService;
@@ -30,8 +31,10 @@ let UnidadController = class UnidadController {
     consultarTiposCamiones() {
         return this.unidadService.consultarTiposCamiones();
     }
-    consultarUnidadesDisponibles(unidadesOcupadas) {
-        return this.unidadService.findDisponibles(unidadesOcupadas);
+    async consultarUnidadesDisponibles(dto) {
+        const disponiblesPorFecha = await this.unidadService.findDisponibles(dto.unidadesOcupadas);
+        console.log('Unidades disponibles por fecha:', disponiblesPorFecha);
+        return this.unidadService.findUnidadesDisponiblesByTipoRandom(dto.camiones, disponiblesPorFecha);
     }
     findOne(id) {
         return this.unidadService.findOne(+id);
@@ -64,10 +67,11 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UnidadController.prototype, "consultarTiposCamiones", null);
 __decorate([
-    (0, common_1.Get)('unidadesDisponibles'),
+    (0, common_1.Post)('unidadesDisponibles'),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Array]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [datosUnidadesFront_dto_1.ConsultarUnidadesDto]),
+    __metadata("design:returntype", Promise)
 ], UnidadController.prototype, "consultarUnidadesDisponibles", null);
 __decorate([
     (0, common_1.Get)(':id'),

@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { ViajeService } from './viaje.service';
 import { CreateViajeDto } from './dto/create-viaje.dto';
+import { ConsultarUnidadesDto } from './dto/camiones.dto';
 
 @Controller('viaje')
 export class ViajeController {
@@ -11,6 +12,19 @@ export class ViajeController {
   create(@Body() createViajeDto: CreateViajeDto):Promise<any> {
     return this.viajeService.createViaje(createViajeDto);
   }
+
+  //consulta
+  @Post('viajesRango')
+  findDisponibles(
+    @Query('fechaInicio') fechaInicio?: string, 
+    @Query('fechaFin') fechaFin?: string,
+    @Body() camiones?: ConsultarUnidadesDto){
+      const inicio = fechaInicio ? new Date(fechaInicio) : undefined;
+      const fin = fechaFin ? new Date(fechaFin) : undefined;
+      console.log('Fechas recibidas:', inicio, fin);
+      return this.viajeService.buscarUnidadesDisponibles(inicio, fin, camiones);
+  }
+
 
   //consulta
   @Get()
