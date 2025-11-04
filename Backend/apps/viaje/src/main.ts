@@ -1,8 +1,18 @@
 import { NestFactory } from '@nestjs/core';
-import { ViajeModule } from './viaje.module';
+import { ViajeService } from './viaje.service';
+import {AppModule} from '../app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(ViajeModule);
-  await app.listen(3004); // este microservicio escucha en 3004
+  const app = await NestFactory.create(AppModule);
+
+  app.enableCors({
+    origin: 'http://localhost:4200', // Debo permitir las peticions del front que corre en el 4200
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
+  
+  const usersService = app.get(ViajeService);
+  await usersService.testConnection();
+  await app.listen(process.env.PORT || 3004);
 }
 bootstrap();

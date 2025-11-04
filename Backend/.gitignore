@@ -1,6 +1,7 @@
 # === Compiled output ===
 /dist
 /build
+<<<<<<< HEAD
 
 # === Dependencies ===
 node_modules/     # sin barra inicial evita errores en monorepos
@@ -8,6 +9,10 @@ package-lock.json # opcional, si no querés versionar los locks (depende de tu e
 yarn.lock         # idem para yarn
 
 # === Logs ===
+=======
+*.tsbuildinfo
+# Logs
+>>>>>>> 364f7fddaa9bbefdb9bd3ef8f527cc69143a4829
 logs
 *.log
 npm-debug.log*
@@ -16,7 +21,16 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
+<<<<<<< HEAD
 # === OS files ===
+=======
+# Node
+/node_modules
+npm-debug.log
+yarn-error.log
+
+# OS
+>>>>>>> 364f7fddaa9bbefdb9bd3ef8f527cc69143a4829
 .DS_Store
 Thumbs.db
 
@@ -40,7 +54,19 @@ Thumbs.db
 !.vscode/launch.json
 !.vscode/extensions.json
 
+<<<<<<< HEAD
 # === Temp directories ===
+=======
+# dotenv environment variable files
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+*.env
+**/*.env
+# temp directory
+>>>>>>> 364f7fddaa9bbefdb9bd3ef8f527cc69143a4829
 .temp
 .tmp
 
