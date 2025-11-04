@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       console.log('Email:', this.email);
       console.log('Password:', this.password);
 
-      // 👉 Redirige a /menu después de login
+      //  Redirige a /menu después de login
       this.router.navigate(['/menu']);
     } else {
       alert('Por favor, complete todos los campos correctamente.');
