@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-
+import { UsersService } from '../services/users.service';
 @Component({
   selector: 'app-register',
   standalone: true,
@@ -10,28 +10,33 @@ import { RouterModule } from '@angular/router';
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })
+
 export class RegisterComponent {
   user = {
     nombre: '',
     apellido: '',
     dni: '',
-    cel: '',
-    cuit: '',
+    celular: '',
+    CUIT: '',
     direccion: '',
     email: '',
     password: '',
     confirmPassword: ''
   };
 
-  onRegister() {
+  constructor(private usersService: UsersService) {}
+
+async  onRegister() {
     if (this.user.password !== this.user.confirmPassword) {
-      alert('⚠️ Las contraseñas no coinciden');
+      alert('Las contraseñas no coinciden');
       return;
     }
 
-    console.log('✅ Usuario registrado:', this.user);
-    // Acá podés llamar a tu servicio de backend para guardar el usuario
-    // Ejemplo:
-    // this.authService.register(this.user).subscribe(...)
+    try {
+      const response = await this.usersService.register(this.user);
+      alert('Usuario registrado con éxito');
+    } catch (error) {
+      alert('Este usuario ya existe');
+    }
   }
-}
+  }

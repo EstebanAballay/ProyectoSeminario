@@ -36,10 +36,10 @@ export class Viaje {
   total: number;
 
   //Relación: Guardo los id de las unidades
-  @Column()
+  @Column('int', { array: true })
   idUnidades: number[];
 
   //id viaje
-  @Column()
+  @Column('int', { array: true })
   idEstadoViaje: number;
 }

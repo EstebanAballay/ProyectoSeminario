@@ -1,12 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';  
-import { Router, RouterModule } from '@angular/router'; // Importar Router y RouterModule
+import { Router, RouterModule } from '@angular/router';
+import { UsersService } from '../services/users.service';
+import { parseJwt } from '../jwt';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, CommonModule, RouterModule], //  agregar RouterModule
+  imports: [FormsModule, CommonModule, RouterModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
@@ -14,7 +16,10 @@ export class LoginComponent implements OnInit, OnDestroy {
   email: string = '';
   password: string = '';
 
-  constructor(private router: Router) {} //  Inyectar el Router
+  constructor(
+    private usersService: UsersService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     document.body.classList.add('login');
@@ -24,15 +29,40 @@ export class LoginComponent implements OnInit, OnDestroy {
     document.body.classList.remove('login');
   }
 
-  onLogin(loginForm: any) {
-    if (loginForm.valid) {
-      console.log('Email:', this.email);
-      console.log('Password:', this.password);
-
-      //  Redirige a /menu después de login
-      this.router.navigate(['/menu']);
-    } else {
+  async onLogin(loginForm: any) {
+    console.log('onLogin llamado');
+    if (!loginForm.valid) {
       alert('Por favor, complete todos los campos correctamente.');
+      return;
+    }
+
+    try {
+      const result = await this.usersService.login(this.email.trim(), this.password.trim());
+      console.log('result completo:', result);
+      console.log('token recibido:', result.token);
+
+      // Guardar JWT en localStorage
+      localStorage.setItem('token', result.token);
+
+      // Decodificar JWT usando la función importada
+      const payload = parseJwt(result.token);
+
+      if (!payload || !payload.role) {
+        this.router.navigate(['/login']);
+        return;
+      }
+
+       // Redirigir según el rol
+      if (payload.role === 'admin') {
+        this.router.navigate(['/misviajes']); // cambiar despues por el componente de administrador, fue solo de prueba
+      } else if (payload.role === 'client') {
+        this.router.navigate(['/menu']);
+      } else {
+        this.router.navigate(['/paginainicio']);
+      }
+
+    } catch (error: any) {
+      alert('Email o contraseña incorrecta');
     }
   }
 }

@@ -1,22 +1,27 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "src",
-  "compilerOptions": {
-    "deleteOutDir": true,
-    "webpack": true,
-    "tsConfigPath": "apps/proyecto-seminario/tsconfig.app.json"
-  },
   "monorepo": true,
-  "root": "apps/proyecto-seminario",
+  "compilerOptions": {
+    "deleteOutDir": true
+  },
   "projects": {
-    "proyecto-seminario": {
+    "cobro": {
       "type": "application",
-      "root": "apps/proyecto-seminario",
+      "root": "apps/cobro",
       "entryFile": "main",
-      "sourceRoot": "apps/proyecto-seminario/src",
+      "sourceRoot": "apps/cobro/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/proyecto-seminario/tsconfig.app.json"
+        "tsConfigPath": "apps/cobro/tsconfig.app.json"
+      }
+    },
+    "viaje": {
+      "type": "application",
+      "root": "apps/viaje",
+      "entryFile": "main",
+      "sourceRoot": "apps/viaje/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/viaje/tsconfig.app.json"
       }
     },
     "unidad": {
@@ -26,6 +31,15 @@
       "sourceRoot": "apps/unidad/src",
       "compilerOptions": {
         "tsConfigPath": "apps/unidad/tsconfig.app.json"
+      }
+    },
+    "users": {
+      "type": "application",
+      "root": "apps/users",
+      "entryFile": "main",
+      "sourceRoot": "apps/users/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/users/tsconfig.app.json"
       }
     }
   }

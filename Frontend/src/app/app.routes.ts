@@ -6,17 +6,21 @@ import { PaginainicioComponent } from './paginainicio/paginainicio.component';
 import { MenuComponent } from './menu.component/menu.component';  
 import { NuevoViajeComponent } from './nuevo-viaje.component/nuevo-viaje.component';
 import { MisViajesComponent } from './mis-viajes.component/mis-viajes.component';
-import { PagoSeniaComponent } from './pago-senia.component/pago-senia.component';
-import { Path } from 'leaflet';
-
+import { RoleGuard } from './guards/role.guard';
 export const routes: Routes = [
   { path: '', redirectTo: 'paginainicio', pathMatch: 'full' },
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
-  { path: 'paginainicio', component: PaginainicioComponent },
-  { path: 'menu', component: MenuComponent },
-  { path: 'nuevoviaje', component: NuevoViajeComponent },
-  { path: 'misviajes', component: MisViajesComponent },
-  { path: 'pagosenia', component: PagoSeniaComponent },
-  { path: '**', redirectTo: '/pago-senia', pathMatch: 'full' }
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./login.component/login.component').then(m => m.LoginComponent)
+  },
+  {
+    path: 'register',
+    loadComponent: () =>
+      import('./register.component/register.component').then(m => m.RegisterComponent)
+  },
+  { path: 'paginainicio', component: PaginainicioComponent, canActivate: [RoleGuard], data: { role: 'client' }  },
+  { path: 'menu', component: MenuComponent, canActivate: [RoleGuard], data: { role: 'client' } },
+  { path: 'misviajes', component: MisViajesComponent, canActivate: [RoleGuard], data: { role: 'client' } }, 
+  { path: 'nuevoviaje', component: NuevoViajeComponent, canActivate: [RoleGuard], data: { role: 'client' }  },
 ];
