@@ -82,11 +82,13 @@ export class ViajeService {
       ]
     });
     console.log('Viajes en el rango:', viajesEnRango);
+    //unidadesOcupadas son los acoplados,semis y camiones que estan en los viajes en el rango,es decir,que no estan disponibles
     const unidadesOcupadas = viajesEnRango.flatMap(v => v.unidades);
     console.log('Unidades ocupadas en el rango:', unidadesOcupadas);
     //Pedir unidades disponibles al microservicio de unidad
     try {
       const dto = { unidadesOcupadas: unidadesOcupadas, camiones: camiones };
+      console.log('el dto con unidadesOcupadas y tipos de camiones',dto);
       const response = await firstValueFrom(
         this.httpService.post('http://unidad-service:3002/unidad/unidadesDisponibles', dto) //uso post porque le mando un body
       );

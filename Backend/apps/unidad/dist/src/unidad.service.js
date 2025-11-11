@@ -154,7 +154,7 @@ let UnidadService = class UnidadService {
                 usadosSemirremolques.add(semi.id);
             }
             let acopladoEncontrado = null;
-            if (acoplado && acoplado.trim().toLowerCase() !== 'Sin acoplado') {
+            if (acoplado && acoplado.trim().toLowerCase() !== 'sin acoplado') {
                 const tipoAcoplado = String(acoplado).trim().toLowerCase();
                 const acopladosDisponibles = acoplados.filter(a => a.tipo.trim().toLowerCase() === tipoAcoplado && !usadosAcoplados.has(a.id));
                 console.log('los usados son: ', usadosAcoplados);

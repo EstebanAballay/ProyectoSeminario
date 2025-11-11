@@ -84,6 +84,7 @@ let ViajeService = class ViajeService {
         console.log('Unidades ocupadas en el rango:', unidadesOcupadas);
         try {
             const dto = { unidadesOcupadas: unidadesOcupadas, camiones: camiones };
+            console.log('el dto con unidadesOcupadas y tipos de camiones', dto);
             const response = await (0, rxjs_1.firstValueFrom)(this.httpService.post('http://unidad-service:3002/unidad/unidadesDisponibles', dto));
             console.log('UnidadesDisponibles:', response.data);
             return response.data;

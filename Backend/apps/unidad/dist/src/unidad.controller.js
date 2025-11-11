@@ -34,7 +34,9 @@ let UnidadController = class UnidadController {
     async consultarUnidadesDisponibles(dto) {
         const disponiblesPorFecha = await this.unidadService.findDisponibles(dto.unidadesOcupadas);
         console.log('Unidades disponibles por fecha:', disponiblesPorFecha);
-        return this.unidadService.findUnidadesDisponiblesByTipoRandom(dto.camiones, disponiblesPorFecha);
+        const disponiblesPorTipo = this.unidadService.findUnidadesDisponiblesByTipoRandom(dto.camiones, disponiblesPorFecha);
+        console.log('Unidades disponibles por tipo:', disponiblesPorTipo);
+        return disponiblesPorTipo;
     }
     findOne(id) {
         return this.unidadService.findOne(+id);

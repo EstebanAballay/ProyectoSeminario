@@ -250,7 +250,7 @@ export class UnidadService {
       // --- Buscar acoplado (si aplica) ---
       let acopladoEncontrado = null;
 
-      if (acoplado && acoplado.trim().toLowerCase() !== 'Sin acoplado') {
+      if (acoplado && acoplado.trim().toLowerCase() !== 'sin acoplado') {
         const tipoAcoplado = String(acoplado).trim().toLowerCase();
 
         //busco acoplados por el tipo y que no hayan sido usados,de entre los disponibles

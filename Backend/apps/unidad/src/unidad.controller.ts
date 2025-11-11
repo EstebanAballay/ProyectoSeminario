@@ -27,7 +27,9 @@ export class UnidadController {
   async consultarUnidadesDisponibles(@Body() dto?: ConsultarUnidadesDto) {
     const disponiblesPorFecha = await this.unidadService.findDisponibles(dto.unidadesOcupadas);
     console.log('Unidades disponibles por fecha:', disponiblesPorFecha);
-    return this.unidadService.findUnidadesDisponiblesByTipoRandom(dto.camiones, disponiblesPorFecha);
+    const disponiblesPorTipo =  this.unidadService.findUnidadesDisponiblesByTipoRandom(dto.camiones, disponiblesPorFecha);
+    console.log('Unidades disponibles por tipo:', disponiblesPorTipo);
+    return disponiblesPorTipo
   } 
 
   @Get(':id')
