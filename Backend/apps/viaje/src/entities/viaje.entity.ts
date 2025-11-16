@@ -38,6 +38,9 @@ export class Viaje {
   @Column()
   total?: number;
 
+  @Column()
+  distancia?: number;
+
   //Relación: Guardo los id de las unidades 
   @Column("jsonb", { nullable: true })
   unidades?: number[] = []; 

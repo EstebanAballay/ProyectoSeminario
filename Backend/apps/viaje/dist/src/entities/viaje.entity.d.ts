@@ -11,6 +11,7 @@ export declare class Viaje {
     sena?: number;
     resto?: number;
     total?: number;
+    distancia?: number;
     unidades?: number[];
     estadoViaje: EstadoViaje;
 }

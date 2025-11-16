@@ -8,6 +8,7 @@ export class CreateViajeDto
     fechaFin:string;
     horaLlegada:string;
 
+    distancia:number;
     //unidades
     unidades: {
       semiremolqueId?:number;   

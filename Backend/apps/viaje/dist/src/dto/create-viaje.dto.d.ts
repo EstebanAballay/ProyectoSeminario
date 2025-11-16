@@ -5,6 +5,7 @@ export declare class CreateViajeDto {
     destinoFin: string;
     fechaFin: string;
     horaLlegada: string;
+    distancia: number;
     unidades: {
         semiremolqueId?: number;
         acopladoId?: number;

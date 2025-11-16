@@ -37,6 +37,7 @@ let ViajeService = class ViajeService {
     }
     async createViaje(data) {
         console.log('Creando viaje con datos:', data);
+        console.log('distancia recibida:', data.distancia);
         const estadoDefault = await this.estadoViajeRepository.findOne({ where: { nombre: 'PreCargado' } });
         const viaje = this.viajeRepository.create({
             fechaReserva: new Date(),
@@ -49,7 +50,8 @@ let ViajeService = class ViajeService {
             sena: 0,
             resto: 0,
             total: 0,
-            estadoViaje: estadoDefault
+            estadoViaje: estadoDefault,
+            distancia: data.distancia,
         });
         const savedViaje = await this.viajeRepository.save(viaje);
         const unidades = data.unidades;

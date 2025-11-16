@@ -64,6 +64,10 @@ __decorate([
     __metadata("design:type", Number)
 ], Viaje.prototype, "total", void 0);
 __decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", Number)
+], Viaje.prototype, "distancia", void 0);
+__decorate([
     (0, typeorm_1.Column)("jsonb", { nullable: true }),
     __metadata("design:type", Array)
 ], Viaje.prototype, "unidades", void 0);

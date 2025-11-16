@@ -26,6 +26,7 @@ export class ViajeService {
   async createViaje(data: CreateViajeDto) {
     //busco el estado PreCargado, que es el estado default
     console.log('Creando viaje con datos:', data);
+    console.log('distancia recibida:', data.distancia);
     const estadoDefault = await this.estadoViajeRepository.findOne({ where: { nombre: 'PreCargado' } });
     const viaje = this.viajeRepository.create({
       //asignar fecha reserva
@@ -41,7 +42,8 @@ export class ViajeService {
       sena: 0,
       resto: 0,
       total: 0,
-      estadoViaje: estadoDefault // lo creo en estado precargado
+      estadoViaje: estadoDefault, // lo creo en estado precargado
+      distancia: data.distancia,
     });
  
     //Guarda el nuevo viaje
