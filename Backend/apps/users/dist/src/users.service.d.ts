@@ -10,7 +10,7 @@ export declare class UsersService {
     constructor(userRepo: Repository<User>, jwtService: JwtService);
     crearUsuario(dto: CreateUserDto): Promise<User>;
     login(dto: LoginDto): Promise<{
-        token: string;
+        token: any;
         id: number;
         nombre: string;
         apellido: string;

@@ -6,7 +6,7 @@ export declare class UsersController {
     constructor(usersService: UsersService);
     registrar(dto: CreateUserDto): Promise<import("./entities/user.entity").User>;
     login(dto: LoginDto): Promise<{
-        token: string;
+        token: any;
         id: number;
         nombre: string;
         apellido: string;
