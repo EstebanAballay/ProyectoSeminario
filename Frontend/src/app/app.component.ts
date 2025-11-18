@@ -13,5 +13,3 @@ export class AppComponent {
   title = 'transporte';
 }
 
-bootstrapApplication(AppComponent)
-  .catch(err => console.error(err));

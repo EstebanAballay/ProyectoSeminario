@@ -1,97 +1,186 @@
-
 body {
+
   margin: 0;
+
   padding: 0;
+
   background-color: #0B1E3A;
+
   font-family: 'Poppins', sans-serif;
+
   color: #fff;
+
   min-height: 100vh;
+
 }
+
+
+
 
 
 .app-header {
+
   background-color: #f4f1e5;
+
   color: #333;
+
   padding: 15px 25px;
+
   display: flex;
+
   justify-content: space-between;
+
   align-items: center;
+
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+
 }
+
+
 
 .logo-section .logo-image {
+
   height: 45px;
+
 }
 
+
+
 .user-profile .profile-icon {
+
   font-size: 2em;
+
   color: #333;
+
   cursor: pointer;
+
 }
+
+
+
 
 
 .main-container {
+
   display: flex;
+
   flex-direction: column;
+
   align-items: center;
+
   justify-content: flex-start;
+
   min-height: calc(100vh - 80px);
+
   padding: 40px 20px;
+
 }
+
+
 
 /* ===== TEXTO DE BIENVENIDA ===== */
+
 .welcome-title {
+
   color: #ffffff;
+
   font-size: 2em;
+
   font-weight: bold;
+
   text-align: center;
+
   margin-bottom: 40px;
+
 }
 
+
+
 /* ===== BOTONES ===== */
+
 .menu-options {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  width: 90%;
-  max-width: 550px;
+  
+  /* Esta es la separación entre botones que se ve en tu foto */
+  gap: 25px; 
+  
+  /* Ajustamos margen superior para separarlo del título */
+  margin-top: 50px;
+  
+  /* CLAVE: Esto define el ancho de la "tira" */
+  width: 90%;           /* Ocupa casi toda la pantalla en móviles */
+  max-width: 1000px;    /* Ocupa hasta 1000px en PC (bien ancho) */
 }
 
+
+
 .menu-button {
+  /* 1. Hace que el botón llene todo el ancho de .menu-options */
+  width: 100%; 
+  
   background-color: #f4f1e5;
   color: #0B1E3A;
   border: none;
   border-radius: 10px;
-  padding: 15px 20px;
+  
+  /* 2. Espaciado interno para que el botón sea "gordito" pero no gigante */
+  padding: 15px 30px; 
+  
+  /* 3. Alinear contenido a la izquierda (icono + texto) */
   display: flex;
-  align-items: center;
+  align-items: center;     /* Centrado verticalmente */
+  justify-content: flex-start; /* Alineado a la IZQUIERDA */
+  
   font-size: 1.2em;
   font-weight: bold;
-  text-align: left;
   cursor: pointer;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   transition: all 0.2s ease;
 }
 
+
+
 .menu-button:hover {
+
   background-color: #ffffff;
+
   transform: scale(1.02);
+
 }
+
+
 
 /* ===== ICONOS ===== */
+
 .icon-background {
+
   display: flex;
+
   justify-content: center;
+
   align-items: center;
+
   width: 50px;
+
   height: 50px;
+
   border-radius: 50%;
+
   background-color: #d8d8d8;
+
   margin-right: 20px;
+
   flex-shrink: 0;
+
 }
 
+
+
 .menu-button .icon {
+
   font-size: 1.5em;
+
   color: #1a3250;
+
 }
