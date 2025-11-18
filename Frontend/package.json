@@ -19,6 +19,7 @@
     "@angular/router": "^20.0.0",
     "@mercadopago/sdk-js": "^0.0.3",
     "@types/leaflet-routing-machine": "^3.2.9",
+    "axios": "^1.13.1",
     "jwt-decode": "^4.0.0",
     "leaflet": "^1.9.4",
     "leaflet-routing-machine": "^3.2.12",
@@ -40,6 +41,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "tailwindcss": "^4.1.16",
     "typescript": "~5.8.2"
   }
 }
