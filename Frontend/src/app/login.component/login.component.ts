@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';  
 import { Router, RouterModule } from '@angular/router';
 import { UsersService } from '../services/users.service';
-
+import { parseJwt } from '../jwt';
 
 @Component({
   selector: 'app-login',
@@ -28,26 +28,41 @@ export class LoginComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     document.body.classList.remove('login');
   }
-async onLogin(loginForm: any) {
-  console.log('onLogin llamado');
-  if (!loginForm.valid) {
-    alert('Por favor, complete todos los campos correctamente.');
-    return;
+
+  async onLogin(loginForm: any) {
+    console.log('onLogin llamado');
+    if (!loginForm.valid) {
+      alert('Por favor, complete todos los campos correctamente.');
+      return;
+    }
+
+    try {
+      const result = await this.usersService.login(this.email.trim(), this.password.trim());
+      console.log('result completo:', result);
+      console.log('token recibido:', result.token);
+
+      // Guardar JWT en localStorage
+      localStorage.setItem('token', result.token);
+
+      // Decodificar JWT usando la función importada
+      const payload = parseJwt(result.token);
+
+      if (!payload || !payload.role) {
+        this.router.navigate(['/login']);
+        return;
+      }
+
+       // Redirigir según el rol
+      if (payload.role === 'admin') {
+        this.router.navigate(['/misviajes']); // cambiar despues por el componente de administrador, fue solo de prueba
+      } else if (payload.role === 'client') {
+        this.router.navigate(['/menu']);
+      } else {
+        this.router.navigate(['/paginainicio']);
+      }
+
+    } catch (error: any) {
+      alert('Email o contraseña incorrecta');
+    }
   }
-
-  try {
-    const result = await this.usersService.login(this.email.trim(), this.password.trim());
-    console.log('result completo:', result);
-    console.log('token recibido:', result.token);
-
-    // Guardar JWT en localStorage
-    localStorage.setItem('token', result.token);
-
-    // Redirigir directamente al menú para cualquier usuario
-    this.router.navigate(['/menu']);
-
-  } catch (error: any) {
-    alert('Email o contraseña incorrecta');
-  }
-}
 }
