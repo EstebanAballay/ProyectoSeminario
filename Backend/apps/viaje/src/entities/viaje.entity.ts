@@ -38,8 +38,8 @@ export class Viaje {
   @Column()
   total?: number;
 
-  @Column()
-  distancia?: number;
+  @Column({ type: 'float', nullable: true })
+  distancia: number;
 
   //Relación: Guardo los id de las unidades 
   @Column("jsonb", { nullable: true })

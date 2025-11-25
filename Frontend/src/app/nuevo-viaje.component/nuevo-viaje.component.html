@@ -111,15 +111,16 @@
     <h2>Resumen del viaje</h2>
 
     <div class="detalle">
-      <h3>Camiones seleccionados:</h3>
+      <h3>Unidades seleccionados:</h3>
       <ul>
-            <div *ngFor="let unidad of unidadesSeleccionadas" class="card p-3 my-2 shadow rounded">
+            <div *ngFor="let unidad of unidadesSeleccionadas" style="background: #f9f9f9; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
                 <p><strong>Camión:</strong> {{ unidad.camion?.patente }} ({{ unidad.camion?.tipo }})</p>
                 <p><strong>Semirremolque:</strong> {{ unidad.semirremolque?.patente }} ({{ unidad.semirremolque?.tipo }})</p>
                 <p><strong>Acoplado:</strong> {{ unidad.acoplado?.patente }} ({{ unidad.acoplado?.tipo }})</p>
                 <p><strong>Carga total:</strong> {{ unidad.cargaTotal }} kg</p>
                 <p><strong>Subtotal:</strong> ${{ unidad.subtotal }}</p>
             </div>
+            Total general: ${{ totalGeneral }}
         <hr>
       </ul>
     </div>

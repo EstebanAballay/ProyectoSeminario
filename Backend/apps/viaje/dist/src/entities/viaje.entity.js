@@ -64,7 +64,7 @@ __decorate([
     __metadata("design:type", Number)
 ], Viaje.prototype, "total", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ type: 'float', nullable: true }),
     __metadata("design:type", Number)
 ], Viaje.prototype, "distancia", void 0);
 __decorate([

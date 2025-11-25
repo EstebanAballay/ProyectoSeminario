@@ -21,7 +21,9 @@ export class NuevoViajeComponent implements AfterViewInit {
   private routingControl: any;
   constructor(private unidadService: UnidadService,
               private viajeService: ViajeService) {}
-  
+  //atributo para el total del pedido
+  public totalGeneral: number = 0;
+
   //variables para que el usuario pueda seleccionar
   public tiposCamion: string[] = [];
   public tiposAcoplado : string[] = [];
@@ -40,6 +42,9 @@ export class NuevoViajeComponent implements AfterViewInit {
 
   //variable para hora de salida
   public horaSalida: string = '';
+  
+  //variable para la distancia
+  public distancia: number = 0;
 
   //datos primordiales del viaje
   public data: any = {
@@ -49,6 +54,7 @@ export class NuevoViajeComponent implements AfterViewInit {
     fechaFin: '',
     horaInicio:'',
     horaFin:'',
+    distancia: 0,
     unidades: []
   };
 
@@ -86,6 +92,7 @@ export class NuevoViajeComponent implements AfterViewInit {
   tipoSemirremolqueSeleccionado: string = '';
   quiereSemirremolque: boolean = false;
   quiereAcoplado: boolean = false;
+  //camionesSeleccionados son los tipos de camion,semi y acoplado que componen a cada una de las unidades
   camionesSeleccionados: { tipo: string, semirremolque: string, acoplado: string }[] = [];
 
 
@@ -181,7 +188,17 @@ export class NuevoViajeComponent implements AfterViewInit {
       [this.origenCoords.lat, this.origenCoords.lon],
       [this.destinoCoords.lat, this.destinoCoords.lon]
     ]);
+    //Calcular la distancia cuando detecta que se seleccionaron los 2 puntos
+    this.routingControl.on('routesfound', (event: any) => {
+      const route = event.routes[0]; // primera ruta encontrada
+      const distanciaMetros = route.summary.totalDistance;
+      const distanciaKm = distanciaMetros / 1000;
+
+      this.distancia = distanciaKm;});
+
   }
+  
+  
 
   async buscarViaje(event: Event): Promise<void> {
     event.preventDefault();
@@ -199,6 +216,7 @@ export class NuevoViajeComponent implements AfterViewInit {
       destino, 
       fecha, 
       camiones: this.camionesSeleccionados, 
+      distancia: this.distancia
     });
     //creo la hora de llegada mockeada
     const horaMockeada = new Date();
@@ -211,6 +229,7 @@ export class NuevoViajeComponent implements AfterViewInit {
     this.data.fechaFin = fechaFin;
     this.data.horaSalida = this.horaSalida;
     this.data.horaLlegada = horaMockeada;
+    this.data.distancia = this.distancia;
 
     if (!this.origenCoords || !this.destinoCoords) {
       alert("❌ Debés seleccionar origen y destino en el mapa o con el formulario.");
@@ -291,10 +310,11 @@ export class NuevoViajeComponent implements AfterViewInit {
 
   //esta funcion simplemente habilita que se muestre la pantalla 
   abrirResumen(disponibles: any) {
-  this.mostrarResumen = true;
-  this.unidadesSeleccionadas = disponibles.unidadesFormadas || [];
-  console.log('las unidades disponibles son:',this.unidadesSeleccionadas);
-
+    this.mostrarResumen = true;
+    this.unidadesSeleccionadas = disponibles.unidadesFormadas || [];
+    console.log('las unidades disponibles son:',this.unidadesSeleccionadas);
+    this.actualizarTotalGeneral();
+    console.log('el total es:',this.totalGeneral)
   }
 
   cerrarResumen() {
@@ -304,6 +324,7 @@ export class NuevoViajeComponent implements AfterViewInit {
   confirmarViaje() {
     // Aquí iría tu lógica para enviar la creación al backend
     console.log("Viaje confirmado:");
+    console.log(this.data.distancia);
     this.mostrarResumen = false;
     this.data.unidades = this.unidadesSeleccionadas.map((u: any) => {
     return {
@@ -326,7 +347,12 @@ export class NuevoViajeComponent implements AfterViewInit {
   }
 
 
-
+  actualizarTotalGeneral() {
+    this.totalGeneral = this.unidadesSeleccionadas.reduce(
+      (acum, unidad) => acum + (unidad.subtotal || 0),
+      0
+    );
+  }
 
 }
 
