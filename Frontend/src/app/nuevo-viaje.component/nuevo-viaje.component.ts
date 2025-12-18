@@ -6,6 +6,7 @@ import {tiposAcoplado} from '../interfaces/tiposAcoplados';
 import * as L from 'leaflet';
 import 'leaflet-routing-machine';
 import  {ViajeService} from '../services/viaje.service';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-nuevo-viaje',
@@ -20,7 +21,8 @@ export class NuevoViajeComponent implements AfterViewInit {
   private map!: L.Map;
   private routingControl: any;
   constructor(private unidadService: UnidadService,
-              private viajeService: ViajeService) {}
+              private viajeService: ViajeService,
+              private sanitizer: DomSanitizer) {}
   //atributo para el total del pedido
   public totalGeneral: number = 0;
 
@@ -353,6 +355,21 @@ export class NuevoViajeComponent implements AfterViewInit {
       0
     );
   }
+
+  public hacerInseguro(html: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(html);
+  }
+
+  // Dentro de tu clase de componente
+  eliminarCamion(index: number) {
+      // El método splice(posicion, cantidad) modifica el array original
+      this.camionesSeleccionados.splice(index, 1);
+      
+      // Opcional: Si necesitas disparar alguna validación extra al borrar
+      console.log('Unidad eliminada. Unidades restantes:', this.camionesSeleccionados.length);
+  }
+
+
 
 }
 

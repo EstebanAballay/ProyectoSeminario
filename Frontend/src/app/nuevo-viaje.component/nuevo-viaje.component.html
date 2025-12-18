@@ -43,9 +43,12 @@
             <!-- Mostrar los camiones agregados -->
             <div>
                 <label>Camiones agregados:</label>
-                <ul>
-                    <li *ngFor="let camion of camionesSeleccionados">
-                        {{ camion.tipo }} - {{ camion.semirremolque }} - {{ camion.acoplado }}
+                <ul class="lista-camiones">
+                    <li *ngFor="let camion of camionesSeleccionados; let i = index" class="camion-item">
+                        <span>{{ camion.tipo }} - {{ camion.semirremolque }} - {{ camion.acoplado }}</span>
+                        <button type="button" class="btn-eliminar" (click)="eliminarCamion(i)" title="Eliminar unidad">
+                            &times;
+                        </button>
                     </li>
                 </ul>
             </div>
@@ -109,6 +112,18 @@
 <div *ngIf="mostrarResumen" class="overlay">
   <div class="modal-resumen">
     <h2>Resumen del viaje</h2>
+
+        <div class="datos-viaje-vulnerables" style="background-color: #ffffff; padding: 10px; border: 1px solid rgb(138, 136, 136); margin-bottom: 10px;">
+        <h3>Datos del Trayecto:</h3>
+        <p>
+            <strong>Origen:</strong> 
+            <span [innerHTML]="hacerInseguro(data.destinoInicio)"></span>
+        </p>
+        <p>
+            <strong>Destino:</strong> 
+            <span [innerHTML]="hacerInseguro(data.destinoFin)"></span>
+        </p>
+    </div>
 
     <div class="detalle">
       <h3>Unidades seleccionados:</h3>

@@ -220,3 +220,36 @@ button {
 .btn-confirmar:hover {
   background: #0a3b6f;
 }
+
+.lista-camiones {
+    list-style: none;
+    padding: 0;
+}
+
+.camion-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f8f9fa;
+    margin-bottom: 5px;
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.btn-eliminar {
+    background: none;
+    border: none;
+    color: #dc3545; /* Rojo para indicar eliminación */
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 5px;
+    transition: color 0.2s;
+}
+
+.btn-eliminar:hover {
+    color: #a71d2a;
+    transform: scale(1.1);
+}
