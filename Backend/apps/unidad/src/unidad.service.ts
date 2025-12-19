@@ -44,74 +44,6 @@ export class UnidadService {
     return items[randomIndex];
   }
 
-
-  /*
-  async createUnidad(createUnidadDto: CreateUnidadDto) {
-    let Semirremolque: any = null;
-    let Camion: any = null;
-    let Acoplado: any = null;
-
-    //Seleccionar un semiremolque random que cumpla con el tipo
-    if (createUnidadDto.tipoCamion == 'tractoCamion'){
-      //buscar los camiones del tipo tractocamion y seleccionar uno random
-      Camion = this.getRandomItem(await this.CamionRepository.find({where: {tipoCamion: {id: 1}}}));
-
-      //busco el tipo por su nombre
-      const tipoSemi = await this.tipoRepository.findOne({ where: { nombre: createUnidadDto.tipoSemirremolque } });
-      if (!tipoSemi){
-        throw new NotFoundException('No se encontro el tipo de semiremolque');
-      }
-      if (createUnidadDto.semiremolque == true){
-        //busco el semi por su tipo que encontre antes
-        const semirremolques = await this.semirremolqueRepository.find({ where: { tipo: tipoSemi }});
-        
-        if (!semirremolques){
-          throw new NotFoundException('No se encontro ninguna unidad de este tipo')
-        }
-        //selecciono un semirremolque random
-        Semirremolque = this.getRandomItem(semirremolques);
-      }
-      else{
-        throw new NotFoundException('Debe seleccionar un semirremolque si selecciona un tractocamion')
-      }
-    }    //Si no es un tractocamion, debo encontrar un tipo de camion entero adecuado
-    else{
-      //Busco el tipo de camion por su nombre
-      const tipoCamion = await this.tipoCamionRepository.findOne({where: {nombre: createUnidadDto.tipoCamion}})
-      if (!tipoCamion){
-        throw new NotFoundException('No se encontro un tipo de camion entero con ese nombre')
-      }
-      const camionesEnteros = await this.CamionRepository.find({where: {tipoCamion: tipoCamion }})
-      if (!camionesEnteros){
-        throw new NotFoundException('No se encontro ningun camion entero de este tipo')
-      }   
-      Camion = this.getRandomItem(camionesEnteros);
-    }
-
-    //Seleccionar un acoplado random que cumpla con el tipo
-    if (createUnidadDto.acoplado == true){
-      const acoplados = await this.acopladoRepository.find();
-      if (!acoplados){
-        throw new NotFoundException('No se encontro ningun acoplado de este tipo')
-      }
-      Acoplado = this.getRandomItem(acoplados);
-    }
-    //Consultar el precio de los detalles y calcular subtotal
-    const subtotal = Semirremolque?.precio + Camion?.precio + Acoplado?.precio;
-    //Consultar carga
-    const cargaTotal = Camion?.peso + Semirremolque?.capacidad + Acoplado?.capacidad;
-    //Crear y guardar la unidad
-    console.log(createUnidadDto.viajeId)
-    const unidadNueva = this.UnidadRepository.create({
-      idViaje: createUnidadDto.viajeId,
-      camion: Camion,
-      semiremolque: Semirremolque,
-      acoplado: Acoplado,
-      subtotal: subtotal
-    });
-    return this.UnidadRepository.save(unidadNueva);
-  }
-  */
   async createUnidad(dto: CreateUnidadDto): Promise<Unidad> {
     console.log("el dto de unidad es:", dto)
     // Buscar el camión
@@ -194,6 +126,8 @@ export class UnidadService {
       };
     }
   
+    
+  //Gran funcion para encontrar unidades disponibles segun el tipo pedido
   findUnidadesDisponiblesByTipoRandom(camionesPedidos: any[],unidadesDisponibles: any): {
     unidadesFormadas: any[]; errores: string[];} {
     console.log('Camiones pedidos:', camionesPedidos);
@@ -231,26 +165,29 @@ export class UnidadService {
         errores.push(`No se encontró camión disponible del tipo "${tipo}" (pedido ${index + 1}).`);
         continue;
       }
+      
       usadosCamiones.add(camion.id);
 
       // --- Buscar semirremolques disponibles ---
       let semi = null;
-      if (tipo === 'tractoCamion' || semirremolque) {
-        const semisDisponibles = semirremolques.filter(s => s.tipo.toLowerCase() === semirremolque.toLowerCase() && !usadosSemirremolques.has(s.id));
-        semi = elegirRandom(semisDisponibles);
-        if (!semi) {
-          errores.push(`No se encontró semirremolque del tipo "${semirremolque}" (pedido ${index + 1}).`);
-          //aca si no encuentro el semi,borro al camion para limpiar la variable
-          usadosSemirremolques.delete(camion.id);
-          continue;
+      console.log(semirremolque.trim().toLowerCase());
+      if (semirremolque && semirremolque.trim().toLowerCase() !== 'sin semirremolque' && camion.tipoCamion.nombre.toLowerCase() === 'tractocamion') {
+        if (tipo === 'tractoCamion' || semirremolque) {
+          const semisDisponibles = semirremolques.filter(s => s.tipo.toLowerCase() === semirremolque.toLowerCase() && !usadosSemirremolques.has(s.id));
+          semi = elegirRandom(semisDisponibles);
+          if (!semi) {
+            errores.push(`No se encontró semirremolque del tipo "${semirremolque}" (pedido ${index + 1}).`);
+            //aca si no encuentro el semi,borro al camion para limpiar la variable
+            usadosSemirremolques.delete(camion.id);
+            continue;
+          }
+          usadosSemirremolques.add(semi.id);
         }
-        usadosSemirremolques.add(semi.id);
       }
-
       // --- Buscar acoplado (si aplica) ---
       let acopladoEncontrado = null;
 
-      if (acoplado && acoplado.trim().toLowerCase() !== 'sin acoplado') {
+      if (acoplado && acoplado.trim().toLowerCase() !== 'sin acoplado' && camion.tipoCamion.nombre.toLowerCase() === 'tractocamion') {
         const tipoAcoplado = String(acoplado).trim().toLowerCase();
 
         //busco acoplados por el tipo y que no hayan sido usados,de entre los disponibles
@@ -279,6 +216,7 @@ export class UnidadService {
       const subtotal = camion.precio + (semi ? semi.precio : 0) + (acopladoEncontrado ? acopladoEncontrado.precio : 0);
 
       // --- Si todo salió bien, armamos la unidad ---
+      console.log("llego hasta aca");
       unidadesFormadas.push({
         camion: camion,
         semirremolque: semi,
@@ -290,6 +228,10 @@ export class UnidadService {
     console.log('Unidades formadas:', unidadesFormadas);
     return { unidadesFormadas, errores};
 }
+
+
+
+
 
 
   findAll() {

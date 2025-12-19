@@ -143,18 +143,21 @@ let UnidadService = class UnidadService {
             }
             usadosCamiones.add(camion.id);
             let semi = null;
-            if (tipo === 'tractoCamion' || semirremolque) {
-                const semisDisponibles = semirremolques.filter(s => s.tipo.toLowerCase() === semirremolque.toLowerCase() && !usadosSemirremolques.has(s.id));
-                semi = elegirRandom(semisDisponibles);
-                if (!semi) {
-                    errores.push(`No se encontró semirremolque del tipo "${semirremolque}" (pedido ${index + 1}).`);
-                    usadosSemirremolques.delete(camion.id);
-                    continue;
+            console.log(semirremolque.trim().toLowerCase());
+            if (semirremolque && semirremolque.trim().toLowerCase() !== 'sin semirremolque' && camion.tipoCamion.nombre.toLowerCase() === 'tractocamion') {
+                if (tipo === 'tractoCamion' || semirremolque) {
+                    const semisDisponibles = semirremolques.filter(s => s.tipo.toLowerCase() === semirremolque.toLowerCase() && !usadosSemirremolques.has(s.id));
+                    semi = elegirRandom(semisDisponibles);
+                    if (!semi) {
+                        errores.push(`No se encontró semirremolque del tipo "${semirremolque}" (pedido ${index + 1}).`);
+                        usadosSemirremolques.delete(camion.id);
+                        continue;
+                    }
+                    usadosSemirremolques.add(semi.id);
                 }
-                usadosSemirremolques.add(semi.id);
             }
             let acopladoEncontrado = null;
-            if (acoplado && acoplado.trim().toLowerCase() !== 'sin acoplado') {
+            if (acoplado && acoplado.trim().toLowerCase() !== 'sin acoplado' && camion.tipoCamion.nombre.toLowerCase() === 'tractocamion') {
                 const tipoAcoplado = String(acoplado).trim().toLowerCase();
                 const acopladosDisponibles = acoplados.filter(a => a.tipo.trim().toLowerCase() === tipoAcoplado && !usadosAcoplados.has(a.id));
                 console.log('los usados son: ', usadosAcoplados);
@@ -174,6 +177,7 @@ let UnidadService = class UnidadService {
             }
             const cargaTotal = camion.peso + (semi ? semi.capacidad : 0) + (acopladoEncontrado ? acopladoEncontrado.capacidad : 0);
             const subtotal = camion.precio + (semi ? semi.precio : 0) + (acopladoEncontrado ? acopladoEncontrado.precio : 0);
+            console.log("llego hasta aca");
             unidadesFormadas.push({
                 camion: camion,
                 semirremolque: semi,
