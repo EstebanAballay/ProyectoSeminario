@@ -2,7 +2,7 @@ import { Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UnidadService } from '../services/unidad.service';
-import {tiposAcoplado} from '../interfaces/tiposAcoplados';
+import { LoadingService } from '../services/loading.service';
 import * as L from 'leaflet';
 import 'leaflet-routing-machine';
 import  {ViajeService} from '../services/viaje.service';
@@ -17,11 +17,13 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
   styleUrls: ['./nuevo-viaje.component.css']
 })
 
+
 export class NuevoViajeComponent implements AfterViewInit {
   private map!: L.Map;
   private routingControl: any;
   constructor(private unidadService: UnidadService,
               private viajeService: ViajeService,
+              private loadingService: LoadingService,
               private sanitizer: DomSanitizer) {}
   //atributo para el total del pedido
   public totalGeneral: number = 0;
@@ -73,6 +75,7 @@ export class NuevoViajeComponent implements AfterViewInit {
     this.tiposAcoplado = [...this.tiposSemirremolque];
     //los tipos de semi son iguales,pero los de acoplado tienen "sin acoplado"
     this.tiposAcoplado.push('Sin acoplado');
+    this.tiposSemirremolque.push('Sin semirremolque');
   }
 
   @ViewChild('origenInput') origenInput!: ElementRef<HTMLInputElement>;
@@ -243,6 +246,9 @@ export class NuevoViajeComponent implements AfterViewInit {
       return;
     }
 
+    //Muestro la pantalla de carga 
+    this.loadingService.show();
+
     //aca busco el viaje
     try {
       const disponibles = await this.viajeService.getUnidadesDisponibles(fechaInicio, fechaFin, this.camionesSeleccionados);
@@ -253,7 +259,10 @@ export class NuevoViajeComponent implements AfterViewInit {
       console.error("❌ Error al buscar unidades disponibles:", error);
       alert("❌ Ocurrió un error al buscar unidades disponibles. Revisá la consola para más detalles.");
     }
-
+    finally {
+      //oculto la pantalla de carga
+      this.loadingService.hide();
+    }
   }
   
   abrirSelectorVehiculo() { this.mostrarSelector = true; }
