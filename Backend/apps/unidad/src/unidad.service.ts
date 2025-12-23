@@ -69,8 +69,8 @@ export class UnidadService {
         throw new NotFoundException(`Acoplado con id ${dto.acopladoId} no encontrado`);
       }
     }
-
-    const subtotal = semirremolque?.precio + camion?.precio + acoplado?.precio;
+    
+    const subtotal = (semirremolque?.precio ?? 0) + (camion?.precio ?? 0 ) + (acoplado?.precio ?? 0);
     // Crear la unidad
     const unidad = this.UnidadRepository.create({
       idViaje: dto.viajeId,

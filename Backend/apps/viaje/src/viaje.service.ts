@@ -52,11 +52,20 @@ export class ViajeService {
     const unidades = data.unidades
     console.log('Unidades a agregar al viaje:', unidades);
     for (const unidad of unidades) {
-      //creo la unidad y me quedo con su id
-      const nuevaUnidadId = await this.agregarUnidad(unidad,savedViaje.ViajeId);
+      //creo la unidad y me quedo con su id y subtotal
+      const nuevaUnidad = await this.agregarUnidad(unidad,savedViaje.ViajeId);
+      const nuevaUnidadId = nuevaUnidad.id;
+      //calculo el total del viaje
+      const total = Math.trunc((nuevaUnidad.subtotal * data.distancia)*100)/100; //redondeo a 2 decimales
       //asigno el id de la unidad al viaje
       savedViaje.unidades.push(nuevaUnidadId);
+      //asigno el total del viaje
+      savedViaje.total += total;
     }
+    //calculo y asigno la senia del viaje
+    savedViaje.sena += Math.trunc((savedViaje.total * 0.1)*100)/100; //10% del total, redondeado a 2 decimales
+    //calculo y asigno el resto del viaje
+    savedViaje.resto += Math.trunc((savedViaje.total - savedViaje.sena)*100)/100; //redondeado a 2 decimales
     await this.viajeRepository.save(savedViaje);
     return savedViaje;
   }
@@ -69,10 +78,11 @@ export class ViajeService {
       this.httpService.post('http://unidad-service:3002/unidad', unidadCompleta)
     );
     console.log('Unidad creada:', response.data);
-    return response.data.UnidadId;
-  } catch (error) {
-    console.error('Error al crear la unidad:', error.message);
-  }
+    return {id: response.data.UnidadId, subtotal: response.data.subtotal};
+      }  
+    catch (error) {
+      console.error('Error al crear la unidad:', error.message);
+    }
   }
 
   async buscarUnidadesDisponibles(fechaInicio: Date, fechaFin: Date, camiones:any) {

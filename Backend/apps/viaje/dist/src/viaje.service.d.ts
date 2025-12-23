@@ -10,7 +10,10 @@ export declare class ViajeService {
     constructor(estadoViajeRepository: Repository<EstadoViaje>, viajeRepository: Repository<Viaje>, httpService: HttpService);
     testConnection(): Promise<void>;
     createViaje(data: CreateViajeDto): Promise<Viaje>;
-    agregarUnidad(unidad: any, viajeId: number): Promise<any>;
+    agregarUnidad(unidad: any, viajeId: number): Promise<{
+        id: any;
+        subtotal: any;
+    }>;
     buscarUnidadesDisponibles(fechaInicio: Date, fechaFin: Date, camiones: any): Promise<any>;
     findAll(): string;
     findOne(id: number): string;

@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, Decimal128} from 'typeorm';
 import { ManyToOne, JoinColumn } from 'typeorm';
 import { EstadoViaje } from './estadoViaje.entity';
 

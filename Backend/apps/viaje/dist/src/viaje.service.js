@@ -57,9 +57,14 @@ let ViajeService = class ViajeService {
         const unidades = data.unidades;
         console.log('Unidades a agregar al viaje:', unidades);
         for (const unidad of unidades) {
-            const nuevaUnidadId = await this.agregarUnidad(unidad, savedViaje.ViajeId);
+            const nuevaUnidad = await this.agregarUnidad(unidad, savedViaje.ViajeId);
+            const nuevaUnidadId = nuevaUnidad.id;
+            const total = Math.trunc((nuevaUnidad.subtotal * data.distancia) * 100) / 100;
             savedViaje.unidades.push(nuevaUnidadId);
+            savedViaje.total += total;
         }
+        savedViaje.sena += Math.trunc((savedViaje.total * 0.1) * 100) / 100;
+        savedViaje.resto += Math.trunc((savedViaje.total - savedViaje.sena) * 100) / 100;
         await this.viajeRepository.save(savedViaje);
         return savedViaje;
     }
@@ -69,7 +74,7 @@ let ViajeService = class ViajeService {
         try {
             const response = await (0, rxjs_1.firstValueFrom)(this.httpService.post('http://unidad-service:3002/unidad', unidadCompleta));
             console.log('Unidad creada:', response.data);
-            return response.data.UnidadId;
+            return { id: response.data.UnidadId, subtotal: response.data.subtotal };
         }
         catch (error) {
             console.error('Error al crear la unidad:', error.message);
