@@ -344,7 +344,7 @@ export class NuevoViajeComponent implements AfterViewInit {
       acopladoId: u.acoplado?.id || null,
       tieneSemirremolque: !!u.semirremolque, // true si existe semirremolque
       tieneAcoplado: !!u.acoplado,           // true si existe acoplado
-      subtotal: u.subtotal
+      subtotal: u.subtotal * this.data.distancia
     };
   });
   this.guardarViaje()
@@ -360,7 +360,7 @@ export class NuevoViajeComponent implements AfterViewInit {
 
   actualizarTotalGeneral() {
     this.totalGeneral = this.unidadesSeleccionadas.reduce(
-      (acum, unidad) => acum + (unidad.subtotal || 0),
+      (acum, unidad) => Math.trunc((acum + (unidad.subtotal || 0)*this.data.distancia)*100)/100,
       0
     );
   }
