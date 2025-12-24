@@ -29,13 +29,13 @@ export class Viaje {
   @Column({ type: 'time' })
   horaLlegada?: string;
 
-  @Column()
+  @Column({ type: 'numeric'})
   sena?: number;
 
-  @Column()
+  @Column({ type: 'numeric'})
   resto?: number;
 
-  @Column()
+  @Column({ type: 'numeric' })
   total?: number;
 
   @Column({ type: 'float', nullable: true })

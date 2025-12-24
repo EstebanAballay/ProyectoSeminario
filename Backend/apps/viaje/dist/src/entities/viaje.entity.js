@@ -52,15 +52,15 @@ __decorate([
     __metadata("design:type", String)
 ], Viaje.prototype, "horaLlegada", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ type: 'numeric' }),
     __metadata("design:type", Number)
 ], Viaje.prototype, "sena", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ type: 'numeric' }),
     __metadata("design:type", Number)
 ], Viaje.prototype, "resto", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ type: 'numeric' }),
     __metadata("design:type", Number)
 ], Viaje.prototype, "total", void 0);
 __decorate([

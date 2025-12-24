@@ -83,7 +83,8 @@
 
         <div>
             <label for="remolque">Tipo de semirremolque:</label>
-            <select id="remolque" [(ngModel)]="semirremolqueSeleccionado" name="semirremolqueSeleccionado" (change)="toggleAcoplado()">
+            <select id="remolque" [(ngModel)]="semirremolqueSeleccionado" name="semirremolqueSeleccionado" (change)="toggleAcoplado()"
+                [disabled]="tipoCamionSeleccionado !== 'tractoCamion'">
             <option value="" disabled selected>Seleccione un remolque</option>
                 <option *ngFor="let tipo of tiposSemirremolque" [value]="tipo">
                     {{ tipo }}
@@ -91,9 +92,9 @@
             </select>
         </div>
 
-        <!-- Campo de tipo de semirremolque-->
         <label for="acoplado">Tipo de Acoplado:  </label>
-        <select id="acoplado" [(ngModel)]="acopladoSeleccionado" name="acopladoSeleccionado" (change)="toggleSemirremolque()">
+        <select id="acoplado" [(ngModel)]="acopladoSeleccionado" name="acopladoSeleccionado" (change)="toggleSemirremolque()"
+            [disabled]="tipoCamionSeleccionado !== 'tractoCamion' ">
         <option value="" disabled selected>Seleccione un Acoplado</option>
             <option *ngFor="let tipo of tiposAcoplado" [value]="tipo">
                 {{ tipo }}

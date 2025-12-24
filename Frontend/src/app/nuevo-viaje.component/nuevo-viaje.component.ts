@@ -269,21 +269,33 @@ export class NuevoViajeComponent implements AfterViewInit {
   cerrarSelector() { this.mostrarSelector = false; }
 
   agregarCamion(): void {
+    //comprueba si se seleccionaron todos los campos
     if (this.tipoCamionSeleccionado === 'tractoCamion' && this.semirremolqueSeleccionado === '' || this.tipoCamionSeleccionado === '') {
         alert("❌ Debes seleccionar las unidades correctamente.");
         return;
       }
     else  {
+        //comprueba que si selecciono un tipo de camion simple,se seleccione el tipo sin semi y sin acoplado
+        if (this.tipoCamionSeleccionado !== 'tractoCamion'){
+          this.camionesSeleccionados.push({
+            tipo: this.tipoCamionSeleccionado,
+            semirremolque: 'Sin semirremolque',
+            acoplado:  'Sin acoplado',
+          })
+        }
+        else{
         this.camionesSeleccionados.push({
           tipo: this.tipoCamionSeleccionado,
           semirremolque: this.semirremolqueSeleccionado,
-          acoplado: this.quiereAcoplado ? this.acopladoSeleccionado : 'Sin Acoplado'
-        });
+          acoplado: this.quiereAcoplado ? this.acopladoSeleccionado : 'Sin acoplado'})
+        };
+
         //reiniciar las variables de seleccion
         this.tipoCamionSeleccionado = '';
         this.semirremolqueSeleccionado = '';
         this.tipoSemirremolqueSeleccionado = '';
         this.quiereSemirremolque = false;
+        this.quiereAcoplado = false;
         this.cerrarSelector();
       } 
   }
