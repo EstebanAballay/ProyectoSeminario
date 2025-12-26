@@ -253,3 +253,60 @@ button {
     color: #a71d2a;
     transform: scale(1.1);
 }
+
+/* Oculta la lista de pasos/direcciones detalladas */
+.leaflet-routing-alt table {
+    display: none;
+}
+
+/* Mantiene visible el encabezado donde sale la distancia (km) y el tiempo */
+.leaflet-routing-alt h2, 
+.leaflet-routing-alt h3 {
+    display: block;
+    font-size: 14px; /* Podés ajustar el tamaño para que no moleste */
+    margin: 5px;
+}
+
+/* Si querés que el panel sea pequeño y no tape el mapa */
+.leaflet-routing-container {
+    max-height: 50px;
+    overflow: hidden;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: none !important;
+}
+
+/* Fuerza la desaparición de TODO el contenedor de texto */
+::ng-deep .leaflet-routing-container,
+::ng-deep .leaflet-routing-error {
+    display: none !important;
+}
+
+/* Si por alguna razón el contenedor se muestra, esto oculta específicamente las direcciones */
+::ng-deep .leaflet-routing-alt {
+    display: none !important;
+}
+
+.distancia-badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  transform: translateX(-50%);
+  z-index: 1000; /* Por encima de las capas de Leaflet */
+  
+  background-color: rgba(26, 58, 90, 0.9); /* Tu azul marino con transparencia */
+  color: white;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-weight: bold;
+  font-size: 1.1rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  pointer-events: none; /* Permite que el mapa siga siendo clickeable debajo */
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  white-space: nowrap;
+}
+
+.contenedor-mapa {
+  position: relative;
+  width: 100%;
+  height: 450px; /* Ajustalo al alto de tu mapa */
+}

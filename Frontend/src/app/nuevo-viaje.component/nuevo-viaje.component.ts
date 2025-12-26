@@ -8,6 +8,22 @@ import 'leaflet-routing-machine';
 import  {ViajeService} from '../services/viaje.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
+// Solución para el error de los iconos de Leaflet en Angular
+const iconRetinaUrl = 'assets/marker-icon-2x.png';
+const iconUrl = 'assets/marker-icon.png';
+const shadowUrl = 'assets/marker-shadow.png';
+const iconDefault = L.icon({
+  iconRetinaUrl,
+  iconUrl,
+  shadowUrl,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  tooltipAnchor: [16, -28],
+  shadowSize: [41, 41]
+});
+L.Marker.prototype.options.icon = iconDefault;
+
 @Component({
   selector: 'app-nuevo-viaje',
   standalone: true,
@@ -16,7 +32,6 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
   templateUrl: './nuevo-viaje.component.html',
   styleUrls: ['./nuevo-viaje.component.css']
 })
-
 
 export class NuevoViajeComponent implements AfterViewInit {
   private map!: L.Map;
@@ -182,6 +197,9 @@ export class NuevoViajeComponent implements AfterViewInit {
         L.latLng(this.destinoCoords.lat, this.destinoCoords.lon)
       ],
       routeWhileDragging: true,
+      show: false, //evita mostrar el panel con las direccciones
+      addWaypoints: false,  // Evita que el usuario añada puntos extra haciendo clic
+      containerClassName: 'hidden-router-container',
       lineOptions: {
         styles: [{ color: 'blue', weight: 4, opacity: 0.7 }],
         extendToWaypoints: true,

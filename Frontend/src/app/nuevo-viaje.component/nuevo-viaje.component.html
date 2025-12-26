@@ -63,7 +63,12 @@
     </div>
 
     <!-- Contenedor del mapa -->
-    <div id="map" style="height: 400px;"></div>
+    <div class="contenedor-mapa">
+        <div id="map" style="height: 400px;"></div>
+        <div *ngIf="distancia" class="distancia-badge">
+            <strong>Distancia estimada:</strong> {{ distancia | number:'1.0-2' }} km
+        </div>
+    </div>
 </div>
 
 <!-- Modal de selección de vehículo -->
