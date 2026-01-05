@@ -1,0 +1,130 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.main-container {
+    display: flex;
+    justify-content: center; /* Centrado Horizontal: OK */
+    align-items: center; /* Centrado Vertical: OK */
+    min-height: 100vh; 
+    /* ... otros estilos de fondo ... */
+}
+
+.card {
+    width: 350px;
+    background-color: #0b1e3a;
+    color: #fff;
+    border-radius: 12px;
+    
+    /* === MODIFICACIÓN CLAVE PARA EL CENTRADO === */
+    /* 1. Usamos un padding más pequeño para que la tarjeta no desborde la pantalla. */
+    /* 2. Damos un alto padding-top para empujar el contenido hacia abajo. */
+    padding: 90px 30px 40px 30px; /* [Top: 90px] [Right: 30px] [Bottom: 40px] [Left: 30px] */
+    
+    /* 3. Agregamos margin auto para ayudar en el centrado vertical si hay desborde. */
+    margin: 20px auto; 
+
+    font-family: Arial, sans-serif;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    position: relative;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    /* CLAVE: Alinea todos los ítems a la izquierda del contenedor */
+    align-items: flex-start; 
+    width: 100%; 
+    margin: 0 auto; 
+}
+
+/* CLAVE: Alinea el texto "Bienvenido" a la izquierda */
+.titulo-bienvenido {
+    width: 100%; 
+    text-align: left; 
+    font-size: 24px; 
+    font-weight: bold;
+    color: white;
+    margin-bottom: 20px; 
+}
+
+
+/* ========================================================= */
+/* ESTILOS DE COMPONENTES */
+/* ========================================================= */
+
+.card-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.cartelito {
+  margin-left: -50px;
+}
+  
+.logo {
+    /* === MODIFICACIÓN CLAVE PARA EL LOGO === */
+    /* Reducimos el margen negativo para que el logo se mantenga centrado en el alto padding-top (90px) */
+    margin-top: -80px; 
+    width: 95%;
+}
+
+input[type="email"],
+input[type="password"] {
+    width: 100%; 
+    padding: 20px;
+    margin-top: 5px; 
+    margin-bottom: 12px; 
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.btn-access {
+    width: 100%; 
+    display: block;
+    margin-top: 20px;
+    text-align: center;
+    background-color: #ffffff;
+    color: #0b1e3a;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.btn-access:hover {
+    background-color: #e0e0e0;
+}
+
+.extra-link {
+    width: 100%; 
+    margin-top: 15px; 
+    text-align: center;
+}
+
+.extra-link a {
+    color: #ffffff; 
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.extra-link a:hover {
+    text-decoration: underline;
+}
+
+.error {
+    color: red;
+    font-size: 12px;
+    text-align: left;
+    margin-bottom: 5px;
+}

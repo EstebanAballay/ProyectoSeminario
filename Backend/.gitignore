@@ -1,8 +1,8 @@
 # compiled output
 /dist
-/node_modules
+node_modules/
 /build
-
+*.tsbuildinfo
 # Logs
 logs
 *.log
@@ -11,6 +11,11 @@ pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
+
+# Node
+/node_modules
+npm-debug.log
+yarn-error.log
 
 # OS
 .DS_Store
@@ -41,7 +46,8 @@ lerna-debug.log*
 .env.test.local
 .env.production.local
 .env.local
-
+*.env
+**/*.env
 # temp directory
 .temp
 .tmp

@@ -19,13 +19,20 @@
             ],
             "tsConfig": "tsconfig.app.json",
             "assets": [
+              "src/favicon.ico",
+              "src/assets",
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "node_modules/leaflet/dist/images",
+                "output": "assets/"
               }
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "node_modules/leaflet/dist/leaflet.css"
+            ],
+            "scripts": [
+              "node_modules/leaflet/dist/leaflet.js"
             ]
           },
           "configurations": {
@@ -76,17 +83,24 @@
             ],
             "tsConfig": "tsconfig.spec.json",
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
+              "src/favicon.ico",
+              "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "node_modules/leaflet/dist/leaflet.css",
+              "node_modules/leaflet/dist/leaflet.css",
+              "node_modules/leaflet-routing-machine/dist/leaflet-routing-machine.css" 
+            ],
+            "scripts": [
+              "node_modules/leaflet/dist/leaflet.js"
             ]
           }
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "720b6a77-faf5-42b5-893a-dcb431cbf1b7"
   }
 }

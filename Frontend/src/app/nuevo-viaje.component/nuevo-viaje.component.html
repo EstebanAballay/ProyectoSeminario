@@ -1,0 +1,154 @@
+<!-- Encabezado -->
+<div class="header">
+    <div class="logo">
+        <img src="assets/logo.png" alt="Logo Grafo" />
+    </div>
+    <div class="profile-icon">👤</div>
+</div>
+
+<!-- Contenido -->
+<div class="container">
+    <h2>Crear nuevo viaje</h2>
+
+    <!-- Tarjeta del formulario -->
+    <div class="form-card">
+        <form (submit)="buscarViaje($event)">
+            <div>
+                <label for="origen">Origen:</label>
+                <input id="origen" type="text" #origenInput placeholder="Ej: Córdoba" />
+                <!-- Botón para confirmar origen -->
+                <button type="button" (click)="confirmarOrigen()">OK</button>
+            </div>
+
+            <div>
+                <label for="destino">Destino:</label>
+                <input id="destino" type="text" #destinoInput placeholder="Seleccioná en el mapa" readonly />
+            </div>
+
+            <div>
+                <label for="fechaSalida">Fecha de salida:</label>
+                <input id="fechaSalida" type="date" #fechaSalidaInput />
+            </div>
+
+            <!-- Pedir selección de hora de salida-->
+            <label for="horaSalida">Hora de salida:</label>
+            <input
+            id="horaSalida"
+            type="time"
+            class="form-control"
+            [(ngModel)]="horaSalida"
+            name=horaSalida
+            />
+
+            <!-- Mostrar los camiones agregados -->
+            <div>
+                <label>Camiones agregados:</label>
+                <ul class="lista-camiones">
+                    <li *ngFor="let camion of camionesSeleccionados; let i = index" class="camion-item">
+                        <span>{{ camion.tipo }} - {{ camion.semirremolque }} - {{ camion.acoplado }}</span>
+                        <button type="button" class="btn-eliminar" (click)="eliminarCamion(i)" title="Eliminar unidad">
+                            &times;
+                        </button>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Botón para abrir selector de vehículo -->
+            <div>
+                <button type="button" (click)="abrirSelectorVehiculo()">🚛 Buscar unidades</button>
+            </div>
+
+            <button type="submit" class="btn-submit">🚚 Buscar Viaje</button>
+        </form>
+    </div>
+
+    <!-- Contenedor del mapa -->
+    <div class="contenedor-mapa">
+        <div id="map" style="height: 400px;"></div>
+        <div *ngIf="distancia" class="distancia-badge">
+            <strong>Distancia estimada:</strong> {{ distancia | number:'1.0-2' }} km
+        </div>
+    </div>
+</div>
+
+<!-- Modal de selección de vehículo -->
+<div *ngIf="mostrarSelector" class="modal">
+    <div class="modal-content">
+        <h3>Seleccionar camión</h3>
+
+        <div>
+            <label for="tipoCamion">Tipo de camión:  </label>
+            <select id="tipoCamion" [(ngModel)]="tipoCamionSeleccionado" name="tipoCamionSeleccionado">
+                <option value="" disabled selected>Seleccione un tipo</option>
+                    <option *ngFor="let tipo of tiposCamion" [value]="tipo">
+                        {{ tipo }}
+                    </option>
+            </select>
+        </div>
+
+        <div>
+            <label for="remolque">Tipo de semirremolque:</label>
+            <select id="remolque" [(ngModel)]="semirremolqueSeleccionado" name="semirremolqueSeleccionado" (change)="toggleAcoplado()"
+                [disabled]="tipoCamionSeleccionado !== 'tractoCamion'">
+            <option value="" disabled selected>Seleccione un remolque</option>
+                <option *ngFor="let tipo of tiposSemirremolque" [value]="tipo">
+                    {{ tipo }}
+                </option>
+            </select>
+        </div>
+
+        <label for="acoplado">Tipo de Acoplado:  </label>
+        <select id="acoplado" [(ngModel)]="acopladoSeleccionado" name="acopladoSeleccionado" (change)="toggleSemirremolque()"
+            [disabled]="tipoCamionSeleccionado !== 'tractoCamion' ">
+        <option value="" disabled selected>Seleccione un Acoplado</option>
+            <option *ngFor="let tipo of tiposAcoplado" [value]="tipo">
+                {{ tipo }}
+            </option>
+        </select>
+
+        <div class="modal-actions">
+            <button type="button" (click)="agregarCamion()">Agregar camión</button>
+            <button type="button" (click)="cerrarSelector()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal de confirmación de viaje -->
+<div *ngIf="mostrarResumen" class="overlay">
+  <div class="modal-resumen">
+    <h2>Resumen del viaje</h2>
+
+        <div class="datos-viaje-vulnerables" style="background-color: #ffffff; padding: 10px; border: 1px solid rgb(138, 136, 136); margin-bottom: 10px;">
+        <h3>Datos del Trayecto:</h3>
+        <p>
+            <strong>Origen:</strong> 
+            <span [innerHTML]="hacerInseguro(data.destinoInicio)"></span>
+        </p>
+        <p>
+            <strong>Destino:</strong> 
+            <span [innerHTML]="hacerInseguro(data.destinoFin)"></span>
+        </p>
+    </div>
+
+    <div class="detalle">
+      <h3>Unidades seleccionados:</h3>
+      <ul>
+            <div *ngFor="let unidad of unidadesSeleccionadas" style="background: #f9f9f9; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+                <p><strong>Camión:</strong> {{ unidad.camion?.patente }} ({{ unidad.camion?.tipo }})</p>
+                <p><strong>Semirremolque:</strong> {{ unidad.semirremolque?.patente }} ({{ unidad.semirremolque?.tipo }})</p>
+                <p><strong>Acoplado:</strong> {{ unidad.acoplado?.patente }} ({{ unidad.acoplado?.tipo }})</p>
+                <p><strong>Carga total:</strong> {{ unidad.cargaTotal }} kg</p>
+                <p><strong>Subtotal:</strong> ${{ unidad.subtotal }}</p>
+            </div>
+            Total general: ${{ totalGeneral }}
+        <hr>
+      </ul>
+    </div>
+
+    <div class="acciones">
+      <button class="btn-cancelar" (click)="cerrarResumen()">Cancelar</button>
+      <button class="btn-confirmar" (click)="confirmarViaje()">✅ Confirmar creación del viaje</button>
+    </div>
+  </div>
+</div>
