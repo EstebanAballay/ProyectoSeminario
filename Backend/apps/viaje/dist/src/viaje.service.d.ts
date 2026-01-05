@@ -9,7 +9,7 @@ export declare class ViajeService {
     private readonly httpService;
     constructor(estadoViajeRepository: Repository<EstadoViaje>, viajeRepository: Repository<Viaje>, httpService: HttpService);
     testConnection(): Promise<void>;
-    createViaje(data: CreateViajeDto): Promise<Viaje>;
+    createViaje(data: CreateViajeDto, user: any): Promise<Viaje>;
     agregarUnidad(unidad: any, viajeId: number): Promise<{
         id: any;
         subtotal: any;

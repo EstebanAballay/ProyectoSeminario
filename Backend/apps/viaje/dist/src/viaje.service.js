@@ -35,7 +35,7 @@ let ViajeService = class ViajeService {
             console.error('DB connection failed:', error);
         }
     }
-    async createViaje(data) {
+    async createViaje(data, user) {
         console.log('Creando viaje con datos:', data);
         console.log('distancia recibida:', data.distancia);
         const estadoDefault = await this.estadoViajeRepository.findOne({ where: { nombre: 'PreCargado' } });
@@ -52,6 +52,7 @@ let ViajeService = class ViajeService {
             total: 0,
             estadoViaje: estadoDefault,
             distancia: data.distancia,
+            usuarioId: user.id
         });
         const savedViaje = await this.viajeRepository.save(viaje);
         const unidades = data.unidades;

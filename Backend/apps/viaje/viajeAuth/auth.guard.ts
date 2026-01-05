@@ -6,7 +6,7 @@ import {
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { Request } from "express";
-import { jwtConstants } from "../constants/jwt.constant";
+import { jwtConstants } from "./jwt.constants";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -26,7 +26,7 @@ export class AuthGuard implements CanActivate {
       });
       console.log('✅ Token verificado. Payload:', payload);
       request.user = payload;
-
+      
     } catch (error) {
       console.error('❌ Error en validación de JWT:', error.message);
       throw new UnauthorizedException();

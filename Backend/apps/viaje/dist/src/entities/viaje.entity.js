@@ -76,6 +76,10 @@ __decorate([
     (0, typeorm_2.JoinColumn)({ name: 'estadoViajeId' }),
     __metadata("design:type", estadoViaje_entity_1.EstadoViaje)
 ], Viaje.prototype, "estadoViaje", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", Number)
+], Viaje.prototype, "usuarioId", void 0);
 exports.Viaje = Viaje = __decorate([
     (0, typeorm_1.Entity)({ name: 'viaje', schema: 'microservice_viaje' })
 ], Viaje);

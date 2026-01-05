@@ -4,7 +4,7 @@ import { ConsultarUnidadesDto } from './dto/camiones.dto';
 export declare class ViajeController {
     private readonly viajeService;
     constructor(viajeService: ViajeService);
-    create(createViajeDto: CreateViajeDto): Promise<any>;
+    create(createViajeDto: CreateViajeDto, user: any): Promise<any>;
     findDisponibles(fechaInicio?: string, fechaFin?: string, camiones?: ConsultarUnidadesDto): Promise<any>;
     findAll(): string;
     findOne(id: string): string;

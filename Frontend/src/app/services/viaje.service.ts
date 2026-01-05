@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import axios from 'axios';
+import axios from '../../api/axiosClient';
 
 @Injectable({ providedIn: 'root' })
 
 export class ViajeService {
     private apiUrl = 'http://localhost:3004/viaje';
-
+    
     async getUnidadesDisponibles(fechaInicio: Date, fechaFin: Date, camiones:any ): Promise<any> {
         console.log(camiones);
         // Convertimos las fechas al formato ISO (o el que espere tu back)
@@ -25,7 +25,7 @@ export class ViajeService {
 
     async crearViaje(data:any): Promise<any> {
         const url = `${this.apiUrl}/nuevoViaje`;
-
+        console.log("Token en storage:", localStorage.getItem('token'));
         try {
             const response = await axios.post(url, data);
             return response.data;

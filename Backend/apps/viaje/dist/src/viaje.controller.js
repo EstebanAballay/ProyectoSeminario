@@ -17,12 +17,14 @@ const common_1 = require("@nestjs/common");
 const viaje_service_1 = require("./viaje.service");
 const create_viaje_dto_1 = require("./dto/create-viaje.dto");
 const camiones_dto_1 = require("./dto/camiones.dto");
+const get_user_decorator_1 = require("../decorators/get-user.decorator");
+const auth_guard_1 = require("../viajeAuth/auth.guard");
 let ViajeController = class ViajeController {
     constructor(viajeService) {
         this.viajeService = viajeService;
     }
-    create(createViajeDto) {
-        return this.viajeService.createViaje(createViajeDto);
+    create(createViajeDto, user) {
+        return this.viajeService.createViaje(createViajeDto, user);
     }
     findDisponibles(fechaInicio, fechaFin, camiones) {
         const inicio = fechaInicio ? new Date(fechaInicio) : undefined;
@@ -43,9 +45,11 @@ let ViajeController = class ViajeController {
 exports.ViajeController = ViajeController;
 __decorate([
     (0, common_1.Post)('nuevoViaje'),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, get_user_decorator_1.GetUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_viaje_dto_1.CreateViajeDto]),
+    __metadata("design:paramtypes", [create_viaje_dto_1.CreateViajeDto, Object]),
     __metadata("design:returntype", Promise)
 ], ViajeController.prototype, "create", null);
 __decorate([

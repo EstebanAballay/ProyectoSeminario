@@ -23,7 +23,7 @@ export class ViajeService {
           }
         }
 
-  async createViaje(data: CreateViajeDto) {
+  async createViaje(data: CreateViajeDto,user) {
     //busco el estado PreCargado, que es el estado default
     console.log('Creando viaje con datos:', data);
     console.log('distancia recibida:', data.distancia);
@@ -44,6 +44,7 @@ export class ViajeService {
       total: 0,
       estadoViaje: estadoDefault, // lo creo en estado precargado
       distancia: data.distancia,
+      usuarioId: user.id
     });
  
     //Guarda el nuevo viaje

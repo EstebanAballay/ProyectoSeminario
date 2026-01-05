@@ -14,4 +14,5 @@ export declare class Viaje {
     distancia: number;
     unidades?: number[];
     estadoViaje: EstadoViaje;
+    usuarioId: number;
 }

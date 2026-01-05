@@ -1,7 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
 import { ViajeService } from './viaje.service';
 import { CreateViajeDto } from './dto/create-viaje.dto';
 import { ConsultarUnidadesDto } from './dto/camiones.dto';
+import { GetUser } from '../decorators/get-user.decorator';
+import { AuthGuard } from '../viajeAuth/auth.guard';
 
 @Controller('viaje')
 export class ViajeController {
@@ -9,8 +11,10 @@ export class ViajeController {
   //  viaje/nuevoViaje
   //crear
   @Post('nuevoViaje')
-  create(@Body() createViajeDto: CreateViajeDto):Promise<any> {
-    return this.viajeService.createViaje(createViajeDto);
+  @UseGuards(AuthGuard)
+  create(@Body() createViajeDto: CreateViajeDto,
+         @GetUser() user: any):Promise<any> {
+            return this.viajeService.createViaje(createViajeDto,user);
   }
 
   //consulta
