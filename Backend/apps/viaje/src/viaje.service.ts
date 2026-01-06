@@ -6,6 +6,7 @@ import { EstadoViaje } from './entities/estadoViaje.entity';
 import { Viaje } from './entities/viaje.entity';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
+import { BASE_COORDS, TIEMPO_MUERTO } from '../constantesTiempoViaje';
 
 @Injectable()
 export class ViajeService {
@@ -28,6 +29,7 @@ export class ViajeService {
     console.log('Creando viaje con datos:', data);
     console.log('distancia recibida:', data.distancia);
     const estadoDefault = await this.estadoViajeRepository.findOne({ where: { nombre: 'PreCargado' } });
+    const {fecha, hora} = await this.calcularFechaRegreso(data.origenCoords, data.destinoCoords,BASE_COORDS,data.fechaInicio, TIEMPO_MUERTO) //convertir horas a segundos
     const viaje = this.viajeRepository.create({
       //asignar fecha reserva
       //calcular fecha hora hora llegada
@@ -36,8 +38,8 @@ export class ViajeService {
       fechaInicio: new Date(data.fechaInicio), 
       destinoInicio: data.destinoInicio,
       horaSalida: data.horaSalida.length === 5 ? `${data.horaSalida}:00` : data.horaSalida, //si la long es 5 le agrego :00 para segundos
-      fechaFin: new Date(data.fechaFin), //Cambiar esto cuando se integre con el front.Aqui debe ir la fecha de regreso calculada en funcion de la duracion del viaje.
-      horaLlegada: '17:00:00',
+      fechaFin: fecha, //Cambiar esto cuando se integre con el front.Aqui debe ir la fecha de regreso calculada en funcion de la duracion del viaje.
+      horaLlegada: hora, //hora de llegada de vuelta al origen
       destinoFin: data.destinoFin,
       sena: 0,
       resto: 0,
@@ -112,6 +114,38 @@ export class ViajeService {
     }
 
   }
+
+  // Cambiamos el tipo de retorno a un objeto con fecha y hora
+async calcularFechaRegreso(origenCoords, destinoCoords, baseCoords, fechaInicio, tiempoMuerto): Promise<{ fecha: string; hora: string }> {
+
+  const coords = `${baseCoords.lng},${baseCoords.lat};${origenCoords.lng},${origenCoords.lat};${destinoCoords.lng},${destinoCoords.lat};${baseCoords.lng},${baseCoords.lat}`;
+  const url = `http://router.project-osrm.org/route/v1/driving/${coords}?overview=false`;
+
+  try {
+    //obtengo el ruteo al servicio de OSRM
+    const response = await firstValueFrom(this.httpService.get(url));
+    //con el servicio,puedo calcular los tiempos
+    const duracionTransitoSegundos = response.data.routes[0].duration;
+
+    // Convertimos tiempos muertos a segundos
+    const tiempoTotalSegundos = duracionTransitoSegundos + tiempoMuerto * 3600;
+
+    // Calculamos el objeto Date completo
+    const fechaCompleta = new Date(new Date(fechaInicio).getTime() + tiempoTotalSegundos * 1000);
+    
+    // Extraemos la fecha en formato YYYY-MM-DD
+    const fecha = fechaCompleta.toISOString().split('T')[0];
+    
+    // Extraemos la hora en formato HH:mm:ss
+    const hora = fechaCompleta.toTimeString().split(' ')[0];
+
+    return { fecha, hora };
+    
+  } catch (error) {
+    console.error('Error calculando ruteo:', error);
+    throw new Error('No se pudo calcular la fecha de regreso');
+  }
+}
 
 
   findAll() {

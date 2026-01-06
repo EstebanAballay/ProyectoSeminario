@@ -20,6 +20,7 @@ const estadoViaje_entity_1 = require("./entities/estadoViaje.entity");
 const viaje_entity_1 = require("./entities/viaje.entity");
 const axios_1 = require("@nestjs/axios");
 const rxjs_1 = require("rxjs");
+const constantesTiempoViaje_1 = require("../constantesTiempoViaje");
 let ViajeService = class ViajeService {
     constructor(estadoViajeRepository, viajeRepository, httpService) {
         this.estadoViajeRepository = estadoViajeRepository;
@@ -39,13 +40,14 @@ let ViajeService = class ViajeService {
         console.log('Creando viaje con datos:', data);
         console.log('distancia recibida:', data.distancia);
         const estadoDefault = await this.estadoViajeRepository.findOne({ where: { nombre: 'PreCargado' } });
+        const { fecha, hora } = await this.calcularFechaRegreso(data.origenCoords, data.destinoCoords, constantesTiempoViaje_1.BASE_COORDS, data.fechaInicio, constantesTiempoViaje_1.TIEMPO_MUERTO);
         const viaje = this.viajeRepository.create({
             fechaReserva: new Date(),
             fechaInicio: new Date(data.fechaInicio),
             destinoInicio: data.destinoInicio,
             horaSalida: data.horaSalida.length === 5 ? `${data.horaSalida}:00` : data.horaSalida,
-            fechaFin: new Date(data.fechaFin),
-            horaLlegada: '17:00:00',
+            fechaFin: fecha,
+            horaLlegada: hora,
             destinoFin: data.destinoFin,
             sena: 0,
             resto: 0,
@@ -99,6 +101,23 @@ let ViajeService = class ViajeService {
         }
         catch (error) {
             console.error('Error al buscar la unidad:', error.message);
+        }
+    }
+    async calcularFechaRegreso(origenCoords, destinoCoords, baseCoords, fechaInicio, tiempoMuerto) {
+        const coords = `${baseCoords.lng},${baseCoords.lat};${origenCoords.lng},${origenCoords.lat};${destinoCoords.lng},${destinoCoords.lat};${baseCoords.lng},${baseCoords.lat}`;
+        const url = `http://router.project-osrm.org/route/v1/driving/${coords}?overview=false`;
+        try {
+            const response = await (0, rxjs_1.firstValueFrom)(this.httpService.get(url));
+            const duracionTransitoSegundos = response.data.routes[0].duration;
+            const tiempoTotalSegundos = duracionTransitoSegundos + tiempoMuerto * 3600;
+            const fechaCompleta = new Date(new Date(fechaInicio).getTime() + tiempoTotalSegundos * 1000);
+            const fecha = fechaCompleta.toISOString().split('T')[0];
+            const hora = fechaCompleta.toTimeString().split(' ')[0];
+            return { fecha, hora };
+        }
+        catch (error) {
+            console.error('Error calculando ruteo:', error);
+            throw new Error('No se pudo calcular la fecha de regreso');
         }
     }
     findAll() {

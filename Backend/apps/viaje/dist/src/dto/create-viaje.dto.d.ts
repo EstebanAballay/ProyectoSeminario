@@ -4,7 +4,7 @@ export declare class CreateViajeDto {
     destinoInicio: string;
     destinoFin: string;
     fechaFin: string;
-    horaLlegada: string;
+    tiempoDeViaje: string;
     distancia: number;
     unidades: {
         semiremolqueId?: number;
@@ -13,4 +13,12 @@ export declare class CreateViajeDto {
         tieneSemirremolque: boolean;
         tieneAcoplado: boolean;
     }[];
+    origenCoords: {
+        lat: number;
+        lng: number;
+    };
+    destinoCoords: {
+        lat: number;
+        lng: number;
+    };
 }
