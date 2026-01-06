@@ -65,6 +65,11 @@ export class NuevoViajeComponent implements AfterViewInit {
   //variable para la distancia
   public distancia: number = 0;
 
+  //coordenadas de origen y destino
+  public origenCoords: { lat: number; lon: number } | null = null;
+  public destinoCoords: { lat: number; lon: number } | null = null;
+
+
   //datos primordiales del viaje
   public data: any = {
     origen: '',
@@ -74,6 +79,8 @@ export class NuevoViajeComponent implements AfterViewInit {
     horaInicio:'',
     horaFin:'',
     distancia: 0,
+    origenCoords: { lat: 0, lng: 0 },
+    destinoCoords: { lat: 0, lng: 0 },
     unidades: []
   };
 
@@ -97,8 +104,6 @@ export class NuevoViajeComponent implements AfterViewInit {
   @ViewChild('destinoInput') destinoInput!: ElementRef<HTMLInputElement>;
   @ViewChild('fechaSalidaInput') fechaSalidaInput!: ElementRef<HTMLInputElement>;
 
-  origenCoords: { lat: number; lon: number } | null = null;
-  destinoCoords: { lat: number; lon: number } | null = null;
   origenMarker: L.Marker | null = null;
   destinoMarker: L.Marker | null = null;
 
@@ -253,6 +258,8 @@ export class NuevoViajeComponent implements AfterViewInit {
     this.data.horaSalida = this.horaSalida;
     this.data.horaLlegada = horaMockeada;
     this.data.distancia = this.distancia;
+    this.data.origenCoords = { lat: this.origenCoords!.lat, lng: this.origenCoords!.lon };
+    this.data.destinoCoords = { lat: this.destinoCoords!.lat, lng: this.destinoCoords!.lon };
 
     if (!this.origenCoords || !this.destinoCoords) {
       alert("❌ Debés seleccionar origen y destino en el mapa o con el formulario.");
