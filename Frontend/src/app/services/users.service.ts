@@ -1,35 +1,32 @@
 import { Injectable } from '@angular/core';
 import axiosService from '../../api/axiosClient';
-
+import usersAxios from '../../api/usersAxios';
 @Injectable({
   providedIn: 'root'
 })
 export class UsersService {
-  private apiUrl = '/users';
+  private usersUrl = '/users';
+  private authUrl = '/auth';
 
-  async register(userData: any) {
-    try {
-      const response = await axiosService.post(`${this.apiUrl}/register`, userData);
-      return response.data;
-    } catch (error: any) {
-      throw error;
-    }
+
+  register(userData: any) {
+        console.log('register de users.service llamado');
+    return usersAxios.post('/users/register', userData);
   }
 
-  async login(email: string, password: string) {
-    console.log('intentando loguear');
-    try {
-      const response = await axiosService.post(`${this.apiUrl}/login`, { email, password });
-        console.log('respuesta backend:', response.data);
-      // guardar token en localStorage
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
-      }
+async login(email: string, password: string) {
+  console.log('intentando loguear por AUTH');
+  try {
+    const response = await axiosService.post(`${this.authUrl}/login`, { email, password });
 
-      return response.data;
-    } catch (error: any) {
-      throw error;
+    if (response.data.token) {
+      localStorage.setItem('token', response.data.token);
     }
+
+    return response.data;
+  } catch (error: any) {
+    throw error;
   }
+}
 }
 

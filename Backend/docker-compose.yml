@@ -1,6 +1,6 @@
 services:
   users:
-    build: ./apps/users             # ruta al Dockerfile del microservicio
+    build: ./apps/users
     command: npm run start:dev
     container_name: users-service   # nombre del contenedor
     env_file: .env                  # variables de entorno
@@ -9,8 +9,8 @@ services:
     networks:
       - backend-network
     volumes:
-      - ./apps/users:/app
-      - /app/node_modules
+      - ./apps/users:/usr/src/app
+      - /usr/src/app/node_modules
     restart: always                 # reinicia si falla
 
   cobro:
@@ -59,6 +59,21 @@ services:
     depends_on:
       - users
       - unidad
+  auth:
+    build:
+      context: .
+      dockerfile: apps/auth/Dockerfile
+    container_name: auth-service
+    command: npm run start:dev
+    env_file: .env
+    ports:
+      - "3005:3005"
+    networks:
+      - backend-network
+    volumes:
+      - ./apps/auth:/app
+      - /app/node_modules
+    restart: always
 
 networks:
   backend-network:

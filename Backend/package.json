@@ -10,6 +10,7 @@
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start:all": "concurrently \"npm run start:dev:cobro\" \"npm run start:dev:unidad\" \"npm run start:dev:users\" \"npm run start:dev:viaje\"",
     "start:dev:cobro": "node dist/apps/cobro/main",
+    "start:dev:auth": "node dist/apps/auth/main",
     "start:dev:unidad": "node dist/apps/unidad/main",
     "start:dev:users": "node dist/apps/users/main",
     "start:dev:viaje": "node dist/apps/viaje/main",
@@ -26,12 +27,14 @@
     "test:e2e": "jest --config ./apps/proyecto-seminario/test/jest-e2e.json"
   },
   "dependencies": {
+    "@nestjs/axios": "^4.0.1",
     "@nestjs/common": "^11.1.6",
     "@nestjs/core": "^11.0.1",
-    "@nestjs/jwt": "^11.0.0",
+    "@nestjs/jwt": "^11.0.1",
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^11.0.1",
     "@types/bcryptjs": "^2.4.6",
+    "axios": "^1.13.2",
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.2",
     "class-transformer": "^0.5.1",

@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';  
 import { Router, RouterModule } from '@angular/router';
-import { UsersService } from '../services/users.service';
 import { parseJwt } from '../jwt';
+import { AuthApiService } from '../services/auth-api.service';
 
 @Component({
   selector: 'app-login',
@@ -17,9 +17,10 @@ export class LoginComponent implements OnInit, OnDestroy {
   password: string = '';
 
   constructor(
-    private usersService: UsersService,
+    private authApi: AuthApiService,
     private router: Router
   ) {}
+
 
   ngOnInit() {
     document.body.classList.add('login');
@@ -37,12 +38,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     try {
-      const result = await this.usersService.login(this.email.trim(), this.password.trim());
+      const result = await this.authApi.login(this.email.trim(), this.password.trim());
       console.log('result completo:', result);
       console.log('token recibido:', result.token);
-
-      // Guardar JWT en localStorage
-      localStorage.setItem('token', result.token);
 
       // Decodificar JWT usando la función importada
       const payload = parseJwt(result.token);
@@ -61,8 +59,10 @@ export class LoginComponent implements OnInit, OnDestroy {
         this.router.navigate(['/paginainicio']);
       }
 
-    } catch (error: any) {
-      alert('Email o contraseña incorrecta');
-    }
+      } catch (error: any) {
+        console.error('ERROR en login:', error);
+        alert('Error al intentar loguear. Mirá la consola.');
+      }
+
   }
 }

@@ -27,6 +27,7 @@ export class RegisterComponent {
   constructor(private usersService: UsersService) {}
 
 async  onRegister() {
+      console.log('onRegister llamado');
     if (this.user.password !== this.user.confirmPassword) {
       alert('Las contraseñas no coinciden');
       return;
@@ -35,8 +36,9 @@ async  onRegister() {
     try {
       const response = await this.usersService.register(this.user);
       alert('Usuario registrado con éxito');
-    } catch (error) {
-      alert('Este usuario ya existe');
-    }
+} catch (error: any) {
+  console.error('❌ ERROR REGISTER:', error.response?.data || error);
+  alert(error.response?.data?.message || 'Error al registrar usuario');
+}
   }
   }

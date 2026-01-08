@@ -18,14 +18,14 @@ import { User } from './entities/user.entity';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         type: 'postgres',
-        host: config.get<string>('DB_HOST', 'localhost'),
-        port: config.get<number>('DB_PORT', 5432),
-        username: config.get<string>('DB_USER', 'postgres'),
-        password: config.get<string>('DB_PASS', 'postgres'),
-        database: config.get<string>('DB_NAME', 'usersdb'),
-        entities: [User],
-        autoLoadEntities: true,
-        synchronize: true,
+        host: config.get<string>('DB_HOST', 'localhost'), // direccion del servidor
+        port: config.get<number>('DB_PORT', 5432), // direccion del puerto
+        username: config.get<string>('DB_USER', 'postgres'), // usuario de bd
+        password: config.get<string>('DB_PASS', 'postgres'), // contraseña de bd
+        database: config.get<string>('DB_NAME', 'usersdb'), // db
+        entities: [User], // entidades de las que crea tablas
+        autoLoadEntities: true, 
+        synchronize: true, // sincroniza automáticamente el esquema de la base con las entidades
       }),
     }),
 

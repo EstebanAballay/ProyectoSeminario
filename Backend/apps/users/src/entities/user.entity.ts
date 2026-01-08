@@ -1,7 +1,8 @@
+// entidad de usuario
 import { Entity, Column, PrimaryGeneratedColumn} from 'typeorm';
 import { Role } from '../role.enum';
 
-@Entity({ name: 'user', schema: 'microservice_usuarios' })
+@Entity({ name: 'user', schema: 'microservice_usuarios' }) // se guarda en el esquema establecido para simular distintas bases de datos
 export class User {
   @PrimaryGeneratedColumn()
   id: number;

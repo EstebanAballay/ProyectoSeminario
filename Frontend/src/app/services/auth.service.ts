@@ -4,8 +4,7 @@ import * as jwtDecode from 'jwt-decode';
 interface TokenData {
   id: number;
   nombre: string;
-  rol: string;
-  exp: number;
+  role: string;
 }
 
 @Injectable({
@@ -17,7 +16,7 @@ export class AuthService {
     if (!token) return null;
     try {
     const decoded: TokenData = (jwtDecode as any).default(token);
-      return decoded.rol;
+      return decoded.role;
     } catch (e) {
       return null;
     }

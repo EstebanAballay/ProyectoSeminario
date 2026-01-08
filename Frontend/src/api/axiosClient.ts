@@ -2,25 +2,22 @@
 import axios from 'axios';
 import { config } from '../app/config/env';
 
+
 const axiosService = axios.create({
-  baseURL: config.baseUrl,
+  baseURL: 'http://localhost:3005',
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// esta aprte agrega el token automaticamente
-axiosService.interceptors.request.use(
-  (requestConfig) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      requestConfig.headers.Authorization = `Bearer ${token}`;
-    }
-    return requestConfig;
-  },
-  (error) => {
-    return Promise.reject(error);
+axiosService.interceptors.request.use((requestConfig) => {
+  const token = localStorage.getItem('token');
+
+  if (token && !requestConfig.url?.includes('/auth/login')) {
+    requestConfig.headers.Authorization = `Bearer ${token}`;
   }
-);
+
+  return requestConfig;
+});
 
 export default axiosService;

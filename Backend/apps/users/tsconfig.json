@@ -3,15 +3,19 @@
     "module": "commonjs",
     "declaration": true,
     "removeComments": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "target": "ES2020",
     "sourceMap": true,
     "outDir": "./dist",
     "incremental": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+     "baseUrl": "./",
+    "paths": {
+      "@common/*": ["../../libs/common/src/*"]
+    },
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "src/role.enum.ts", "src/dto"],
   "exclude": ["node_modules", "**/*.spec.ts"]
 }
