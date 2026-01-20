@@ -32,8 +32,8 @@ let ViajeController = class ViajeController {
         console.log('Fechas recibidas:', inicio, fin);
         return this.viajeService.buscarUnidadesDisponibles(inicio, fin, camiones);
     }
-    findAll() {
-        return this.viajeService.findAll();
+    findAll(user) {
+        return this.viajeService.findAll(user);
     }
     findOne(id) {
         return this.viajeService.findOne(+id);
@@ -62,9 +62,11 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ViajeController.prototype, "findDisponibles", null);
 __decorate([
-    (0, common_1.Get)(),
+    (0, common_1.Get)('misViajes'),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    __param(0, (0, get_user_decorator_1.GetUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], ViajeController.prototype, "findAll", null);
 __decorate([

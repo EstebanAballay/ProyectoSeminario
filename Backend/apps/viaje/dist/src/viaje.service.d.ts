@@ -19,7 +19,7 @@ export declare class ViajeService {
         fecha: string;
         hora: string;
     }>;
-    findAll(): string;
+    findAll(user: any): Promise<Viaje[]>;
     findOne(id: number): string;
     remove(id: number): string;
 }

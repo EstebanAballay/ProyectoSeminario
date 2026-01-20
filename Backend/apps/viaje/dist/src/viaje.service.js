@@ -120,8 +120,10 @@ let ViajeService = class ViajeService {
             throw new Error('No se pudo calcular la fecha de regreso');
         }
     }
-    findAll() {
-        return `This action returns all viaje`;
+    findAll(user) {
+        const viajes = this.viajeRepository.find(user.id);
+        console.log(viajes);
+        return viajes;
     }
     findOne(id) {
         return `This action returns a #${id} viaje`;

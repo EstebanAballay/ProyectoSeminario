@@ -40,7 +40,7 @@ async register(registerDto: RegisterDto) {
     message: "User created successfully",
   };
 }
-
+  
   async login({ email, password }: LoginDto) {
     const user = await this.usersService.findOneByEmailWithPassword(email);
 

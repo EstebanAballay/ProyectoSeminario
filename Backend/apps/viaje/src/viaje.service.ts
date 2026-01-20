@@ -148,8 +148,10 @@ async calcularFechaRegreso(origenCoords, destinoCoords, baseCoords, fechaInicio,
 }
 
 
-  findAll() {
-    return `This action returns all viaje`;
+  findAll(user) {
+    const viajes = this.viajeRepository.find(user.id);
+    console.log(viajes);
+    return viajes;
   }
 
   findOne(id: number) {
