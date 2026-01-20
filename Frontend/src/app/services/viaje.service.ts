@@ -36,4 +36,15 @@ export class ViajeService {
         }
   }
 
+
+    async getMisViajes(): Promise<any> {
+        const url = `${this.apiUrl}/misViajes`;
+        try {
+            const response = await axios.get(url);
+            return response.data;
+        } catch (error) {
+            console.error('Error al obtener mis viajes:', error);
+            throw error;
+        }
+    }
 }

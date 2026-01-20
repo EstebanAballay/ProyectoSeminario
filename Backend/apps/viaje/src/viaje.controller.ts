@@ -12,8 +12,7 @@ export class ViajeController {
   //crear
   @Post('nuevoViaje')
   @UseGuards(AuthGuard)
-  create(@Body() createViajeDto: CreateViajeDto,
-         @GetUser() user: any):Promise<any> {
+  create(@Body() createViajeDto: CreateViajeDto, @GetUser() user: any):Promise<any> {
             return this.viajeService.createViaje(createViajeDto,user);
   }
 
@@ -31,9 +30,10 @@ export class ViajeController {
 
 
   //consulta
-  @Get()
-  findAll() {
-    return this.viajeService.findAll();
+  @Get('misViajes')
+  @UseGuards(AuthGuard)
+  findAll(@GetUser() user: any) {
+    return this.viajeService.findAll(user);
   }
 
 

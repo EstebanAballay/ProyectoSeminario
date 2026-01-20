@@ -15,7 +15,11 @@ export declare class ViajeService {
         subtotal: any;
     }>;
     buscarUnidadesDisponibles(fechaInicio: Date, fechaFin: Date, camiones: any): Promise<any>;
-    findAll(): string;
+    calcularFechaRegreso(origenCoords: any, destinoCoords: any, baseCoords: any, fechaInicio: any, tiempoMuerto: any): Promise<{
+        fecha: string;
+        hora: string;
+    }>;
+    findAll(user: any): Promise<Viaje[]>;
     findOne(id: number): string;
     remove(id: number): string;
 }
