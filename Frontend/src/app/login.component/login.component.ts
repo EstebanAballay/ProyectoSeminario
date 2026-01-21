@@ -54,7 +54,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
        // Redirigir según el rol
       if (payload.role === 'admin') {
-        this.router.navigate(['/misviajes']); // cambiar despues por el componente de administrador, fue solo de prueba
+        this.router.navigate(['/admin']); // cambiar despues por el componente de administrador, fue solo de prueba
       } else if (payload.role === 'client') {
         this.router.navigate(['/menu']);
       } else {
