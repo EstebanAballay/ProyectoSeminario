@@ -1,7 +1,5 @@
-// app.routes.ts
 import { Routes } from '@angular/router';
 
-// (Aquí van tus importaciones de componentes existentes...)
 import { LoginComponent } from './login.component/login.component';
 import { RegisterComponent } from './register.component/register.component';
 import { PaginainicioComponent } from './paginainicio/paginainicio.component';
@@ -9,12 +7,15 @@ import { MenuComponent } from './menu.component/menu.component';
 import { NuevoViajeComponent } from './nuevo-viaje.component/nuevo-viaje.component';
 import { MisViajesComponent } from './mis-viajes.component/mis-viajes.component';
 import { PagoSeniaComponent } from './pago-senia.component/pago-senia.component';
-
-
 import { MenucamioneroComponent } from './menu.camionero/menucamionero.component';
 
-// ---
+// IMPORTANTE: Importar el componente que creamos
+import { NuevoEmpleadoComponent } from './nuevo-empleado.component/nuevo-empleado.component';
+
 export const routes: Routes = [
+    // 1. Agregamos la ruta que faltaba
+    { path: 'nuevo-empleado', component: NuevoEmpleadoComponent },
+
     { path: '', redirectTo: 'paginainicio', pathMatch: 'full' },
     { path: 'login', component: LoginComponent },
     { path: 'register', component: RegisterComponent },
@@ -25,6 +26,6 @@ export const routes: Routes = [
     { path: 'pagosenia', component: PagoSeniaComponent },
     { path: 'menucamionero', component: MenucamioneroComponent },
 
-    // La ruta catch-all (**) siempre debe ir al final
+    // 2. El comodín siempre al final
     { path: '**', redirectTo: 'paginainicio', pathMatch: 'full' }
 ];
