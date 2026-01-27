@@ -5,7 +5,7 @@
   align-items: center;
   min-height: 100vh;
   padding: 40px 20px;
-  background-color: #0B1E3A; /* Tu azul oscuro de Grafo Logística */
+  background-color: #0B1E3A;
   font-family: 'Poppins', sans-serif;
   color: #f4f1e5;
 }
@@ -30,7 +30,7 @@
 
 /* Secciones (Cards) */
 .form-section {
-  background-color: rgba(244, 241, 229, 0.08); /* Fondo sutil */
+  background-color: rgba(244, 241, 229, 0.08);
   padding: 20px;
   border-radius: 15px;
   border: 1px solid rgba(244, 241, 229, 0.2);
@@ -52,8 +52,10 @@
   gap: 15px;
 }
 
-input, select {
+.input-group input,
+.input-group select {
   width: 100%;
+  box-sizing: border-box; /* 🔥 FIX */
   padding: 12px 15px;
   border-radius: 10px;
   border: none;
