@@ -52,4 +52,16 @@ export class Viaje {
 
   @Column()
   usuarioId: number;
+
+  @Column({type: 'double precision', nullable: true})
+  CoordXOrigen: number;
+
+  @Column({type: 'double precision', nullable: true})
+  CoordYOrigen: number;
+
+  @Column({type: 'double precision', nullable: true})
+  CoordXDestino: number;
+
+  @Column({type: 'double precision', nullable: true})
+  CoordYDestino: number;
 }

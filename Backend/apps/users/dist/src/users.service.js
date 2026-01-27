@@ -75,6 +75,9 @@ let UsersService = class UsersService {
             select: ['id', 'nombre', 'email', 'password_hash', 'role'],
         });
     }
+    async findByIds(ids) {
+        return this.userRepo.findBy({ id: (0, typeorm_1.In)(ids) });
+    }
 };
 exports.UsersService = UsersService;
 exports.UsersService = UsersService = __decorate([

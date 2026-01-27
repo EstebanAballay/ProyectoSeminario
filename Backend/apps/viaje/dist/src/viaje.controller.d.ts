@@ -7,6 +7,36 @@ export declare class ViajeController {
     create(createViajeDto: CreateViajeDto, user: any): Promise<any>;
     findDisponibles(fechaInicio?: string, fechaFin?: string, camiones?: ConsultarUnidadesDto): Promise<any>;
     findAll(user: any): Promise<import("./entities/viaje.entity").Viaje[]>;
+    findAllAdmin(): Promise<{
+        unidades: any;
+        ViajeId: number;
+        fechaReserva: Date;
+        fechaInicio: Date;
+        fechaFin?: Date;
+        destinoInicio: string;
+        destinoFin: string;
+        horaSalida: string;
+        horaLlegada?: string;
+        sena?: number;
+        resto?: number;
+        total?: number;
+        distancia: number;
+        estadoViaje: import("./entities/estadoViaje.entity").EstadoViaje;
+        usuarioId: number;
+        CoordXOrigen: number;
+        CoordYOrigen: number;
+        CoordXDestino: number;
+        CoordYDestino: number;
+    }[]>;
+    getChoferesDisponibles(desde: Date, hasta: Date): Promise<any>;
+    asignarChoferes(dto: {
+        viajeId: number;
+        asignaciones: {
+            unidadId: number;
+            choferId: number;
+        }[];
+    }): Promise<void>;
+    rechazarViaje(id: number): Promise<void>;
     findOne(id: string): string;
     remove(id: string): string;
 }

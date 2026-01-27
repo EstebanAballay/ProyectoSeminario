@@ -17,4 +17,5 @@ export declare class UsersController {
         direccion: string;
         role: import("./role.enum").Role;
     }>;
+    getUsersByIds(ids: number[]): Promise<import("./entities/user.entity").User[]>;
 }

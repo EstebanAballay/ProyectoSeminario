@@ -15,4 +15,8 @@ export declare class Viaje {
     unidades?: number[];
     estadoViaje: EstadoViaje;
     usuarioId: number;
+    CoordXOrigen: number;
+    CoordYOrigen: number;
+    CoordXDestino: number;
+    CoordYDestino: number;
 }

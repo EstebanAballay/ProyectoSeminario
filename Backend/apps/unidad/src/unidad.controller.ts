@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { UnidadService } from './unidad.service';
 import { CreateUnidadDto } from './dto/create-unidad.dto';
 import { UpdateUnidadDto } from './dto/update-unidad.dto';
@@ -32,9 +32,27 @@ export class UnidadController {
     return disponiblesPorTipo
   } 
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.unidadService.findOne(+id);
+  @Post('choferesDisponibles')
+  async getChoferesDisponibles(@Body() dto: {idViajesEnRango:number[]}) {
+    const disponibles = await this.unidadService.getChoferesDisponibles(dto.idViajesEnRango);
+    console.log('Choferes disponibles:', disponibles);
+    return disponibles;
+  }
+
+  @Get() 
+  async buscarUnidades(@Query('idViaje') idViaje?: number) {
+    if (idViaje) {
+      // Si llega el parámetro, buscamos por viaje
+      return this.unidadService.findOne(idViaje);
+    }
+    // Si no llega parámetro, devuelve todas (opcional)
+    return this.unidadService.findAll();
+  }
+
+  @Post('asignarChoferes')
+  async asignarChoferes(@Body() dto: {asignaciones: {unidadId: number, choferId: number}[]}) {
+    console.log('Asignaciones recibidas:', dto.asignaciones);
+    return await this.unidadService.asignarChoferes(dto.asignaciones);
   }
 
   @Patch(':id')

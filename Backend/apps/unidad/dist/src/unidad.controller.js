@@ -38,8 +38,20 @@ let UnidadController = class UnidadController {
         console.log('Unidades disponibles por tipo:', disponiblesPorTipo);
         return disponiblesPorTipo;
     }
-    findOne(id) {
-        return this.unidadService.findOne(+id);
+    async getChoferesDisponibles(dto) {
+        const disponibles = await this.unidadService.getChoferesDisponibles(dto.idViajesEnRango);
+        console.log('Choferes disponibles:', disponibles);
+        return disponibles;
+    }
+    async buscarUnidades(idViaje) {
+        if (idViaje) {
+            return this.unidadService.findOne(idViaje);
+        }
+        return this.unidadService.findAll();
+    }
+    async asignarChoferes(dto) {
+        console.log('Asignaciones recibidas:', dto.asignaciones);
+        return await this.unidadService.asignarChoferes(dto.asignaciones);
     }
     update(id, updateUnidadDto) {
         return this.unidadService.update(+id, updateUnidadDto);
@@ -76,12 +88,26 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UnidadController.prototype, "consultarUnidadesDisponibles", null);
 __decorate([
-    (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Post)('choferesDisponibles'),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], UnidadController.prototype, "findOne", null);
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UnidadController.prototype, "getChoferesDisponibles", null);
+__decorate([
+    (0, common_1.Get)(),
+    __param(0, (0, common_1.Query)('idViaje')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], UnidadController.prototype, "buscarUnidades", null);
+__decorate([
+    (0, common_1.Post)('asignarChoferes'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UnidadController.prototype, "asignarChoferes", null);
 __decorate([
     (0, common_1.Patch)(':id'),
     __param(0, (0, common_1.Param)('id')),

@@ -20,6 +20,33 @@ export declare class ViajeService {
         hora: string;
     }>;
     findAll(user: any): Promise<Viaje[]>;
+    getViajesPendientes(): Promise<{
+        unidades: any;
+        ViajeId: number;
+        fechaReserva: Date;
+        fechaInicio: Date;
+        fechaFin?: Date;
+        destinoInicio: string;
+        destinoFin: string;
+        horaSalida: string;
+        horaLlegada?: string;
+        sena?: number;
+        resto?: number;
+        total?: number;
+        distancia: number;
+        estadoViaje: EstadoViaje;
+        usuarioId: number;
+        CoordXOrigen: number;
+        CoordYOrigen: number;
+        CoordXDestino: number;
+        CoordYDestino: number;
+    }[]>;
+    getChoferesDisponibles(fechaInicio: Date, fechaFin: Date): Promise<any>;
+    asignarChoferes(viajeId: number, asignaciones: {
+        unidadId: number;
+        choferId: number;
+    }[]): Promise<void>;
+    rechazarViaje(viajeId: number): Promise<void>;
     findOne(id: number): string;
     remove(id: number): string;
 }

@@ -1,6 +1,6 @@
 import { Injectable, BadRequestException, UnauthorizedException} from '@nestjs/common';
 import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Role } from './role.enum';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -75,6 +75,11 @@ const salt = await bcrypt.genSalt(10);
     return this.userRepo.findOne({
       where: { email },
       select: ['id', 'nombre', 'email', 'password_hash', 'role'],
-  });
-}
+      });
+    }
+  
+  async findByIds(ids: number[]): Promise<User[]> {
+    return this.userRepo.findBy({ id: In(ids) });
+  }
+
 }

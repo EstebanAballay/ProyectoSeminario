@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { CreateViajeDto } from './dto/create-viaje.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
+import { LessThanOrEqual, MoreThanOrEqual, Repository, Not} from 'typeorm';
 import { EstadoViaje } from './entities/estadoViaje.entity';
 import { Viaje } from './entities/viaje.entity';
 import { HttpService } from '@nestjs/axios';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom,lastValueFrom } from 'rxjs';
 import { BASE_COORDS, TIEMPO_MUERTO } from '../constantesTiempoViaje';
 
 @Injectable()
@@ -46,7 +46,11 @@ export class ViajeService {
       total: 0,
       estadoViaje: estadoDefault, // lo creo en estado precargado
       distancia: data.distancia,
-      usuarioId: user.id
+      usuarioId: user.id,
+      CoordXOrigen: data.origenCoords.lat,
+      CoordYOrigen: data.origenCoords.lng,
+      CoordXDestino: data.destinoCoords.lat,
+      CoordYDestino: data.destinoCoords.lng
     });
  
     //Guarda el nuevo viaje
@@ -153,6 +157,84 @@ async calcularFechaRegreso(origenCoords, destinoCoords, baseCoords, fechaInicio,
     console.log(viajes);
     return viajes;
   }
+
+ // Importaciones necesarias arriba
+
+async getViajesPendientes() {
+  // 1. Busco el estado Pendiente
+  const estadoPendiente = await this.estadoViajeRepository.findOne({ where: { id: 2 } });
+  
+  // 2. Busco los viajes (Metadata básica)
+  const viajes = await this.viajeRepository.find({ where: { estadoViaje: estadoPendiente } });
+
+  // 3. "Hidratamos" cada viaje buscando sus unidades en el otro microservicio
+  const viajesConUnidades = await Promise.all(viajes.map(async (viaje) => {
+    try {
+      // Hacemos la petición al servicio de unidades
+      // Asumo que tu servicio de unidades responde en el puerto 3002 y acepta un query param
+      const { data: unidades } = await lastValueFrom(
+        this.httpService.get('http://unidad-service:3002/unidad/', {
+          params: { idViaje: viaje.ViajeId } // Asegúrate que sea la Key correcta (ViajeId o id)
+        })
+      );
+
+      // 4. Retornamos el viaje original + el array de unidades real
+      return {
+        ...viaje,      // Copia todas las propiedades del viaje (origen, destino, etc)
+        unidades: unidades // Agrega/Sobreescribe la propiedad unidades con el array lleno
+      };
+
+    } catch (error) {
+      console.error(`Error al buscar unidades para viaje ${viaje.ViajeId}`, error);
+      // Si falla el microservicio de unidades, devolvemos el viaje con lista vacía para no romper todo
+      return { ...viaje, unidades: [] };
+    }
+  }));
+
+  console.log('Viajes completos recuperados:', viajesConUnidades);
+  return viajesConUnidades;
+}
+
+  async getChoferesDisponibles(fechaInicio: Date, fechaFin: Date) {
+    //Busco los viajes en el rango y que no esten cancelados
+    const viajesEnRango = await this.viajeRepository.find({
+      where: 
+        { fechaInicio: LessThanOrEqual(fechaFin), fechaFin: MoreThanOrEqual(fechaInicio),estadoViaje: {id: Not(3)} } //solo los viajes asignados,
+      
+    });
+    console.log('Viajes en el rango para choferes:', viajesEnRango);
+    try {
+      const response = await firstValueFrom(
+        this.httpService.post('http://unidad-service:3002/unidad/choferesDisponibles', viajesEnRango)
+      );
+      console.log('Choferes disponibles:', response.data);
+      return response.data;
+    }  
+    catch (error) {
+      console.error('Error al buscar los choferes:', error.message);
+    }
+
+  }
+
+  async asignarChoferes(viajeId:number, asignaciones: {unidadId: number, choferId: number}[]) {
+    // Lllamar al servicio de unidad para actualizar los choferes asignados
+    try {
+      console.log(asignaciones);
+      const response = await firstValueFrom(
+        this.httpService.post('http://unidad-service:3002/unidad/asignarChoferes',{asignaciones})
+      );
+      //Actualizo el viaje solo si logro asignar los choferes
+      await this.viajeRepository.update(viajeId, {estadoViaje: {id:4}}); //cambio el estado pendiente de pago
+      console.log('choferes asignados y viaje actualizado')
+      
+    }  
+    catch (error) {
+      console.error('Error al asignar los choferes:', error.message);
+    }
+  }
+
+  async rechazarViaje(viajeId: number) {
+    await this.viajeRepository.update(viajeId, { estadoViaje: { id: 3 } }); }
 
   findOne(id: number) {
     return `This action returns a #${id} viaje`;

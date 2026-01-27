@@ -24,8 +24,10 @@ const tipoCamion_entity_1 = require("./entities/tipoCamion.entity");
 const camion_entity_1 = require("./entities/camion.entity");
 const unidad_entity_1 = require("./entities/unidad.entity");
 const typeorm_3 = require("typeorm");
+const transportista_entity_1 = require("./entities/transportista.entity");
+const rxjs_1 = require("rxjs");
 let UnidadService = class UnidadService {
-    constructor(httpService, semirremolqueRepository, acopladoRepository, tipoRepository, tipoCamionRepository, CamionRepository, UnidadRepository) {
+    constructor(httpService, semirremolqueRepository, acopladoRepository, tipoRepository, tipoCamionRepository, CamionRepository, UnidadRepository, choferRepository) {
         this.httpService = httpService;
         this.semirremolqueRepository = semirremolqueRepository;
         this.acopladoRepository = acopladoRepository;
@@ -33,6 +35,7 @@ let UnidadService = class UnidadService {
         this.tipoCamionRepository = tipoCamionRepository;
         this.CamionRepository = CamionRepository;
         this.UnidadRepository = UnidadRepository;
+        this.choferRepository = choferRepository;
     }
     async testConnection() {
         try {
@@ -189,11 +192,51 @@ let UnidadService = class UnidadService {
         console.log('Unidades formadas:', unidadesFormadas);
         return { unidadesFormadas, errores };
     }
+    async getChoferesDisponibles(idViajesEnRango) {
+        if (!idViajesEnRango) {
+            console.log('No hay viajes en el rango proporcionado.');
+            const allChoferes = await this.choferRepository.find();
+            const idsParaSolicitar = allChoferes.map(c => c.idUsuario);
+            const { data } = await (0, rxjs_1.lastValueFrom)(this.httpService.get('http://users-service:3003/users/by-ids', {
+                params: {
+                    ids: idsParaSolicitar.join(',')
+                }
+            }));
+            return data;
+        }
+        const unidadesEnRango = await this.UnidadRepository.find({
+            where: { idViaje: (0, typeorm_3.In)(idViajesEnRango) },
+            relations: ['transportista']
+        });
+        const idsOcupados = [...new Set(unidadesEnRango.map(u => u.transportista.idUsuario))];
+        let opcionesBusqueda = {};
+        if (idsOcupados.length > 0) {
+            opcionesBusqueda = {
+                where: { idUsuario: (0, typeorm_3.Not)((0, typeorm_3.In)(idsOcupados)) },
+            };
+        }
+        const choferesDisponibles = await this.choferRepository.find(opcionesBusqueda);
+        console.log('IDs de choferes disponibles:', choferesDisponibles.map(c => c.idUsuario));
+        if (choferesDisponibles.length === 0)
+            return [];
+        const idsParaSolicitar = choferesDisponibles.map(c => c.idUsuario);
+        const { data } = await (0, rxjs_1.lastValueFrom)(this.httpService.get('http://users-service:3003/users/by-ids', {
+            params: {
+                ids: idsParaSolicitar.join(',')
+            }
+        }));
+        return data;
+    }
+    asignarChoferes(asignaciones) {
+        for (const asignacion of asignaciones)
+            this.UnidadRepository.update(asignacion.unidadId, { transportista: { idUsuario: asignacion.choferId } });
+    }
     findAll() {
         return `This action returns all unidad`;
     }
     findOne(id) {
-        return `This action returns a #${id} unidad`;
+        const unidad = this.UnidadRepository.find({ where: { idViaje: id }, relations: ['camion', 'semiremolque', 'acoplado'] });
+        return unidad;
     }
     update(id, updateUnidadDto) {
         return `This action updates a #${id} unidad`;
@@ -211,7 +254,9 @@ exports.UnidadService = UnidadService = __decorate([
     __param(4, (0, typeorm_1.InjectRepository)(tipoCamion_entity_1.TipoCamion)),
     __param(5, (0, typeorm_1.InjectRepository)(camion_entity_1.Camion)),
     __param(6, (0, typeorm_1.InjectRepository)(unidad_entity_1.Unidad)),
+    __param(7, (0, typeorm_1.InjectRepository)(transportista_entity_1.Transportista)),
     __metadata("design:paramtypes", [axios_1.HttpService,
+        typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository,

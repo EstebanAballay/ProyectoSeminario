@@ -35,6 +35,24 @@ let ViajeController = class ViajeController {
     findAll(user) {
         return this.viajeService.findAll(user);
     }
+    findAllAdmin() {
+        return this.viajeService.getViajesPendientes();
+    }
+    async getChoferesDisponibles(desde, hasta) {
+        if (!desde || !hasta) {
+            throw new common_1.BadRequestException('Las fechas "desde" y "hasta" son obligatorias');
+        }
+        ;
+        const fechaInicio = new Date(desde);
+        const fechaFin = new Date(hasta);
+        return this.viajeService.getChoferesDisponibles(fechaInicio, fechaFin);
+    }
+    async asignarChoferes(dto) {
+        return this.viajeService.asignarChoferes(dto.viajeId, dto.asignaciones);
+    }
+    async rechazarViaje(id) {
+        return this.viajeService.rechazarViaje(id);
+    }
     findOne(id) {
         return this.viajeService.findOne(+id);
     }
@@ -69,6 +87,36 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], ViajeController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)('viajesPendientes'),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], ViajeController.prototype, "findAllAdmin", null);
+__decorate([
+    (0, common_1.Get)('choferesDisponibles'),
+    __param(0, (0, common_1.Query)('desde')),
+    __param(1, (0, common_1.Query)('hasta')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Date,
+        Date]),
+    __metadata("design:returntype", Promise)
+], ViajeController.prototype, "getChoferesDisponibles", null);
+__decorate([
+    (0, common_1.Post)('asignarChoferes'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ViajeController.prototype, "asignarChoferes", null);
+__decorate([
+    (0, common_1.Patch)('rechazarViaje/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], ViajeController.prototype, "rechazarViaje", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),

@@ -54,7 +54,11 @@ let ViajeService = class ViajeService {
             total: 0,
             estadoViaje: estadoDefault,
             distancia: data.distancia,
-            usuarioId: user.id
+            usuarioId: user.id,
+            CoordXOrigen: data.origenCoords.lat,
+            CoordYOrigen: data.origenCoords.lng,
+            CoordXDestino: data.destinoCoords.lat,
+            CoordYDestino: data.destinoCoords.lng
         });
         const savedViaje = await this.viajeRepository.save(viaje);
         const unidades = data.unidades;
@@ -124,6 +128,55 @@ let ViajeService = class ViajeService {
         const viajes = this.viajeRepository.find(user.id);
         console.log(viajes);
         return viajes;
+    }
+    async getViajesPendientes() {
+        const estadoPendiente = await this.estadoViajeRepository.findOne({ where: { id: 2 } });
+        const viajes = await this.viajeRepository.find({ where: { estadoViaje: estadoPendiente } });
+        const viajesConUnidades = await Promise.all(viajes.map(async (viaje) => {
+            try {
+                const { data: unidades } = await (0, rxjs_1.lastValueFrom)(this.httpService.get('http://unidad-service:3002/unidad/', {
+                    params: { idViaje: viaje.ViajeId }
+                }));
+                return {
+                    ...viaje,
+                    unidades: unidades
+                };
+            }
+            catch (error) {
+                console.error(`Error al buscar unidades para viaje ${viaje.ViajeId}`, error);
+                return { ...viaje, unidades: [] };
+            }
+        }));
+        console.log('Viajes completos recuperados:', viajesConUnidades);
+        return viajesConUnidades;
+    }
+    async getChoferesDisponibles(fechaInicio, fechaFin) {
+        const viajesEnRango = await this.viajeRepository.find({
+            where: { fechaInicio: (0, typeorm_2.LessThanOrEqual)(fechaFin), fechaFin: (0, typeorm_2.MoreThanOrEqual)(fechaInicio), estadoViaje: { id: (0, typeorm_2.Not)(3) } }
+        });
+        console.log('Viajes en el rango para choferes:', viajesEnRango);
+        try {
+            const response = await (0, rxjs_1.firstValueFrom)(this.httpService.post('http://unidad-service:3002/unidad/choferesDisponibles', viajesEnRango));
+            console.log('Choferes disponibles:', response.data);
+            return response.data;
+        }
+        catch (error) {
+            console.error('Error al buscar los choferes:', error.message);
+        }
+    }
+    async asignarChoferes(viajeId, asignaciones) {
+        try {
+            console.log(asignaciones);
+            const response = await (0, rxjs_1.firstValueFrom)(this.httpService.post('http://unidad-service:3002/unidad/asignarChoferes', { asignaciones }));
+            await this.viajeRepository.update(viajeId, { estadoViaje: { id: 4 } });
+            console.log('choferes asignados y viaje actualizado');
+        }
+        catch (error) {
+            console.error('Error al asignar los choferes:', error.message);
+        }
+    }
+    async rechazarViaje(viajeId) {
+        await this.viajeRepository.update(viajeId, { estadoViaje: { id: 3 } });
     }
     findOne(id) {
         return `This action returns a #${id} viaje`;

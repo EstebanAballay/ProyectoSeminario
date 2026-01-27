@@ -11,6 +11,8 @@ import { TipoCamion } from './entities/tipoCamion.entity';
 import { Camion } from './entities/camion.entity';
 import { Unidad } from './entities/unidad.entity'
 import { In, Not } from 'typeorm';
+import { Transportista } from './entities/transportista.entity';
+import { lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class UnidadService {
@@ -21,7 +23,8 @@ export class UnidadService {
     @InjectRepository(Tipo) private tipoRepository: Repository<Tipo>,
     @InjectRepository(TipoCamion) private tipoCamionRepository: Repository<TipoCamion>,
     @InjectRepository(Camion) private CamionRepository: Repository<Camion>,
-    @InjectRepository(Unidad) private UnidadRepository: Repository<Unidad>
+    @InjectRepository(Unidad) private UnidadRepository: Repository<Unidad>,
+    @InjectRepository(Transportista) private choferRepository: Repository<Transportista>
   ) {}
 
   async testConnection() 
@@ -229,9 +232,66 @@ export class UnidadService {
     return { unidadesFormadas, errores};
 }
 
+  async getChoferesDisponibles(idViajesEnRango: number[]) {
+    // Si no hay viajes, no hay unidades que buscar, entonces devuelvo todos los choferes
+    if (!idViajesEnRango) {
+      console.log('No hay viajes en el rango proporcionado.');
+      const allChoferes = await this.choferRepository.find();
+      const idsParaSolicitar = allChoferes.map(c => c.idUsuario);
 
+      const { data } = await lastValueFrom(
+        this.httpService.get('http://users-service:3003/users/by-ids', {
+          params: {
+            ids: idsParaSolicitar.join(',') // Ahora sí es un string "1,2,3"
+          }
+        })
+      );
+      return data;
+    }
 
+  // Buscar unidades asociadas a los viajes en el rango
+  const unidadesEnRango = await this.UnidadRepository.find({
+    where: { idViaje: In(idViajesEnRango) },
+    relations: ['transportista'] 
+  });
 
+  // Busco los IDs de los choferes ocupados
+  // Usamos un Set para evitar duplicados si un chofer tiene varios viajes
+  const idsOcupados = [...new Set(unidadesEnRango.map(u => u.transportista.idUsuario))];
+
+  let opcionesBusqueda = {};
+
+  // Solo aplicamos el filtro Not(In(...)) si realmente hay alguien ocupado
+  if (idsOcupados.length > 0) {
+    opcionesBusqueda = {
+      where: { idUsuario: Not(In(idsOcupados)) },
+    };
+  }
+
+  // Busco los choferes disponibles (Entities)
+  const choferesDisponibles = await this.choferRepository.find(opcionesBusqueda);
+
+  console.log('IDs de choferes disponibles:', choferesDisponibles.map(c => c.idUsuario));
+
+  if (choferesDisponibles.length === 0) return [];
+
+  const idsParaSolicitar = choferesDisponibles.map(c => c.idUsuario);
+
+  const { data } = await lastValueFrom(
+    this.httpService.get('http://users-service:3003/users/by-ids', {
+      params: {
+        ids: idsParaSolicitar.join(',') // Ahora sí es un string "1,2,3"
+      }
+    })
+  );
+  
+  return data;
+}
+
+  asignarChoferes(asignaciones:{unidadId: number, choferId: number}[]) {
+    for (const asignacion of asignaciones)
+      this.UnidadRepository.update(asignacion.unidadId,{transportista: { idUsuario: asignacion.choferId }});
+  }
 
 
   findAll() {
@@ -239,7 +299,8 @@ export class UnidadService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} unidad`;
+    const unidad = this.UnidadRepository.find({where: {idViaje:id}, relations:['camion','semiremolque','acoplado']});
+    return unidad;
   }
 
   update(id: number, updateUnidadDto: UpdateUnidadDto) {

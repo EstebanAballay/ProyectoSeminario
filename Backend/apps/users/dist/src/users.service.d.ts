@@ -23,4 +23,5 @@ export declare class UsersService {
     }>;
     findOneByEmail(email: string): Promise<User>;
     findOneByEmailWithPassword(email: string): Promise<User>;
+    findByIds(ids: number[]): Promise<User[]>;
 }

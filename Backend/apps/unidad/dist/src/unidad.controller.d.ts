@@ -12,7 +12,16 @@ export declare class UnidadController {
         unidadesFormadas: any[];
         errores: string[];
     }>;
-    findOne(id: string): string;
+    getChoferesDisponibles(dto: {
+        idViajesEnRango: number[];
+    }): Promise<any>;
+    buscarUnidades(idViaje?: number): Promise<string | import("./entities/unidad.entity").Unidad[]>;
+    asignarChoferes(dto: {
+        asignaciones: {
+            unidadId: number;
+            choferId: number;
+        }[];
+    }): Promise<void>;
     update(id: string, updateUnidadDto: UpdateUnidadDto): string;
     remove(id: string): string;
 }

@@ -8,6 +8,7 @@ import { Tipo } from './entities/tipo.entity';
 import { TipoCamion } from './entities/tipoCamion.entity';
 import { Camion } from './entities/camion.entity';
 import { Unidad } from './entities/unidad.entity';
+import { Transportista } from './entities/transportista.entity';
 export declare class UnidadService {
     private readonly httpService;
     private semirremolqueRepository;
@@ -16,7 +17,8 @@ export declare class UnidadService {
     private tipoCamionRepository;
     private CamionRepository;
     private UnidadRepository;
-    constructor(httpService: HttpService, semirremolqueRepository: Repository<Semirremolque>, acopladoRepository: Repository<Acoplado>, tipoRepository: Repository<Tipo>, tipoCamionRepository: Repository<TipoCamion>, CamionRepository: Repository<Camion>, UnidadRepository: Repository<Unidad>);
+    private choferRepository;
+    constructor(httpService: HttpService, semirremolqueRepository: Repository<Semirremolque>, acopladoRepository: Repository<Acoplado>, tipoRepository: Repository<Tipo>, tipoCamionRepository: Repository<TipoCamion>, CamionRepository: Repository<Camion>, UnidadRepository: Repository<Unidad>, choferRepository: Repository<Transportista>);
     testConnection(): Promise<void>;
     private getRandomItem;
     createUnidad(dto: CreateUnidadDto): Promise<Unidad>;
@@ -31,8 +33,13 @@ export declare class UnidadService {
         unidadesFormadas: any[];
         errores: string[];
     };
+    getChoferesDisponibles(idViajesEnRango: number[]): Promise<any>;
+    asignarChoferes(asignaciones: {
+        unidadId: number;
+        choferId: number;
+    }[]): void;
     findAll(): string;
-    findOne(id: number): string;
+    findOne(id: number): Promise<Unidad[]>;
     update(id: number, updateUnidadDto: UpdateUnidadDto): string;
     remove(id: number): string;
 }

@@ -10,6 +10,8 @@ import { PagoSeniaComponent } from './pago-senia.component/pago-senia.component'
 import { Path } from 'leaflet';
 import { AdminPanel } from './admin-panel/admin-panel.component'; 
 import { RoleGuard } from './guards/role.guard';
+import { ConsultarViajes } from './consultar-viajes-admin/consultar-viajes.component';
+
 export const routes: Routes = [
   { path: '', redirectTo: 'paginainicio', pathMatch: 'full' },
   {
@@ -26,12 +28,9 @@ export const routes: Routes = [
   { path: 'menu', component: MenuComponent, canActivate: [RoleGuard], data: { role: 'client' } },
   { path: 'misviajes', component: MisViajesComponent, canActivate: [RoleGuard], data: { role: 'client' } }, 
   { path: 'nuevoviaje', component: NuevoViajeComponent, canActivate: [RoleGuard], data: { role: 'client' }  },
-   {path: 'admin', component: AdminPanel, 
-    children: [
-      //{ path: 'consultar-viajes', component: MisViajesComponent },
+  { path: 'admin', component: AdminPanel, canActivate: [RoleGuard], data: { role: 'admin' }}, 
+  { path: 'admin/consultar-viajes', component: ConsultarViajes, canActivate: [RoleGuard], data: { role: 'admin' }},
       //{ path: 'agregar-empleados', component: RegistroEmpleadosComponent },
       //{ path: 'gestion-clientes', component: GestionClientesComponent },
       // ... el resto de tus sub-componentes
-    ]
-  },
 ];

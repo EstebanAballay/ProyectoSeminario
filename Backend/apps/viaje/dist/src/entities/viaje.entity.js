@@ -80,6 +80,22 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
 ], Viaje.prototype, "usuarioId", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'double precision', nullable: true }),
+    __metadata("design:type", Number)
+], Viaje.prototype, "CoordXOrigen", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'double precision', nullable: true }),
+    __metadata("design:type", Number)
+], Viaje.prototype, "CoordYOrigen", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'double precision', nullable: true }),
+    __metadata("design:type", Number)
+], Viaje.prototype, "CoordXDestino", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'double precision', nullable: true }),
+    __metadata("design:type", Number)
+], Viaje.prototype, "CoordYDestino", void 0);
 exports.Viaje = Viaje = __decorate([
     (0, typeorm_1.Entity)({ name: 'viaje', schema: 'microservice_viaje' })
 ], Viaje);

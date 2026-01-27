@@ -27,6 +27,9 @@ let UsersController = class UsersController {
     async login(dto) {
         return this.usersService.login(dto);
     }
+    async getUsersByIds(ids) {
+        return this.usersService.findByIds(ids);
+    }
 };
 exports.UsersController = UsersController;
 __decorate([
@@ -43,6 +46,13 @@ __decorate([
     __metadata("design:paramtypes", [login_dto_1.LoginDto]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "login", null);
+__decorate([
+    (0, common_1.Get)('by-ids'),
+    __param(0, (0, common_1.Query)('ids', new common_1.ParseArrayPipe({ items: Number, separator: ',' }))),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Array]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "getUsersByIds", null);
 exports.UsersController = UsersController = __decorate([
     (0, common_1.Controller)('users'),
     __metadata("design:paramtypes", [users_service_1.UsersService])
