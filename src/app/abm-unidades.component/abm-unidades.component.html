@@ -1,0 +1,35 @@
+<div class="main-container">
+  <h2 class="welcome-title">Nueva Unidad</h2>
+
+  <form class="menu-options" [formGroup]="unidadesForm" (ngSubmit)="guardarUnidad()">
+    
+    <div class="form-section">
+      <p class="section-title">Datos del Vehículo</p>
+      <div class="input-group">
+        <input type="text" placeholder="Patente" formControlName="patente">
+        <input type="text" placeholder="Marca" formControlName="marca">
+        <input type="text" placeholder="Modelo" formControlName="modelo">
+      </div>
+    </div>
+
+    <div class="form-section">
+      <p class="section-title">Especificaciones</p>
+      <div class="input-group">
+        <select formControlName="tipo">
+          <option value="" disabled selected>Seleccione Tipo de Unidad</option>
+          <option value="camion">Camión</option>
+          <option value="remolque">Remolque</option>
+        </select>
+        <input type="text" placeholder="Capacidad de Carga (kg)" formControlName="capacidad">
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="submit" class="menu-button" [disabled]="unidadesForm.invalid">
+        <div class="icon-background"><span class="icon">💾</span></div>
+        Guardar Unidad
+      </button>
+      <button type="button" class="cancel-link" (click)="cancelar()">Cancelar</button>
+    </div>
+  </form>
+</div>

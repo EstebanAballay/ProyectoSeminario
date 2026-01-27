@@ -8,14 +8,16 @@ import { NuevoViajeComponent } from './nuevo-viaje.component/nuevo-viaje.compone
 import { MisViajesComponent } from './mis-viajes.component/mis-viajes.component';
 import { PagoSeniaComponent } from './pago-senia.component/pago-senia.component';
 import { MenucamioneroComponent } from './menu.camionero/menucamionero.component';
-
-// IMPORTANTE: Importar el componente que creamos
 import { NuevoEmpleadoComponent } from './nuevo-empleado.component/nuevo-empleado.component';
 
-export const routes: Routes = [
-    // 1. Agregamos la ruta que faltaba
-    { path: 'nuevo-empleado', component: NuevoEmpleadoComponent },
+// 1. Importamos el nuevo componente de Unidades que creaste con la terminal
+import { AbmUnidadesComponent } from './abm-unidades.component/abm-unidades.component';
 
+export const routes: Routes = [
+    // 2. Agregamos la ruta para gestionar camiones y remolques
+    { path: 'abm-unidades', component: AbmUnidadesComponent },
+    
+    { path: 'nuevo-empleado', component: NuevoEmpleadoComponent },
     { path: '', redirectTo: 'paginainicio', pathMatch: 'full' },
     { path: 'login', component: LoginComponent },
     { path: 'register', component: RegisterComponent },
@@ -26,6 +28,6 @@ export const routes: Routes = [
     { path: 'pagosenia', component: PagoSeniaComponent },
     { path: 'menucamionero', component: MenucamioneroComponent },
 
-    // 2. El comodín siempre al final
+    // El comodín siempre al final para evitar errores de navegación
     { path: '**', redirectTo: 'paginainicio', pathMatch: 'full' }
 ];
