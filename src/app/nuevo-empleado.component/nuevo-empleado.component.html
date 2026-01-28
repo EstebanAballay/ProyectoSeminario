@@ -1,0 +1,40 @@
+<div class="main-container">
+  <h2 class="welcome-title">Nuevo Empleado</h2>
+
+  <form class="menu-options" [formGroup]="empleadoForm" (ngSubmit)="guardarEmpleado()">
+    
+    <div class="form-section">
+      <p class="section-title">Datos Personales</p>
+      <div class="input-group">
+        <input type="text" placeholder="Nombre" formControlName="nombre">
+        <input type="text" placeholder="Apellido" formControlName="apellido">
+        <input type="text" placeholder="DNI / CUIL" formControlName="dni">
+      </div>
+    </div>
+
+    <div class="form-section">
+      <p class="section-title">Puesto y Contacto</p>
+      <div class="input-group">
+        <select formControlName="rol">
+          <option value="" disabled selected>Seleccione un Rol</option>
+          <option value="chofer">Chofer</option>
+          <option value="admin">Administrador/a</option>
+          <option value="operario">Operario</option>
+        </select>
+        <input type="tel" placeholder="Teléfono" formControlName="telefono">
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="submit" class="menu-button" [disabled]="empleadoForm.invalid">
+        <div class="icon-background">
+          <span class="icon">💾</span>
+        </div>
+        Guardar Empleado
+      </button>
+      
+      <button type="button" class="cancel-link" (click)="cancelar()">Cancelar</button>
+    </div>
+
+  </form>
+</div>

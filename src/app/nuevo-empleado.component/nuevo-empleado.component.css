@@ -1,0 +1,105 @@
+/* Contenedor Principal */
+.main-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding: 40px 20px;
+  background-color: #0B1E3A;
+  font-family: 'Poppins', sans-serif;
+  color: #f4f1e5;
+}
+
+/* Título Principal */
+.welcome-title {
+  font-size: 2rem;
+  margin-bottom: 30px;
+  color: #f4f1e5;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Formulario al 90% */
+.menu-options {
+  width: 90%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+/* Secciones (Cards) */
+.form-section {
+  background-color: rgba(244, 241, 229, 0.08);
+  padding: 20px;
+  border-radius: 15px;
+  border: 1px solid rgba(244, 241, 229, 0.2);
+}
+
+.section-title {
+  color: #f4f1e5;
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Inputs y Selects */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.input-group input,
+.input-group select {
+  width: 100%;
+  box-sizing: border-box; /* 🔥 FIX */
+  padding: 12px 15px;
+  border-radius: 10px;
+  border: none;
+  background-color: #f4f1e5;
+  color: #0B1E3A;
+  font-size: 1rem;
+  outline: none;
+}
+
+/* Botón de Acción */
+.menu-button {
+  width: 100%;
+  background-color: #f4f1e5;
+  color: #0B1E3A;
+  border: none;
+  border-radius: 12px;
+  padding: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  margin-top: 10px;
+}
+
+.menu-button:hover:not(:disabled) {
+  background-color: #ffffff;
+  transform: scale(1.03);
+}
+
+.menu-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cancel-link {
+  background: none;
+  border: none;
+  color: #f4f1e5;
+  text-decoration: underline;
+  margin-top: 15px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}

@@ -1,0 +1,131 @@
+/* Encabezado */
+.header {
+    background-color: #F5EFE3;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 2px solid #eee;
+}
+
+.logo img {
+    height: 60px;
+}
+
+.profile-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #333;
+    cursor: pointer;
+}
+
+/* Contenedor principal */
+.container {
+    background-color: #0b2f4e;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    min-height: calc(100vh - 60px);
+}
+
+.container h2 {
+    margin-bottom: 20px;
+}
+
+/* Tarjeta del formulario */
+.form-card {
+    background: #f5f5f5;
+    color: #333;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 600px;
+    margin: 0 auto 20px auto;
+    text-align: left;
+}
+
+.form-card label {
+    font-weight: bold;
+    display: block;
+    margin: 10px 0 5px;
+}
+
+.form-card input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Botón */
+.btn-submit {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    background: #0b2f4e;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-submit:hover {
+    background: #163d5f;
+}
+
+/* Mapa */
+#map {
+    width: 80%;
+    height: 400px;
+    margin: 20px auto;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+/* Colores del routing */
+:host ::ng-deep .leaflet-routing-container,
+:host ::ng-deep .leaflet-routing-container * {
+    color: black !important;
+    text-shadow: none !important;
+}
+
+:host ::ng-deep .leaflet-routing-instructions,
+:host ::ng-deep .leaflet-routing-instructions span,
+:host ::ng-deep .leaflet-routing-alt,
+:host ::ng-deep .leaflet-routing-alt * {
+    color: black !important;
+}
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 320px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
