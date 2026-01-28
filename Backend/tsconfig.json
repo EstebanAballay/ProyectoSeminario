@@ -2,7 +2,8 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "es2017",
-    "lib": ["es2017", "dom"],
+
+    "lib": ["es2017","dom"],
     "declaration": false,
     "sourceMap": true,
     "outDir": "./dist",
@@ -15,5 +16,6 @@
     "skipLibCheck": true,
     "baseUrl": "./",
     "paths": {}
-  }
+  },
+  "exclude": ["node_modules", "dist"]
 }

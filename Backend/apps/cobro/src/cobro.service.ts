@@ -1,0 +1,100 @@
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { HttpService } from '@nestjs/axios';
+import { firstValueFrom } from 'rxjs';
+import { Cobro } from './entities/cobro.entity';
+
+@Injectable()
+export class CobroService {
+    private readonly logger = new Logger(CobroService.name);
+
+    constructor(
+        @InjectRepository(Cobro)
+        private readonly cobroRepo: Repository<Cobro>,
+        private readonly httpService: HttpService,
+    ) {}
+
+    /**
+     * Crea el registro inicial en Supabase.
+     */
+    async crearCobro(data: Partial<Cobro>) {
+        const nuevoCobro = this.cobroRepo.create(data);
+        const guardado = await this.cobroRepo.save(nuevoCobro);
+        this.logger.log(`✅ Cobro creado: ID ${guardado.id} por $${guardado.monto}`);
+        return guardado;
+    }
+
+    /**
+     * Busca un cobro por ID. Fundamental para evitar el error 404 en Postman.
+     */
+    async obtenerPorId(id: number) {
+        const cobro = await this.cobroRepo.findOne({ where: { id } });
+        if (!cobro) {
+            throw new NotFoundException(`El cobro con ID ${id} no existe.`);
+        }
+        return cobro;
+    }
+
+    /**
+     * Genera el link de pago real usando el microservicio de MP y Ngrok.
+     */
+    async generarPagoMP(cobroId: number) {
+        const cobro = await this.obtenerPorId(cobroId);
+
+        try {
+            const response = await firstValueFrom(
+                this.httpService.post(`${process.env.MP_SERVICE_URL}/mercadopago/create`, {
+                    cobroId: cobro.id,
+                    monto: cobro.monto,
+                    // Usamos la URL completa definida en tu .env para el túnel de Ngrok
+                    notificationUrl: process.env.NGROK_WEBHOOK_URL 
+                })
+            );
+
+            this.logger.log(`⏳ Link generado para cobro ${cobroId}. Notificaciones en: ${process.env.NGROK_WEBHOOK_URL}`);
+            return response.data; // Retorna el init_point para el navegador
+        } catch (error) {
+            this.logger.error(`❌ Error al conectar con MP-Service: ${error.message}`);
+            throw error;
+        }
+    }
+
+    /**
+     * Consulta al microservicio de MP los detalles para obtener el cobroId real
+     * y confirmar la transacción en Supabase tras el aviso de Ngrok.
+     */
+    async verificarYConfirmarPago(paymentId: string) {
+        try {
+            const response = await firstValueFrom(
+                this.httpService.get(`${process.env.MP_SERVICE_URL}/mercadopago/verificar/${paymentId}`)
+            );
+
+            const { cobroId, status } = response.data;
+
+            if (status === 'approved') {
+                await this.confirmarPagoMP(cobroId, status, paymentId);
+            }
+        } catch (error) {
+            this.logger.error(`Error verificando pago ${paymentId}: ${error.message}`);
+        }
+    }
+
+    /**
+     * Impacta el cambio de estado en la base de datos de Supabase.
+     */
+    async confirmarPagoMP(cobroId: string, status: string, paymentId: string) {
+        const estadoFinal = status === 'approved' ? 'pagado' : 'rechazado';
+        
+        await this.cobroRepo.update(
+            { id: Number(cobroId) },
+            { 
+                estado: estadoFinal, 
+                transactionId: paymentId 
+            }
+        );
+
+        this.logger.log(`🔔 WEBHOOK PROCESADO: Cobro ${cobroId} actualizado a [${estadoFinal}]`);
+        return { success: true };
+    }
+}

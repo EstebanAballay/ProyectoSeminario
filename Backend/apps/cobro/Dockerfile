@@ -1,18 +1,7 @@
-FROM node:20
-
+FROM node:20-alpine
 WORKDIR /app
-
 COPY package*.json ./
 RUN npm install
-
 COPY . .
-
-#Comando necesario en linux,borrar si estas en windows
-RUN chmod +x node_modules/.bin/nest
-
-RUN npm install -g @nestjs/cli
-
-RUN npm run build
-
-CMD ["node", "dist/main.js"]
-
+# Eliminamos el RUN npm run build para evitar el error de compilación estática
+CMD ["npm", "run", "start:dev", "cobro"]

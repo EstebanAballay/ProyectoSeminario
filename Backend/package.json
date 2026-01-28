@@ -26,10 +26,7 @@
     "test:e2e": "jest --config ./apps/proyecto-seminario/test/jest-e2e.json"
   },
   "dependencies": {
-<<<<<<< ours
     "@googlemaps/google-maps-services-js": "^3.4.2",
-=======
->>>>>>> theirs
     "@nestjs/axios": "^4.0.1",
     "@nestjs/common": "^11.1.6",
     "@nestjs/config": "^4.0.2",
@@ -40,24 +37,16 @@
     "@nestjs/typeorm": "^11.0.0",
     "@supabase/supabase-js": "^2.75.0",
     "@types/bcryptjs": "^2.4.6",
-<<<<<<< ours
     "axios": "^1.12.2",
-=======
-    "axios": "^1.13.1",
->>>>>>> theirs
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.2",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
-<<<<<<< ours
+    "dotenv": "^17.2.3",
+    "mercadopago": "^2.10.0",
     "concurrently": "^9.0.0",
     "jsonwebtoken": "^9.0.2",
     "passport-jwt": "^4.0.1",
-=======
-    "dotenv": "^17.2.3",
-    "jsonwebtoken": "^9.0.2",
-    "mercadopago": "^2.10.0",
->>>>>>> theirs
     "pg": "^8.16.3",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
