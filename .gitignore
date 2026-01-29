@@ -1,0 +1,3 @@
+# Ignorar carpetas generadas
+dist/
+Backend/apps/**/dist/

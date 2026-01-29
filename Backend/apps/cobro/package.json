@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+
   "scripts": {
-    "start": "nest start",
-    "start:dev": "nest start --watch",
-    "build": "nest build"
+    "build": "nest build",
+    "start": "node dist/src/main.js",
+    "start:dev": "nest start --watch"
   },
   "keywords": [],
   "author": "",

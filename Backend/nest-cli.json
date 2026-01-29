@@ -24,6 +24,15 @@
         "tsConfigPath": "apps/maps/tsconfig.app.json"
       }
     },
+    "mercadopago": {
+      "type": "application",
+      "root": "apps/mercadopago",
+      "entryFile": "main",
+      "sourceRoot": "apps/mercadopago/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/mercadopago/tsconfig.app.json"
+      }
+    },
     "unidad": {
       "type": "application",
       "root": "apps/unidad",
