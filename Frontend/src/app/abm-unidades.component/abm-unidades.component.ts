@@ -12,6 +12,15 @@ import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angula
 export class AbmUnidadesComponent implements OnInit {
   unidadesForm!: FormGroup;
 
+  // Definición de subtipos por categoría
+  subtiposMap = {
+    'camion': ['Cisterna', 'Frigorífico', 'Tracto Camión', 'Reparto'],
+    'acoplado': ['Cisterna Aceite', 'Cisterna Leche', 'Cisterna Combustible', 'Mixto', 'Ganado', 'Granos', 'Arena/Piedra'],
+    'semirremolque': ['Cisterna Aceite', 'Cisterna Leche', 'Cisterna Combustible', 'Mixto', 'Ganado', 'Granos', 'Arena/Piedra']
+  };
+
+  subtiposDisponibles: string[] = [];
+
   constructor(private fb: FormBuilder) { }
 
   ngOnInit(): void {
@@ -21,6 +30,11 @@ export class AbmUnidadesComponent implements OnInit {
       modelo: ['', Validators.required],
       tipo: ['', Validators.required],
       capacidad: ['', [Validators.required, Validators.pattern('^[0-9]*$')]]
+    });
+
+    this.unidadesForm.get('tipo')?.valueChanges.subscribe(tipo => {
+      this.subtiposDisponibles = this.subtiposMap[tipo as keyof typeof this.subtiposMap] || [];
+      this.unidadesForm.get('subtipo')?.setValue(''); // Resetear el subtipo al cambiar el tipo
     });
   }
 

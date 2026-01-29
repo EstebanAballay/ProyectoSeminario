@@ -4,26 +4,35 @@
   <form class="menu-options" [formGroup]="unidadesForm" (ngSubmit)="guardarUnidad()">
     
     <div class="form-section">
-      <p class="section-title">Datos del Vehículo</p>
-      <div class="input-group">
-        <input type="text" placeholder="Patente" formControlName="patente">
-        <input type="text" placeholder="Marca" formControlName="marca">
-        <input type="text" placeholder="Modelo" formControlName="modelo">
-      </div>
-    </div>
-
-    <div class="form-section">
       <p class="section-title">Especificaciones</p>
       <div class="input-group">
         <select formControlName="tipo">
           <option value="" disabled selected>Seleccione Tipo de Unidad</option>
           <option value="camion">Camión</option>
-          <option value="remolque">Remolque</option>
+          <option value="semirremolque">Remolque</option>
+          <option value="acoplado">Acoplado</option>
         </select>
-        <input type="text" placeholder="Capacidad de Carga (kg)" formControlName="capacidad">
       </div>
     </div>
 
+    <div class="form-section">
+      <p class="section-title">Datos del Vehículo</p>
+      <div class="input-group">
+        <input type="text" placeholder="Patente" formControlName="patente">
+        <input type="text" placeholder="Capacidad de Carga (kg)" formControlName="capacidad">
+        <input type="text" placeholder="Precio por Kilometro" formControlName="precio">
+        <input type="text" placeholder="Cantidad de Ejes" formControlName="ejes">
+      </div>
+
+      <div class="form-group field-spacing"  >
+        <select formControlName="subtipo" class="custom-select-styled">
+          <option value="" disabled selected>Seleccione Sub-Tipo de Vehículo</option>
+          <option *ngFor="let s of subtiposDisponibles" [value]="s">{{ s }}</option>
+        </select>
+      </div>
+    </div>
+
+    
     <div class="actions">
       <button type="submit" class="menu-button" [disabled]="unidadesForm.invalid">
         <div class="icon-background"><span class="icon">💾</span></div>
