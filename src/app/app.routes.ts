@@ -9,23 +9,25 @@ import { MisViajesComponent } from './mis-viajes.component/mis-viajes.component'
 import { PagoSeniaComponent } from './pago-senia.component/pago-senia.component';
 import { MenucamioneroComponent } from './menu.camionero/menucamionero.component';
 
-// IMPORTANTE: Importar el componente que creamos
 import { NuevoEmpleadoComponent } from './nuevo-empleado.component/nuevo-empleado.component';
+import { ListaEmpleadosComponent } from './componentes/lista-empleados/lista-empleados.component';
 
 export const routes: Routes = [
-    // 1. Agregamos la ruta que faltaba
-    { path: 'nuevo-empleado', component: NuevoEmpleadoComponent },
+  { path: '', redirectTo: 'paginainicio', pathMatch: 'full' },
 
-    { path: '', redirectTo: 'paginainicio', pathMatch: 'full' },
-    { path: 'login', component: LoginComponent },
-    { path: 'register', component: RegisterComponent },
-    { path: 'paginainicio', component: PaginainicioComponent },
-    { path: 'menu', component: MenuComponent },
-    { path: 'nuevoviaje', component: NuevoViajeComponent },
-    { path: 'misviajes', component: MisViajesComponent },
-    { path: 'pagosenia', component: PagoSeniaComponent },
-    { path: 'menucamionero', component: MenucamioneroComponent },
+  // EMPLEADOS
+  { path: 'nuevo-empleado', component: NuevoEmpleadoComponent },
+  { path: 'lista-empleados', component: ListaEmpleadosComponent },
+  { path: 'editar-empleado/:id', component: NuevoEmpleadoComponent },
 
-    // 2. El comodín siempre al final
-    { path: '**', redirectTo: 'paginainicio', pathMatch: 'full' }
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: 'paginainicio', component: PaginainicioComponent },
+  { path: 'menu', component: MenuComponent },
+  { path: 'nuevoviaje', component: NuevoViajeComponent },
+  { path: 'misviajes', component: MisViajesComponent },
+  { path: 'pagosenia', component: PagoSeniaComponent },
+  { path: 'menucamionero', component: MenucamioneroComponent },
+
+  { path: '**', redirectTo: 'paginainicio' }
 ];

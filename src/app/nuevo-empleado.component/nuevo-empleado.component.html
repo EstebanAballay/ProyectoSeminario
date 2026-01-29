@@ -1,5 +1,7 @@
 <div class="main-container">
-  <h2 class="welcome-title">Nuevo Empleado</h2>
+  <h2 class="welcome-title">
+    {{ modoEdicion ? 'Editar Empleado' : 'Nuevo Empleado' }}
+  </h2>
 
   <form class="menu-options" [formGroup]="empleadoForm" (ngSubmit)="guardarEmpleado()">
     
@@ -16,7 +18,7 @@
       <p class="section-title">Puesto y Contacto</p>
       <div class="input-group">
         <select formControlName="rol">
-          <option value="" disabled selected>Seleccione un Rol</option>
+          <option value="" disabled>Seleccione un Rol</option>
           <option value="chofer">Chofer</option>
           <option value="admin">Administrador/a</option>
           <option value="operario">Operario</option>
@@ -30,7 +32,7 @@
         <div class="icon-background">
           <span class="icon">💾</span>
         </div>
-        Guardar Empleado
+        {{ modoEdicion ? 'Guardar Cambios' : 'Guardar Empleado' }}
       </button>
       
       <button type="button" class="cancel-link" (click)="cancelar()">Cancelar</button>
