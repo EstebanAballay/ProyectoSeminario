@@ -1,0 +1,34 @@
+<div class="main-container">
+  <div class="header-acciones">
+    <h2 class="welcome-title">Unidades</h2>
+    <button routerLink="/nueva-unidad" class="menu-button">
+      + Registrar Unidad
+    </button>
+  </div>
+
+  <table class="tabla-logistica">
+    <thead>
+      <tr>
+        <th>Tipo</th>
+        <th>Patente</th>
+        <th>Marca</th>
+        <th>Modelo</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let unidad of unidades">
+        <td>{{ unidad.tipo }}</td>
+        <td>{{ unidad.patente }}</td>
+        <td>{{ unidad.marca }}</td>
+        <td>{{ unidad.modelo }}</td>
+        <td>{{ unidad.estado }}</td>
+        <td>
+          <button (click)="irAEditar(unidad.id)" class="btn-icon">✏️</button>
+          <button (click)="borrar(unidad.id)" class="btn-icon delete">🗑️</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
