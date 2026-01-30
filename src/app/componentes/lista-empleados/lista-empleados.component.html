@@ -1,0 +1,30 @@
+<div class="main-container">
+  <div class="header-acciones">
+    <h2 class="welcome-title">Nómina de Empleados</h2>
+    <button routerLink="/nuevo-empleado" class="menu-button">
+      + Registrar Empleado
+    </button>
+  </div>
+
+  <table class="tabla-logistica">
+    <thead>
+      <tr>
+        <th>Nombre y Apellido</th>
+        <th>Rol</th>
+        <th>Teléfono</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let emp of empleados">
+        <td>{{ emp.nombre }} {{ emp.apellido }}</td>
+        <td>{{ emp.rol }}</td>
+        <td>{{ emp.telefono }}</td>
+        <td>
+          <button (click)="irAEditar(emp.id)" class="btn-icon">✏️</button>
+          <button (click)="borrar(emp.id)" class="btn-icon delete">🗑️</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -8,8 +8,14 @@ import { NuevoViajeComponent } from './nuevo-viaje.component/nuevo-viaje.compone
 import { MisViajesComponent } from './mis-viajes.component/mis-viajes.component';
 import { PagoSeniaComponent } from './pago-senia.component/pago-senia.component';
 import { MenucamioneroComponent } from './menu.camionero/menucamionero.component';
-import { NuevoEmpleadoComponent } from './nuevo-empleado.component/nuevo-empleado.component';
+<<<<<<< HEAD
+=======
 
+>>>>>>> nuevo-empleado
+import { NuevoEmpleadoComponent } from './nuevo-empleado.component/nuevo-empleado.component';
+import { ListaEmpleadosComponent } from './componentes/lista-empleados/lista-empleados.component';
+
+<<<<<<< HEAD
 // 1. Importamos el nuevo componente de Unidades que creaste con la terminal
 import { AbmUnidadesComponent } from './abm-unidades.component/abm-unidades.component';
 
@@ -46,6 +52,16 @@ export const routes: Routes = [
   { path: 'lista-unidades', component: ListaUnidadesComponent },
   { path: 'editar-unidad/:id', component: NuevaUnidadComponent },
 
+=======
+export const routes: Routes = [
+  { path: '', redirectTo: 'paginainicio', pathMatch: 'full' },
+
+  // EMPLEADOS
+  { path: 'nuevo-empleado', component: NuevoEmpleadoComponent },
+  { path: 'lista-empleados', component: ListaEmpleadosComponent },
+  { path: 'editar-empleado/:id', component: NuevoEmpleadoComponent },
+
+>>>>>>> nuevo-empleado
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'paginainicio', component: PaginainicioComponent },
@@ -57,4 +73,7 @@ export const routes: Routes = [
 
   { path: '**', redirectTo: 'paginainicio' }
 ];
+<<<<<<< HEAD
 >>>>>>> Stashed changes
+=======
+>>>>>>> nuevo-empleado
