@@ -14,6 +14,11 @@ export class UnidadController {
     return this.unidadService.createUnidad(createUnidadDto);
   }
 
+  @Get()
+  finndAll(): any {
+    return this.unidadService.findAll();}
+
+
   @Get(':id/')
   async findAll(@Param('id') id: String): Promise<any> {
     return this.unidadService.findUnityByDriver(Number(id));}
@@ -35,6 +40,16 @@ export class UnidadController {
     return this.unidadService.findUnidadesDisponiblesByTipoRandom(dto.camiones, disponiblesPorFecha);
   } 
 
+@Patch('iniciarEstadoViaje/:id')
+  async iniciarEstadoViaje(@Param('id') id: number) {
+    return this.unidadService.iniciarEstadoViaje(id);
+  }
+  
+  @Patch('finalizarEstadoViaje/:id')
+  async finalizarEstadoViaje(@Param('id') id: number) {
+    return this.unidadService.finalizarEstadoViaje(id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.unidadService.findOne(+id);
@@ -49,4 +64,7 @@ export class UnidadController {
   remove(@Param('id') id: string) {
     return this.unidadService.remove(+id);
   }
+
+
+
 }

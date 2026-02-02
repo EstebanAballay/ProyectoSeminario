@@ -29,14 +29,17 @@ export class Viaje {
   @Column({ type: 'time' })
   horaLlegada?: string;
 
-  @Column()
+  @Column({ type: 'numeric', nullable: true })
   sena?: number;
 
-  @Column()
+  @Column({ type: 'numeric'})
   resto?: number;
 
-  @Column()
+  @Column({ type: 'numeric' })
   total?: number;
+
+  @Column({ type: 'float', nullable: true })
+  distancia: number;
 
   //Relación: Guardo los id de las unidades 
   @Column("jsonb", { nullable: true })
@@ -46,5 +49,19 @@ export class Viaje {
   @ManyToOne(() => EstadoViaje, (estado) => estado.viajes, { eager: true })
   @JoinColumn({ name: 'estadoViajeId' })
   estadoViaje: EstadoViaje;
-  idEstadoViaje: number;
+
+  @Column()
+  usuarioId: number;
+
+  @Column({type: 'double precision', nullable: true})
+  CoordXOrigen: number;
+
+  @Column({type: 'double precision', nullable: true})
+  CoordYOrigen: number;
+
+  @Column({type: 'double precision', nullable: true})
+  CoordXDestino: number;
+
+  @Column({type: 'double precision', nullable: true})
+  CoordYDestino: number;
 }

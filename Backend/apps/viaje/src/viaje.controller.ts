@@ -49,4 +49,9 @@ export class ViajeController {
   remove(@Param('id') id: string) {
     return this.viajeService.remove(+id);
   }
+
+  @Patch('finalizar/:id')
+  finalizar(@Param('id') id: number) {
+    return this.viajeService.enViaje(id);
+  }
 }

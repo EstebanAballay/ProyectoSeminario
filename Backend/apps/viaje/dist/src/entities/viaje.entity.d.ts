@@ -11,6 +11,12 @@ export declare class Viaje {
     sena?: number;
     resto?: number;
     total?: number;
+    distancia: number;
     unidades?: number[];
     estadoViaje: EstadoViaje;
+    usuarioId: number;
+    CoordXOrigen: number;
+    CoordYOrigen: number;
+    CoordXDestino: number;
+    CoordYDestino: number;
 }

@@ -11,17 +11,27 @@ import { TipoCamion } from './entities/tipoCamion.entity';
 import { Camion } from './entities/camion.entity';
 import { Unidad } from './entities/unidad.entity'
 import { In, Not } from 'typeorm';
+import { EstadoCamion } from './entities/estadoCamion.entity';
+import { EstadoSemirremolque } from './entities/estadoSemirremolque.entity';
+import { EstadoAcoplado } from './entities/estadoAcoplado.entity';
+import { estadoTransportista } from './entities/estadoTransportista.entity';
+import { Transportista } from './entities/transportista.entity';
 
 @Injectable()
 export class UnidadService {
 
   constructor(private readonly httpService: HttpService,
-    @InjectRepository(Semirremolque) private semirremolqueRepository: Repository<Semirremolque>,
-    @InjectRepository(Acoplado) private acopladoRepository: Repository<Acoplado>,
+    @InjectRepository(Semirremolque) private estadoSemirremolqueRepository: Repository<Semirremolque>,
+    @InjectRepository(Acoplado) private estadoAcopladoRepository: Repository<Acoplado>,
     @InjectRepository(Tipo) private tipoRepository: Repository<Tipo>,
     @InjectRepository(TipoCamion) private tipoCamionRepository: Repository<TipoCamion>,
     @InjectRepository(Camion) private CamionRepository: Repository<Camion>,
-    @InjectRepository(Unidad) private UnidadRepository: Repository<Unidad>
+    @InjectRepository(Unidad) private UnidadRepository: Repository<Unidad>,
+    @InjectRepository(EstadoCamion) private estadoCamionRepository: Repository<EstadoCamion>,
+    @InjectRepository(EstadoSemirremolque) private EstadoSemirremolqueRepository: Repository<EstadoSemirremolque>,
+    @InjectRepository(EstadoAcoplado) private EstadoAcopladoRepository: Repository<EstadoAcoplado>,
+    @InjectRepository(estadoTransportista) private estadoTransportistaRepository: Repository<estadoTransportista>,
+    @InjectRepository(Transportista) private transportistaRepository: Repository<Transportista>
   ) {}
 
   async testConnection() 
@@ -123,7 +133,7 @@ export class UnidadService {
     // Buscar semirremolque si aplica
     let semirremolque: Semirremolque | null = null;
     if (dto.tieneSemirremolque && dto.semiremolqueId) {
-      semirremolque = await this.semirremolqueRepository.findOneBy({ id: dto.semiremolqueId });
+      semirremolque = await this.estadoSemirremolqueRepository.findOneBy({ id: dto.semiremolqueId });
       if (!semirremolque) {
         throw new NotFoundException(`Semirremolque con id ${dto.semiremolqueId} no encontrado`);
       }
@@ -132,7 +142,7 @@ export class UnidadService {
     // Buscar acoplado si aplica
     let acoplado: Acoplado | null = null;
     if (dto.tieneAcoplado && dto.acopladoId) {
-      acoplado = await this.acopladoRepository.findOneBy({ id: dto.acopladoId });
+      acoplado = await this.estadoAcopladoRepository.findOneBy({ id: dto.acopladoId });
       if (!acoplado) {
         throw new NotFoundException(`Acoplado con id ${dto.acopladoId} no encontrado`);
       }
@@ -179,11 +189,11 @@ export class UnidadService {
         where: { id: Not(In(camionesOcupados))},
       })).map(c => ({ ...c, tipo: c.tipoCamion.nombre }));;
 
-      const acopladosDisponibles = (await this.acopladoRepository.find({
+      const acopladosDisponibles = (await this.estadoAcopladoRepository.find({
         where: { id: Not(In(acopladosOcupados))},
       })).map(c => ({ ...c, tipo: c.tipo.nombre }));;
 
-      const semirremolquesDisponibles = (await this.semirremolqueRepository.find({
+      const semirremolquesDisponibles = (await this.estadoSemirremolqueRepository.find({
         where: { id: Not(In(semirremolquesOcupados))},
       })).map(c => ({ ...c, tipo: c.tipo.nombre }));;
 
@@ -321,4 +331,102 @@ export class UnidadService {
       where: { transportistaId: idusuario }, 
     });
   }
+
+  //funcion para cambiar el estado de todos los vehiculos adentro de la unidad asignada al viaje (sin pasar el estado)
+  async iniciarEstadoViaje(viajeId: number): Promise<void> {
+    const unidades = await this.UnidadRepository.find({
+      where: { idViaje: viajeId },
+      relations: ['camion', 'semirremolque', 'acoplado'],
+    });
+
+    //buscar estados de los vehiculos en viaje
+    const estadoCamion = await this.estadoCamionRepository.findOne({ where: { nombre: 'En Viaje' } });
+    const estadoSemirremolque = await this.EstadoSemirremolqueRepository.findOne({ where: { nombre: 'En Viaje' } });
+    const estadoAcoplado = await this.EstadoAcopladoRepository.findOne({ where: { nombre: 'En Viaje' } });
+    const estadoTransportista = await this.estadoTransportistaRepository.findOne({ where: { nombre: 'En Viaje' } });
+
+    //obtener cada de vehiculo de cada unidad y cambiar su estado
+    for (const unidad of unidades) {
+      if (unidad.camion) {
+        const camion = await this.CamionRepository.findOne({ where: { id: unidad.camion.id } });
+        if (camion && estadoCamion) {
+          camion.estadoCamion = estadoCamion;
+          await this.CamionRepository.save(camion);
+        }
+      }
+
+      if (unidad.semiremolque) {
+        const semirremolque = await this.estadoSemirremolqueRepository.findOne({ where: { id: unidad.semiremolque.id } });
+        if (semirremolque && estadoSemirremolque) {
+          semirremolque.estado = estadoSemirremolque;
+          await this.estadoSemirremolqueRepository.save(semirremolque);
+        }
+      }
+
+      if (unidad.acoplado) {
+        const acoplado = await this.estadoAcopladoRepository.findOne({ where: { id: unidad.acoplado.id } });
+        if (acoplado && estadoAcoplado) {
+          acoplado.estado = estadoAcoplado;
+          await this.estadoAcopladoRepository.save(acoplado);
+        }
+      }
+
+      //cambiar estado del transportista
+      const transportista = await this.transportistaRepository.findOne({ where: { idUsuario: unidad.transportistaId } });
+      if (transportista && estadoTransportista) {
+        transportista.estado = estadoTransportista;
+        await this.transportistaRepository.save(transportista);
+      }
+  }
+
+}
+
+async finalizarEstadoViaje(viajeId: number): Promise<void> {
+    const unidades = await this.UnidadRepository.find({
+      where: { idViaje: viajeId },
+      relations: ['camion', 'semirremolque', 'acoplado'],
+    });
+
+    //buscar estados de los vehiculos en viaje
+    const estadoCamion = await this.estadoCamionRepository.findOne({ where: { nombre: 'disponible' } });
+    const estadoSemirremolque = await this.EstadoSemirremolqueRepository.findOne({ where: { nombre: 'disponible' } });
+    const estadoAcoplado = await this.EstadoAcopladoRepository.findOne({ where: { nombre: 'disponible' } });
+    const estadoTransportista = await this.estadoTransportistaRepository.findOne({ where: { nombre: 'disponible' } });
+
+    //obtener cada de vehiculo de cada unidad y cambiar su estado
+    for (const unidad of unidades) {
+      if (unidad.camion) {
+        const camion = await this.CamionRepository.findOne({ where: { id: unidad.camion.id } });
+        if (camion && estadoCamion) {
+          camion.estadoCamion = estadoCamion;
+          await this.CamionRepository.save(camion);
+        }
+      }
+
+      if (unidad.semiremolque) {
+        const semirremolque = await this.estadoSemirremolqueRepository.findOne({ where: { id: unidad.semiremolque.id } });
+        if (semirremolque && estadoSemirremolque) {
+          semirremolque.estado = estadoSemirremolque;
+          await this.estadoSemirremolqueRepository.save(semirremolque);
+        }
+      }
+
+      if (unidad.acoplado) {
+        const acoplado = await this.estadoAcopladoRepository.findOne({ where: { id: unidad.acoplado.id } });
+        if (acoplado && estadoAcoplado) {
+          acoplado.estado = estadoAcoplado;
+          await this.estadoAcopladoRepository.save(acoplado);
+        }
+      }
+
+      //cambiar estado del transportista
+      const transportista = await this.transportistaRepository.findOne({ where: { idUsuario: unidad.transportistaId } });
+      if (transportista && estadoTransportista) {
+        transportista.estado = estadoTransportista;
+        await this.transportistaRepository.save(transportista);
+      }
+  }
+
+}
+
 }

@@ -52,17 +52,21 @@ __decorate([
     __metadata("design:type", String)
 ], Viaje.prototype, "horaLlegada", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ type: 'numeric', nullable: true }),
     __metadata("design:type", Number)
 ], Viaje.prototype, "sena", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ type: 'numeric' }),
     __metadata("design:type", Number)
 ], Viaje.prototype, "resto", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ type: 'numeric' }),
     __metadata("design:type", Number)
 ], Viaje.prototype, "total", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'float', nullable: true }),
+    __metadata("design:type", Number)
+], Viaje.prototype, "distancia", void 0);
 __decorate([
     (0, typeorm_1.Column)("jsonb", { nullable: true }),
     __metadata("design:type", Array)
@@ -72,6 +76,26 @@ __decorate([
     (0, typeorm_2.JoinColumn)({ name: 'estadoViajeId' }),
     __metadata("design:type", estadoViaje_entity_1.EstadoViaje)
 ], Viaje.prototype, "estadoViaje", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", Number)
+], Viaje.prototype, "usuarioId", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'double precision', nullable: true }),
+    __metadata("design:type", Number)
+], Viaje.prototype, "CoordXOrigen", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'double precision', nullable: true }),
+    __metadata("design:type", Number)
+], Viaje.prototype, "CoordYOrigen", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'double precision', nullable: true }),
+    __metadata("design:type", Number)
+], Viaje.prototype, "CoordXDestino", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'double precision', nullable: true }),
+    __metadata("design:type", Number)
+], Viaje.prototype, "CoordYDestino", void 0);
 exports.Viaje = Viaje = __decorate([
     (0, typeorm_1.Entity)({ name: 'viaje', schema: 'microservice_viaje' })
 ], Viaje);

@@ -8,15 +8,25 @@ import { Tipo } from './entities/tipo.entity';
 import { TipoCamion } from './entities/tipoCamion.entity';
 import { Camion } from './entities/camion.entity';
 import { Unidad } from './entities/unidad.entity';
+import { EstadoCamion } from './entities/estadoCamion.entity';
+import { EstadoSemirremolque } from './entities/estadoSemirremolque.entity';
+import { EstadoAcoplado } from './entities/estadoAcoplado.entity';
+import { estadoTransportista } from './entities/estadoTransportista.entity';
+import { Transportista } from './entities/transportista.entity';
 export declare class UnidadService {
     private readonly httpService;
-    private semirremolqueRepository;
-    private acopladoRepository;
+    private estadoSemirremolqueRepository;
+    private estadoAcopladoRepository;
     private tipoRepository;
     private tipoCamionRepository;
     private CamionRepository;
     private UnidadRepository;
-    constructor(httpService: HttpService, semirremolqueRepository: Repository<Semirremolque>, acopladoRepository: Repository<Acoplado>, tipoRepository: Repository<Tipo>, tipoCamionRepository: Repository<TipoCamion>, CamionRepository: Repository<Camion>, UnidadRepository: Repository<Unidad>);
+    private estadoCamionRepository;
+    private EstadoSemirremolqueRepository;
+    private EstadoAcopladoRepository;
+    private estadoTransportistaRepository;
+    private transportistaRepository;
+    constructor(httpService: HttpService, estadoSemirremolqueRepository: Repository<Semirremolque>, estadoAcopladoRepository: Repository<Acoplado>, tipoRepository: Repository<Tipo>, tipoCamionRepository: Repository<TipoCamion>, CamionRepository: Repository<Camion>, UnidadRepository: Repository<Unidad>, estadoCamionRepository: Repository<EstadoCamion>, EstadoSemirremolqueRepository: Repository<EstadoSemirremolque>, EstadoAcopladoRepository: Repository<EstadoAcoplado>, estadoTransportistaRepository: Repository<estadoTransportista>, transportistaRepository: Repository<Transportista>);
     testConnection(): Promise<void>;
     private getRandomItem;
     createUnidad(dto: CreateUnidadDto): Promise<Unidad>;
@@ -35,4 +45,7 @@ export declare class UnidadService {
     findOne(id: number): string;
     update(id: number, updateUnidadDto: UpdateUnidadDto): string;
     remove(id: number): string;
+    findUnityByDriver(idusuario: number): Promise<any[]>;
+    iniciarEstadoViaje(viajeId: number): Promise<void>;
+    finalizarEstadoViaje(viajeId: number): Promise<void>;
 }

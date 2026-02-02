@@ -92,14 +92,94 @@ let ViajeService = class ViajeService {
             console.error('Error al buscar la unidad:', error.message);
         }
     }
-    findAll() {
-        return `This action returns all viaje`;
+    async findAll() {
+        return await this.viajeRepository.find({
+            relations: ['chofer', 'estadoViaje', 'unidad', 'transportista'],
+        });
     }
     findOne(id) {
         return `This action returns a #${id} viaje`;
     }
     remove(id) {
         return `This action removes a #${id} viaje`;
+    }
+    async enViaje(viajeId) {
+        const estadoEnViaje = await this.estadoViajeRepository.findOne({
+            where: { nombre: 'En Viaje' },
+        });
+        if (!estadoEnViaje) {
+            throw new common_1.NotFoundException(`No existe el estado 'En Viaje' en la tabla EstadoViaje`);
+        }
+        const viaje = await this.viajeRepository.findOne({
+            where: { ViajeId: viajeId },
+        });
+        viaje.estadoViaje = estadoEnViaje;
+        await this.viajeRepository.save(viaje);
+        try {
+            const response = await (0, rxjs_1.firstValueFrom)(this.httpService.post('http://unidad-service:3002/unidad/iniciarEstadoViaje', {
+                viajeId: viaje.ViajeId,
+            }));
+            console.log('Respuesta de unidad-service:', response.data);
+        }
+        catch (error) {
+            console.error('Error al actualizar el estado del viaje en unidad-service:', error.message);
+        }
+        return {
+            mensaje: `El viaje ${viaje.ViajeId} ha comenzado.`,
+            viaje,
+        };
+    }
+    async finalizarViaje(viajeId) {
+        const estadoFinalizado = await this.estadoViajeRepository.findOne({
+            where: { nombre: 'Finalizado' },
+        });
+        if (!estadoFinalizado) {
+            throw new common_1.NotFoundException(`No existe el estado 'Finalizado' en la tabla EstadoViaje`);
+        }
+        const viaje = await this.viajeRepository.findOne({
+            where: { ViajeId: viajeId },
+        });
+        if (!viaje) {
+            throw new common_1.NotFoundException(`No se encontró el viaje con id ${viajeId}`);
+        }
+        viaje.estadoViaje = estadoFinalizado;
+        await this.viajeRepository.save(viaje);
+        try {
+            const response = await (0, rxjs_1.firstValueFrom)(this.httpService.post('http://unidad-service:3002/unidad/finalizarEstadoViaje', {
+                viajeId: viaje.ViajeId,
+            }));
+            console.log('Respuesta de unidad-service:', response.data);
+        }
+        catch (error) {
+            console.error('Error al actualizar el estado del viaje en unidad-service:', error.message);
+        }
+        return {
+            mensaje: `El viaje ${viaje.ViajeId} fue finalizado correctamente`,
+            viaje,
+        };
+    }
+    async cancelarViaje(viajeId, choferId, motivo) {
+        const viaje = await this.viajeRepository.findOne({
+            where: { ViajeId: viajeId },
+            relations: ['estadoViaje'],
+        });
+        if (!viaje) {
+            throw new common_1.NotFoundException(`No se encontró el viaje ${viajeId}`);
+        }
+        const estadoCancelado = await this.estadoViajeRepository.findOne({
+            where: { nombre: 'Cancelado' },
+        });
+        if (!estadoCancelado) {
+            throw new common_1.NotFoundException(`No existe el estado 'Cancelado' en la tabla EstadoViaje`);
+        }
+        viaje.estadoViaje = estadoCancelado;
+        viaje.fechaFin = new Date();
+        viaje.motivoCancelacion = motivo ?? null;
+        const viajeGuardado = await this.viajeRepository.save(viaje);
+        return {
+            mensaje: `El viaje ${viajeGuardado.ViajeId} fue cancelado correctamente.`,
+            viaje: viajeGuardado,
+        };
     }
 };
 exports.ViajeService = ViajeService;

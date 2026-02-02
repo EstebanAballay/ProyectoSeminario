@@ -12,7 +12,19 @@ export declare class ViajeService {
     createViaje(data: CreateViajeDto): Promise<Viaje>;
     agregarUnidad(unidad: any, viajeId: number): Promise<any>;
     buscarUnidadesDisponibles(fechaInicio: Date, fechaFin: Date, camiones: any): Promise<any>;
-    findAll(): string;
+    findAll(): Promise<Viaje[]>;
     findOne(id: number): string;
     remove(id: number): string;
+    enViaje(viajeId: number): Promise<{
+        mensaje: string;
+        viaje: Viaje;
+    }>;
+    finalizarViaje(viajeId: number): Promise<{
+        mensaje: string;
+        viaje: Viaje;
+    }>;
+    cancelarViaje(viajeId: number, choferId: number, motivo?: string): Promise<{
+        mensaje: string;
+        viaje: Viaje;
+    }>;
 }

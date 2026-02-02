@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-export class CreateUserDto{
-  nombre:String;
-  apellido:String;
-  DNI:number;
-  cuitl:number;
-  telefono:number;
-  direccion:String
-=======
 import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
 
 export class CreateUserDto {
@@ -34,5 +25,4 @@ export class CreateUserDto {
   @IsNotEmpty()
   @MinLength(8)
   password: string;
->>>>>>> 364f7fddaa9bbefdb9bd3ef8f527cc69143a4829
 }

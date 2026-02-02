@@ -25,6 +25,12 @@ let UnidadController = class UnidadController {
     create(createUnidadDto) {
         return this.unidadService.createUnidad(createUnidadDto);
     }
+    finndAll() {
+        return this.unidadService.findAll();
+    }
+    async findAll(id) {
+        return this.unidadService.findUnityByDriver(Number(id));
+    }
     consultarTiposAcoplados() {
         return this.unidadService.consultarTiposAcoplados();
     }
@@ -35,6 +41,12 @@ let UnidadController = class UnidadController {
         const disponiblesPorFecha = await this.unidadService.findDisponibles(dto.unidadesOcupadas);
         console.log('Unidades disponibles por fecha:', disponiblesPorFecha);
         return this.unidadService.findUnidadesDisponiblesByTipoRandom(dto.camiones, disponiblesPorFecha);
+    }
+    async iniciarEstadoViaje(id) {
+        return this.unidadService.iniciarEstadoViaje(id);
+    }
+    async finalizarEstadoViaje(id) {
+        return this.unidadService.finalizarEstadoViaje(id);
     }
     findOne(id) {
         return this.unidadService.findOne(+id);
@@ -55,6 +67,19 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UnidadController.prototype, "create", null);
 __decorate([
+    (0, common_1.Get)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Object)
+], UnidadController.prototype, "finndAll", null);
+__decorate([
+    (0, common_1.Get)(':id/'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UnidadController.prototype, "findAll", null);
+__decorate([
     (0, common_1.Get)('tiposAcoplados'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
@@ -73,6 +98,20 @@ __decorate([
     __metadata("design:paramtypes", [datosUnidadesFront_dto_1.ConsultarUnidadesDto]),
     __metadata("design:returntype", Promise)
 ], UnidadController.prototype, "consultarUnidadesDisponibles", null);
+__decorate([
+    (0, common_1.Patch)('iniciarEstadoViaje/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], UnidadController.prototype, "iniciarEstadoViaje", null);
+__decorate([
+    (0, common_1.Patch)('finalizarEstadoViaje/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], UnidadController.prototype, "finalizarEstadoViaje", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),

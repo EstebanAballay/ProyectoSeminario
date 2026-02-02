@@ -1,21 +1,3 @@
-<<<<<<< HEAD
-import { Injectable } from '@nestjs/common';
-import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
-import {InjectRepository } from '@nestjs/typeorm';
-import { CreateUserDto } from './dto/create-user.dto';
-
-@Injectable()
-export class UsersService {
-    constructor(@InjectRepository(User) private UserRepository:Repository<User>,
-){}
-  
-    crearUser(CreateUserDto){
-        const nuevo = this.UserRepository.create(CreateUserDto);
-        return 'This action adds a new unidad';
-
-      }
-=======
 import { Injectable, BadRequestException, UnauthorizedException} from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
@@ -95,5 +77,4 @@ const salt = await bcrypt.genSalt(10);
       select: ['id', 'nombre', 'email', 'password_hash', 'role'],
   });
 }
->>>>>>> 364f7fddaa9bbefdb9bd3ef8f527cc69143a4829
 }
