@@ -20,6 +20,10 @@ export declare class ViajeService {
         hora: string;
     }>;
     findAll(user: any): Promise<Viaje[]>;
-    findOne(id: number): string;
-    remove(id: number): string;
+    verificarYCancelarVencidos(userId: number): Promise<void>;
+    confirmarPagoViaje(viajeId: number): Promise<{
+        success: boolean;
+    }>;
+    findOne(id: number): Promise<Viaje>;
+    remove(id: number): Promise<import("typeorm").DeleteResult>;
 }

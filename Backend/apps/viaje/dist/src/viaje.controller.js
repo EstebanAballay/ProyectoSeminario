@@ -32,14 +32,17 @@ let ViajeController = class ViajeController {
         console.log('Fechas recibidas:', inicio, fin);
         return this.viajeService.buscarUnidadesDisponibles(inicio, fin, camiones);
     }
-    findAll(user) {
-        return this.viajeService.findAll(user);
+    async getMisViajes(req) {
+        return await this.viajeService.findAll(req.user);
     }
     findOne(id) {
         return this.viajeService.findOne(+id);
     }
     remove(id) {
         return this.viajeService.remove(+id);
+    }
+    async confirmarPago(id) {
+        return this.viajeService.confirmarPagoViaje(+id);
     }
 };
 exports.ViajeController = ViajeController;
@@ -64,11 +67,11 @@ __decorate([
 __decorate([
     (0, common_1.Get)('misViajes'),
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
-    __param(0, (0, get_user_decorator_1.GetUser)()),
+    __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
-], ViajeController.prototype, "findAll", null);
+    __metadata("design:returntype", Promise)
+], ViajeController.prototype, "getMisViajes", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),
@@ -83,6 +86,13 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], ViajeController.prototype, "remove", null);
+__decorate([
+    (0, common_1.Patch)(':id/confirmar-pago'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], ViajeController.prototype, "confirmarPago", null);
 exports.ViajeController = ViajeController = __decorate([
     (0, common_1.Controller)('viaje'),
     __metadata("design:paramtypes", [viaje_service_1.ViajeService])

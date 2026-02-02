@@ -6,7 +6,10 @@ export declare class ViajeController {
     constructor(viajeService: ViajeService);
     create(createViajeDto: CreateViajeDto, user: any): Promise<any>;
     findDisponibles(fechaInicio?: string, fechaFin?: string, camiones?: ConsultarUnidadesDto): Promise<any>;
-    findAll(user: any): Promise<import("./entities/viaje.entity").Viaje[]>;
-    findOne(id: string): string;
-    remove(id: string): string;
+    getMisViajes(req: any): Promise<import("./entities/viaje.entity").Viaje[]>;
+    findOne(id: string): Promise<import("./entities/viaje.entity").Viaje>;
+    remove(id: string): Promise<import("typeorm").DeleteResult>;
+    confirmarPago(id: string): Promise<{
+        success: boolean;
+    }>;
 }

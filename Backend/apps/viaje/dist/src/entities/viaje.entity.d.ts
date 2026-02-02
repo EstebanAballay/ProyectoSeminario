@@ -8,11 +8,12 @@ export declare class Viaje {
     destinoFin: string;
     horaSalida: string;
     horaLlegada?: string;
-    sena?: number;
-    resto?: number;
-    total?: number;
+    sena: number;
+    resto: number;
+    total: number;
     distancia: number;
-    unidades?: number[];
+    unidades: number[];
+    estadoViajeId: number;
     estadoViaje: EstadoViaje;
     usuarioId: number;
 }

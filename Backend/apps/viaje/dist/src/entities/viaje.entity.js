@@ -11,7 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Viaje = void 0;
 const typeorm_1 = require("typeorm");
-const typeorm_2 = require("typeorm");
 const estadoViaje_entity_1 = require("./estadoViaje.entity");
 let Viaje = class Viaje {
     constructor() {
@@ -20,64 +19,68 @@ let Viaje = class Viaje {
 };
 exports.Viaje = Viaje;
 __decorate([
-    (0, typeorm_1.PrimaryGeneratedColumn)(),
+    (0, typeorm_1.PrimaryGeneratedColumn)({ name: 'ViajeId' }),
     __metadata("design:type", Number)
 ], Viaje.prototype, "ViajeId", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'date' }),
+    (0, typeorm_1.Column)({ type: 'date', name: 'fechaReserva' }),
     __metadata("design:type", Date)
 ], Viaje.prototype, "fechaReserva", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'date' }),
+    (0, typeorm_1.Column)({ type: 'date', name: 'fechaInicio' }),
     __metadata("design:type", Date)
 ], Viaje.prototype, "fechaInicio", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'date' }),
+    (0, typeorm_1.Column)({ type: 'date', name: 'fechaFin', nullable: true }),
     __metadata("design:type", Date)
 ], Viaje.prototype, "fechaFin", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ name: 'destinoInicio' }),
     __metadata("design:type", String)
 ], Viaje.prototype, "destinoInicio", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ name: 'destinoFin' }),
     __metadata("design:type", String)
 ], Viaje.prototype, "destinoFin", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'time' }),
+    (0, typeorm_1.Column)({ type: 'time', name: 'horaSalida' }),
     __metadata("design:type", String)
 ], Viaje.prototype, "horaSalida", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'time' }),
+    (0, typeorm_1.Column)({ type: 'time', name: 'horaLlegada', nullable: true }),
     __metadata("design:type", String)
 ], Viaje.prototype, "horaLlegada", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'numeric' }),
+    (0, typeorm_1.Column)({ type: 'numeric', precision: 12, scale: 2, default: 0, name: 'sena' }),
     __metadata("design:type", Number)
 ], Viaje.prototype, "sena", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'numeric' }),
+    (0, typeorm_1.Column)({ type: 'numeric', precision: 12, scale: 2, default: 0, name: 'resto' }),
     __metadata("design:type", Number)
 ], Viaje.prototype, "resto", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'numeric' }),
+    (0, typeorm_1.Column)({ type: 'numeric', precision: 12, scale: 2, default: 0, name: 'total' }),
     __metadata("design:type", Number)
 ], Viaje.prototype, "total", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'float', nullable: true }),
+    (0, typeorm_1.Column)({ type: 'float', nullable: true, name: 'distancia' }),
     __metadata("design:type", Number)
 ], Viaje.prototype, "distancia", void 0);
 __decorate([
-    (0, typeorm_1.Column)("jsonb", { nullable: true }),
+    (0, typeorm_1.Column)("jsonb", { nullable: true, name: 'unidades' }),
     __metadata("design:type", Array)
 ], Viaje.prototype, "unidades", void 0);
 __decorate([
-    (0, typeorm_2.ManyToOne)(() => estadoViaje_entity_1.EstadoViaje, (estado) => estado.viajes, { eager: true }),
-    (0, typeorm_2.JoinColumn)({ name: 'estadoViajeId' }),
+    (0, typeorm_1.Column)({ name: 'estadoViajeId', nullable: true }),
+    __metadata("design:type", Number)
+], Viaje.prototype, "estadoViajeId", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => estadoViaje_entity_1.EstadoViaje, (estado) => estado.viajes, { eager: true }),
+    (0, typeorm_1.JoinColumn)({ name: 'estadoViajeId' }),
     __metadata("design:type", estadoViaje_entity_1.EstadoViaje)
 ], Viaje.prototype, "estadoViaje", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ name: 'usuarioId' }),
     __metadata("design:type", Number)
 ], Viaje.prototype, "usuarioId", void 0);
 exports.Viaje = Viaje = __decorate([

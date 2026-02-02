@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, Request } from '@nestjs/common';
 import { ViajeService } from './viaje.service';
 import { CreateViajeDto } from './dto/create-viaje.dto';
 import { ConsultarUnidadesDto } from './dto/camiones.dto';
@@ -32,9 +32,9 @@ export class ViajeController {
   //consulta
   @Get('misViajes')
   @UseGuards(AuthGuard)
-  findAll(@GetUser() user: any) {
-    return this.viajeService.findAll(user);
-  }
+  async getMisViajes(@Request() req) {
+    return await this.viajeService.findAll(req.user); 
+}
 
 
   @Get(':id')
@@ -53,4 +53,10 @@ export class ViajeController {
   remove(@Param('id') id: string) {
     return this.viajeService.remove(+id);
   }
+
+
+@Patch(':id/confirmar-pago')
+async confirmarPago(@Param('id') id: string) {
+  return this.viajeService.confirmarPagoViaje(+id);
+}
 }

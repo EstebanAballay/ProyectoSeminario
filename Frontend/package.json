@@ -19,6 +19,7 @@
     "@angular/router": "^20.0.0",
     "@mercadopago/sdk-js": "^0.0.3",
     "@types/leaflet-routing-machine": "^3.2.9",
+    "axios": "^1.13.4",
     "jwt-decode": "^4.0.0",
     "leaflet": "^1.9.4",
     "leaflet-routing-machine": "^3.2.12",
