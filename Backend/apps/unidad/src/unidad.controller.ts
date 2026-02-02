@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { UnidadService } from './unidad.service';
 import { CreateUnidadDto } from './dto/create-unidad.dto';
 import { UpdateUnidadDto } from './dto/update-unidad.dto';
+import { promises } from 'dns';
 import { ConsultarUnidadesDto } from './dto/datosUnidadesFront.dto';
 import { CreateVehicleDto } from './dto/create-Vehicle.dto';
 
@@ -14,6 +15,15 @@ export class UnidadController {
     return this.unidadService.createUnidad(createUnidadDto);
   }
 
+  @Get()
+  finndAll(): any {
+    return this.unidadService.findAll();}
+
+
+  @Get(':id/')
+  async findAll(@Param('id') id: String): Promise<any> {
+    return this.unidadService.findUnityByDriver(Number(id));}
+    
   @Get('tiposAcoplados')
   consultarTiposAcoplados() {
     return this.unidadService.consultarTiposAcoplados();
@@ -33,6 +43,7 @@ export class UnidadController {
     return disponiblesPorTipo
   } 
 
+<<<<<<< HEAD
   @Post('choferesDisponibles')
   async getChoferesDisponibles(@Body() dto: {idViajesEnRango:number[]}) {
     const disponibles = await this.unidadService.getChoferesDisponibles(dto.idViajesEnRango);
@@ -54,6 +65,21 @@ export class UnidadController {
   async asignarChoferes(@Body() dto: {asignaciones: {unidadId: number, choferId: number}[]}) {
     console.log('Asignaciones recibidas:', dto.asignaciones);
     return await this.unidadService.asignarChoferes(dto.asignaciones);
+=======
+@Patch('iniciarEstadoViaje/:id')
+  async iniciarEstadoViaje(@Param('id') id: number) {
+    return this.unidadService.iniciarEstadoViaje(id);
+  }
+  
+  @Patch('finalizarEstadoViaje/:id')
+  async finalizarEstadoViaje(@Param('id') id: number) {
+    return this.unidadService.finalizarEstadoViaje(id);
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.unidadService.findOne(+id);
+>>>>>>> origin/cambiosChofer
   }
 
   @Patch(':id')
@@ -66,9 +92,13 @@ export class UnidadController {
     return this.unidadService.remove(+id);
   }
 
+<<<<<<< HEAD
   @Post('nuevaUnidad')
   async crearUnidad(@Body() createUnidadDto: CreateVehicleDto) {
     return await this.unidadService.createVehicle(createUnidadDto);
   }
+=======
+
+>>>>>>> origin/cambiosChofer
 
 }

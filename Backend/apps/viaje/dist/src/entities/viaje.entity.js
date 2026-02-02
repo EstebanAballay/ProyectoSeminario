@@ -52,7 +52,11 @@ __decorate([
     __metadata("design:type", String)
 ], Viaje.prototype, "horaLlegada", void 0);
 __decorate([
+<<<<<<< HEAD
     (0, typeorm_1.Column)({ type: 'numeric' }),
+=======
+    (0, typeorm_1.Column)({ type: 'numeric', nullable: true }),
+>>>>>>> origin/cambiosChofer
     __metadata("design:type", Number)
 ], Viaje.prototype, "sena", void 0);
 __decorate([

@@ -33,7 +33,7 @@ export class ViajeController {
   @Get('misViajes')
   @UseGuards(AuthGuard)
   findAll(@GetUser() user: any) {
-    return this.viajeService.findAll(user);
+    return this.viajeService.buscarTodos(user);
   }
 
   //consulta de los viajes del admin pendientes
@@ -74,5 +74,10 @@ export class ViajeController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.viajeService.remove(+id);
+  }
+
+  @Patch('finalizar/:id')
+  finalizar(@Param('id') id: number) {
+    return this.viajeService.enViaje(id);
   }
 }

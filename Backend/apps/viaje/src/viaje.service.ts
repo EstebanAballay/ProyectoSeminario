@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateViajeDto } from './dto/create-viaje.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LessThanOrEqual, MoreThanOrEqual, Repository, Not} from 'typeorm';
@@ -7,6 +7,8 @@ import { Viaje } from './entities/viaje.entity';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom,lastValueFrom } from 'rxjs';
 import { BASE_COORDS, TIEMPO_MUERTO } from '../constantesTiempoViaje';
+import { UpdateViajeDto } from './dto/update-viaje.dto';
+
 
 @Injectable()
 export class ViajeService {
@@ -152,7 +154,7 @@ async calcularFechaRegreso(origenCoords, destinoCoords, baseCoords, fechaInicio,
 }
 
 
-  findAll(user) {
+  buscarTodos(user) {
     const viajes = this.viajeRepository.find(user.id);
     console.log(viajes);
     return viajes;
@@ -235,6 +237,12 @@ async getViajesPendientes() {
   async rechazarViaje(viajeId: number) {
     await this.viajeRepository.update(viajeId, { estadoViaje: { id: 3 } }); }
 
+  async findAll(): Promise<Viaje[]> {
+    return await this.viajeRepository.find({
+      relations: ['chofer', 'estadoViaje', 'unidad', 'transportista'],
+    });
+  }
+  
   findOne(id: number) {
     return this.viajeRepository.findOne({ where: { ViajeId: id } });
   }
@@ -246,5 +254,121 @@ async getViajesPendientes() {
 
   remove(id: number) {
     return `This action removes a #${id} viaje`;
+  }
+
+//xddd
+
+  async enViaje(viajeId: number) {
+    // El parámetro 'unidadId' parece ser el 'viajeId' según la lógica 
+    // de los otros métodos ('finalizarViaje'); 
+
+    // 1. Encontrar el estado "En Viaje"
+    const estadoEnViaje = await this.estadoViajeRepository.findOne({
+      where: { nombre: 'En Viaje' }, // Asegúrate que este sea el nombre correcto en tu BD
+    });
+
+    if (!estadoEnViaje) {
+      throw new NotFoundException(`No existe el estado 'En Viaje' en la tabla EstadoViaje`);
+    }
+
+    const viaje = await this.viajeRepository.findOne({
+      where: { ViajeId: viajeId },
+    });
+
+    // 5. Asignar el nuevo estado y guardar
+    viaje.estadoViaje = estadoEnViaje;
+    await this.viajeRepository.save(viaje);
+
+    //peticion a unidad-service para actualizar el estado del viaje en las unidades asociadas
+try {
+  const response = await firstValueFrom(
+    this.httpService.post('http://unidad-service:3002/unidad/iniciarEstadoViaje', {
+      viajeId: viaje.ViajeId,
+    })
+  );
+  console.log('Respuesta de unidad-service:', response.data);
+}
+catch (error) {
+  console.error('Error al actualizar el estado del viaje en unidad-service:', error.message);
+}
+
+    return {
+      mensaje: `El viaje ${viaje.ViajeId} ha comenzado.`,
+      viaje,
+    };
+  }
+
+  async finalizarViaje(viajeId: number) {
+  const estadoFinalizado = await this.estadoViajeRepository.findOne({
+    where: { nombre: 'Finalizado' },
+  });
+
+  if (!estadoFinalizado) {
+    throw new NotFoundException(`No existe el estado 'Finalizado' en la tabla EstadoViaje`);
+  }
+
+  // Buscar el viaje por el id obtenido de la unidad
+  const viaje = await this.viajeRepository.findOne({
+    where: { ViajeId: viajeId },
+  });
+
+  if (!viaje) {
+    throw new NotFoundException(`No se encontró el viaje con id ${viajeId}`);
+  }
+
+  // Asignar el nuevo estado y guardar el viaje
+  viaje.estadoViaje = estadoFinalizado;
+  await this.viajeRepository.save(viaje);
+
+ //peticion a unidad-service para actualizar el estado del viaje en las unidades asociadas
+try {
+  const response = await firstValueFrom(
+    this.httpService.post('http://unidad-service:3002/unidad/finalizarEstadoViaje', {
+      viajeId: viaje.ViajeId,
+    })
+  );
+  console.log('Respuesta de unidad-service:', response.data);
+}
+catch (error) {
+  console.error('Error al actualizar el estado del viaje en unidad-service:', error.message);
+}
+
+  return {
+    mensaje: `El viaje ${viaje.ViajeId} fue finalizado correctamente`,
+    viaje,
+  };
+}
+
+  async cancelarViaje(viajeId: number, choferId: number, motivo?: string) {
+    const viaje = await this.viajeRepository.findOne({
+      where: { ViajeId: viajeId },
+      relations: ['estadoViaje'],
+    });
+
+    if (!viaje) {
+      throw new NotFoundException(`No se encontró el viaje ${viajeId}`);
+    }
+
+    const estadoCancelado = await this.estadoViajeRepository.findOne({
+      where: { nombre: 'Cancelado' },
+    });
+
+    if (!estadoCancelado) {
+      throw new NotFoundException(`No existe el estado 'Cancelado' en la tabla EstadoViaje`);
+    }
+
+    // Asignar estado y fecha de fin
+    viaje.estadoViaje = estadoCancelado;
+    viaje.fechaFin = new Date();
+
+    
+    (viaje as any).motivoCancelacion = motivo ?? null;
+
+    const viajeGuardado = await this.viajeRepository.save(viaje);
+
+    return {
+      mensaje: `El viaje ${viajeGuardado.ViajeId} fue cancelado correctamente.`,
+      viaje: viajeGuardado,
+    };
   }
 }

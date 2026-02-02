@@ -15,6 +15,7 @@ export declare class ViajeService {
         subtotal: any;
     }>;
     buscarUnidadesDisponibles(fechaInicio: Date, fechaFin: Date, camiones: any): Promise<any>;
+<<<<<<< HEAD
     calcularFechaRegreso(origenCoords: any, destinoCoords: any, baseCoords: any, fechaInicio: any, tiempoMuerto: any): Promise<{
         fecha: string;
         hora: string;
@@ -48,5 +49,21 @@ export declare class ViajeService {
     }[]): Promise<void>;
     rechazarViaje(viajeId: number): Promise<void>;
     findOne(id: number): Promise<Viaje>;
+=======
+    findAll(): Promise<Viaje[]>;
+    findOne(id: number): string;
+>>>>>>> origin/cambiosChofer
     remove(id: number): string;
+    enViaje(viajeId: number): Promise<{
+        mensaje: string;
+        viaje: Viaje;
+    }>;
+    finalizarViaje(viajeId: number): Promise<{
+        mensaje: string;
+        viaje: Viaje;
+    }>;
+    cancelarViaje(viajeId: number, choferId: number, motivo?: string): Promise<{
+        mensaje: string;
+        viaje: Viaje;
+    }>;
 }

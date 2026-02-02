@@ -84,7 +84,8 @@ services:
     build: ./apps/viaje
     container_name: viaje-service
     command: npm run start:dev
-    env_file: .env
+    env_file: 
+      - .env
     ports:
       - "3004:3004"
     networks:

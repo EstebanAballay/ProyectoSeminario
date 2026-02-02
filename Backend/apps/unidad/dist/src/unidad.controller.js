@@ -26,6 +26,12 @@ let UnidadController = class UnidadController {
     create(createUnidadDto) {
         return this.unidadService.createUnidad(createUnidadDto);
     }
+    finndAll() {
+        return this.unidadService.findAll();
+    }
+    async findAll(id) {
+        return this.unidadService.findUnityByDriver(Number(id));
+    }
     consultarTiposAcoplados() {
         return this.unidadService.consultarTiposAcoplados();
     }
@@ -39,6 +45,7 @@ let UnidadController = class UnidadController {
         console.log('Unidades disponibles por tipo:', disponiblesPorTipo);
         return disponiblesPorTipo;
     }
+<<<<<<< HEAD
     async getChoferesDisponibles(dto) {
         const disponibles = await this.unidadService.getChoferesDisponibles(dto.idViajesEnRango);
         console.log('Choferes disponibles:', disponibles);
@@ -53,6 +60,16 @@ let UnidadController = class UnidadController {
     async asignarChoferes(dto) {
         console.log('Asignaciones recibidas:', dto.asignaciones);
         return await this.unidadService.asignarChoferes(dto.asignaciones);
+=======
+    async iniciarEstadoViaje(id) {
+        return this.unidadService.iniciarEstadoViaje(id);
+    }
+    async finalizarEstadoViaje(id) {
+        return this.unidadService.finalizarEstadoViaje(id);
+    }
+    findOne(id) {
+        return this.unidadService.findOne(+id);
+>>>>>>> origin/cambiosChofer
     }
     update(id, updateUnidadDto) {
         return this.unidadService.update(+id, updateUnidadDto);
@@ -73,6 +90,19 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UnidadController.prototype, "create", null);
 __decorate([
+    (0, common_1.Get)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Object)
+], UnidadController.prototype, "finndAll", null);
+__decorate([
+    (0, common_1.Get)(':id/'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UnidadController.prototype, "findAll", null);
+__decorate([
     (0, common_1.Get)('tiposAcoplados'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
@@ -92,8 +122,27 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UnidadController.prototype, "consultarUnidadesDisponibles", null);
 __decorate([
+<<<<<<< HEAD
     (0, common_1.Post)('choferesDisponibles'),
     __param(0, (0, common_1.Body)()),
+=======
+    (0, common_1.Patch)('iniciarEstadoViaje/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], UnidadController.prototype, "iniciarEstadoViaje", null);
+__decorate([
+    (0, common_1.Patch)('finalizarEstadoViaje/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], UnidadController.prototype, "finalizarEstadoViaje", null);
+__decorate([
+    (0, common_1.Get)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+>>>>>>> origin/cambiosChofer
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)

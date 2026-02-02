@@ -1,9 +1,14 @@
-# compiled output
+# === Compiled output ===
 /dist
 node_modules/
 /build
-*.tsbuildinfo
-# Logs
+
+# === Dependencies ===
+node_modules/     # sin barra inicial evita errores en monorepos
+package-lock.json # opcional, si no querés versionar los locks (depende de tu equipo)
+yarn.lock         # idem para yarn
+
+# === Logs ===
 logs
 *.log
 npm-debug.log*
@@ -12,19 +17,15 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
-# Node
-/node_modules
-npm-debug.log
-yarn-error.log
-
-# OS
+# === OS files ===
 .DS_Store
+Thumbs.db
 
-# Tests
+# === Test output ===
 /coverage
 /.nyc_output
 
-# IDEs and editors
+# === IDEs and editors ===
 /.idea
 .project
 .classpath
@@ -33,30 +34,27 @@ yarn-error.log
 .settings/
 *.sublime-workspace
 
-# IDE - VSCode
+# === VSCode ===
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
 
-# dotenv environment variable files
-.env
-.env.development.local
-.env.test.local
-.env.production.local
-.env.local
-*.env
-**/*.env
-# temp directory
+# === Temp directories ===
 .temp
 .tmp
 
-# Runtime data
+# === Runtime data ===
 pids
 *.pid
 *.seed
 *.pid.lock
 
-# Diagnostic reports (https://nodejs.org/api/report.html)
+# === Diagnostic reports ===
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+*.env
+*.env.*
+.env
+Backend/**/*.env.*
