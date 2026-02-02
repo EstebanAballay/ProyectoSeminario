@@ -15,12 +15,11 @@ export declare class ViajeService {
         subtotal: any;
     }>;
     buscarUnidadesDisponibles(fechaInicio: Date, fechaFin: Date, camiones: any): Promise<any>;
-<<<<<<< HEAD
     calcularFechaRegreso(origenCoords: any, destinoCoords: any, baseCoords: any, fechaInicio: any, tiempoMuerto: any): Promise<{
         fecha: string;
         hora: string;
     }>;
-    findAll(user: any): Promise<Viaje[]>;
+    buscarTodos(user: any): Promise<Viaje[]>;
     getViajesPendientes(): Promise<{
         unidades: any;
         ViajeId: number;
@@ -48,11 +47,8 @@ export declare class ViajeService {
         choferId: number;
     }[]): Promise<void>;
     rechazarViaje(viajeId: number): Promise<void>;
-    findOne(id: number): Promise<Viaje>;
-=======
     findAll(): Promise<Viaje[]>;
-    findOne(id: number): string;
->>>>>>> origin/cambiosChofer
+    findOne(id: number): Promise<Viaje>;
     remove(id: number): string;
     enViaje(viajeId: number): Promise<{
         mensaje: string;
@@ -62,7 +58,7 @@ export declare class ViajeService {
         mensaje: string;
         viaje: Viaje;
     }>;
-    cancelarViaje(viajeId: number, choferId: number, motivo?: string): Promise<{
+    cancelarViaje(viajeId: number): Promise<{
         mensaje: string;
         viaje: Viaje;
     }>;

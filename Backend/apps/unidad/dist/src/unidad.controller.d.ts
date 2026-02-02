@@ -15,7 +15,6 @@ export declare class UnidadController {
         unidadesFormadas: any[];
         errores: string[];
     }>;
-<<<<<<< HEAD
     getChoferesDisponibles(dto: {
         idViajesEnRango: number[];
     }): Promise<any>;
@@ -26,11 +25,6 @@ export declare class UnidadController {
             choferId: number;
         }[];
     }): Promise<void>;
-=======
-    iniciarEstadoViaje(id: number): Promise<void>;
-    finalizarEstadoViaje(id: number): Promise<void>;
-    findOne(id: string): string;
->>>>>>> origin/cambiosChofer
     update(id: string, updateUnidadDto: UpdateUnidadDto): string;
     remove(id: string): string;
     crearUnidad(createUnidadDto: CreateVehicleDto): Promise<import("./entities/camion.entity").Camion | import("./entities/acoplado.entity").Acoplado | import("./entities/semirremolque.entity").Semirremolque>;

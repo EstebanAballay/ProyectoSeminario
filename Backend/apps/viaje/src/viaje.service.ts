@@ -264,7 +264,7 @@ async getViajesPendientes() {
 
     // 1. Encontrar el estado "En Viaje"
     const estadoEnViaje = await this.estadoViajeRepository.findOne({
-      where: { nombre: 'En Viaje' }, // Asegúrate que este sea el nombre correcto en tu BD
+      where: { nombre: 'En viaje' }, // Asegúrate que este sea el nombre correcto en tu BD
     });
 
     if (!estadoEnViaje) {
@@ -299,6 +299,7 @@ catch (error) {
   }
 
   async finalizarViaje(viajeId: number) {
+    //busca el estado Finalizado
   const estadoFinalizado = await this.estadoViajeRepository.findOne({
     where: { nombre: 'Finalizado' },
   });
@@ -339,7 +340,7 @@ catch (error) {
   };
 }
 
-  async cancelarViaje(viajeId: number, choferId: number, motivo?: string) {
+  async cancelarViaje(viajeId: number) {
     const viaje = await this.viajeRepository.findOne({
       where: { ViajeId: viajeId },
       relations: ['estadoViaje'],
@@ -359,10 +360,6 @@ catch (error) {
 
     // Asignar estado y fecha de fin
     viaje.estadoViaje = estadoCancelado;
-    viaje.fechaFin = new Date();
-
-    
-    (viaje as any).motivoCancelacion = motivo ?? null;
 
     const viajeGuardado = await this.viajeRepository.save(viaje);
 

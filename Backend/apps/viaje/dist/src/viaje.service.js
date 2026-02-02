@@ -107,7 +107,6 @@ let ViajeService = class ViajeService {
             console.error('Error al buscar la unidad:', error.message);
         }
     }
-<<<<<<< HEAD
     async calcularFechaRegreso(origenCoords, destinoCoords, baseCoords, fechaInicio, tiempoMuerto) {
         const coords = `${baseCoords.lng},${baseCoords.lat};${origenCoords.lng},${origenCoords.lat};${destinoCoords.lng},${destinoCoords.lat};${baseCoords.lng},${baseCoords.lat}`;
         const url = `http://router.project-osrm.org/route/v1/driving/${coords}?overview=false`;
@@ -125,7 +124,7 @@ let ViajeService = class ViajeService {
             throw new Error('No se pudo calcular la fecha de regreso');
         }
     }
-    findAll(user) {
+    buscarTodos(user) {
         const viajes = this.viajeRepository.find(user.id);
         console.log(viajes);
         return viajes;
@@ -178,12 +177,11 @@ let ViajeService = class ViajeService {
     }
     async rechazarViaje(viajeId) {
         await this.viajeRepository.update(viajeId, { estadoViaje: { id: 3 } });
-=======
+    }
     async findAll() {
         return await this.viajeRepository.find({
             relations: ['chofer', 'estadoViaje', 'unidad', 'transportista'],
         });
->>>>>>> origin/cambiosChofer
     }
     findOne(id) {
         return this.viajeRepository.findOne({ where: { ViajeId: id } });
@@ -193,7 +191,7 @@ let ViajeService = class ViajeService {
     }
     async enViaje(viajeId) {
         const estadoEnViaje = await this.estadoViajeRepository.findOne({
-            where: { nombre: 'En Viaje' },
+            where: { nombre: 'En viaje' },
         });
         if (!estadoEnViaje) {
             throw new common_1.NotFoundException(`No existe el estado 'En Viaje' en la tabla EstadoViaje`);
@@ -246,7 +244,7 @@ let ViajeService = class ViajeService {
             viaje,
         };
     }
-    async cancelarViaje(viajeId, choferId, motivo) {
+    async cancelarViaje(viajeId) {
         const viaje = await this.viajeRepository.findOne({
             where: { ViajeId: viajeId },
             relations: ['estadoViaje'],
@@ -261,8 +259,6 @@ let ViajeService = class ViajeService {
             throw new common_1.NotFoundException(`No existe el estado 'Cancelado' en la tabla EstadoViaje`);
         }
         viaje.estadoViaje = estadoCancelado;
-        viaje.fechaFin = new Date();
-        viaje.motivoCancelacion = motivo ?? null;
         const viajeGuardado = await this.viajeRepository.save(viaje);
         return {
             mensaje: `El viaje ${viajeGuardado.ViajeId} fue cancelado correctamente.`,

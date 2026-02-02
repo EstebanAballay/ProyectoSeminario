@@ -33,7 +33,7 @@ let ViajeController = class ViajeController {
         return this.viajeService.buscarUnidadesDisponibles(inicio, fin, camiones);
     }
     findAll(user) {
-        return this.viajeService.findAll(user);
+        return this.viajeService.buscarTodos(user);
     }
     findAllAdmin() {
         return this.viajeService.getViajesPendientes();
@@ -60,6 +60,9 @@ let ViajeController = class ViajeController {
         return this.viajeService.remove(+id);
     }
     finalizar(id) {
+        return this.viajeService.finalizarViaje(id);
+    }
+    iniciar(id) {
         return this.viajeService.enViaje(id);
     }
 };
@@ -141,6 +144,13 @@ __decorate([
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], ViajeController.prototype, "finalizar", null);
+__decorate([
+    (0, common_1.Patch)('iniciar/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", void 0)
+], ViajeController.prototype, "iniciar", null);
 exports.ViajeController = ViajeController = __decorate([
     (0, common_1.Controller)('viaje'),
     __metadata("design:paramtypes", [viaje_service_1.ViajeService])

@@ -6,7 +6,6 @@ export declare class ViajeController {
     constructor(viajeService: ViajeService);
     create(createViajeDto: CreateViajeDto, user: any): Promise<any>;
     findDisponibles(fechaInicio?: string, fechaFin?: string, camiones?: ConsultarUnidadesDto): Promise<any>;
-<<<<<<< HEAD
     findAll(user: any): Promise<import("./entities/viaje.entity").Viaje[]>;
     findAllAdmin(): Promise<{
         unidades: any;
@@ -39,12 +38,12 @@ export declare class ViajeController {
     }): Promise<void>;
     rechazarViaje(id: number): Promise<void>;
     findOne(id: string): Promise<import("./entities/viaje.entity").Viaje>;
-=======
-    findAll(): Promise<import("./entities/viaje.entity").Viaje[]>;
-    findOne(id: string): string;
->>>>>>> origin/cambiosChofer
     remove(id: string): string;
     finalizar(id: number): Promise<{
+        mensaje: string;
+        viaje: import("./entities/viaje.entity").Viaje;
+    }>;
+    iniciar(id: number): Promise<{
         mensaje: string;
         viaje: import("./entities/viaje.entity").Viaje;
     }>;

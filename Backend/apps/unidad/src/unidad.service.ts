@@ -11,43 +11,30 @@ import { TipoCamion } from './entities/tipoCamion.entity';
 import { Camion } from './entities/camion.entity';
 import { Unidad } from './entities/unidad.entity'
 import { In, Not } from 'typeorm';
-<<<<<<< HEAD
 import { Transportista } from './entities/transportista.entity';
 import { lastValueFrom } from 'rxjs';
 import { CreateVehicleDto } from './dto/create-Vehicle.dto';
 import { EstadoCamion } from './entities/estadoCamion.entity';
 import { EstadoAcoplado } from './entities/estadoAcoplado.entity';
 import { EstadoSemirremolque } from './entities/estadoSemirremolque.entity';
-=======
-import { EstadoCamion } from './entities/estadoCamion.entity';
-import { EstadoSemirremolque } from './entities/estadoSemirremolque.entity';
-import { EstadoAcoplado } from './entities/estadoAcoplado.entity';
 import { estadoTransportista } from './entities/estadoTransportista.entity';
-import { Transportista } from './entities/transportista.entity';
->>>>>>> origin/cambiosChofer
 
 @Injectable()
 export class UnidadService {
 
   constructor(private readonly httpService: HttpService,
-    @InjectRepository(Semirremolque) private estadoSemirremolqueRepository: Repository<Semirremolque>,
-    @InjectRepository(Acoplado) private estadoAcopladoRepository: Repository<Acoplado>,
+    @InjectRepository(Semirremolque) private semirremolqueRepository: Repository<Semirremolque>,
+    @InjectRepository(Acoplado) private acopladoRepository: Repository<Acoplado>,
     @InjectRepository(Tipo) private tipoRepository: Repository<Tipo>,
     @InjectRepository(TipoCamion) private tipoCamionRepository: Repository<TipoCamion>,
     @InjectRepository(Camion) private CamionRepository: Repository<Camion>,
     @InjectRepository(Unidad) private UnidadRepository: Repository<Unidad>,
-<<<<<<< HEAD
     @InjectRepository(Transportista) private choferRepository: Repository<Transportista>,
-    @InjectRepository(EstadoCamion) private estadoCamionRepository: Repository<EstadoCamion>,
-    @InjectRepository(EstadoAcoplado) private estadoAcopladoRepository: Repository<EstadoAcoplado>,
-    @InjectRepository(EstadoSemirremolque) private estadoSemirremolqueRepository: Repository<EstadoSemirremolque>,
-=======
     @InjectRepository(EstadoCamion) private estadoCamionRepository: Repository<EstadoCamion>,
     @InjectRepository(EstadoSemirremolque) private EstadoSemirremolqueRepository: Repository<EstadoSemirremolque>,
     @InjectRepository(EstadoAcoplado) private EstadoAcopladoRepository: Repository<EstadoAcoplado>,
     @InjectRepository(estadoTransportista) private estadoTransportistaRepository: Repository<estadoTransportista>,
     @InjectRepository(Transportista) private transportistaRepository: Repository<Transportista>
->>>>>>> origin/cambiosChofer
   ) {}
 
   async testConnection() 
@@ -81,7 +68,7 @@ export class UnidadService {
     // Buscar semirremolque si aplica
     let semirremolque: Semirremolque | null = null;
     if (dto.tieneSemirremolque && dto.semiremolqueId) {
-      semirremolque = await this.estadoSemirremolqueRepository.findOneBy({ id: dto.semiremolqueId });
+      semirremolque = await this.semirremolqueRepository.findOneBy({ id: dto.semiremolqueId });
       if (!semirremolque) {
         throw new NotFoundException(`Semirremolque con id ${dto.semiremolqueId} no encontrado`);
       }
@@ -90,7 +77,7 @@ export class UnidadService {
     // Buscar acoplado si aplica
     let acoplado: Acoplado | null = null;
     if (dto.tieneAcoplado && dto.acopladoId) {
-      acoplado = await this.estadoAcopladoRepository.findOneBy({ id: dto.acopladoId });
+      acoplado = await this.acopladoRepository.findOneBy({ id: dto.acopladoId });
       if (!acoplado) {
         throw new NotFoundException(`Acoplado con id ${dto.acopladoId} no encontrado`);
       }
@@ -137,11 +124,11 @@ export class UnidadService {
         where: { id: Not(In(camionesOcupados))},
       })).map(c => ({ ...c, tipo: c.tipoCamion.nombre }));;
 
-      const acopladosDisponibles = (await this.estadoAcopladoRepository.find({
+      const acopladosDisponibles = (await this.acopladoRepository.find({
         where: { id: Not(In(acopladosOcupados))},
       })).map(c => ({ ...c, tipo: c.tipo.nombre }));;
 
-      const semirremolquesDisponibles = (await this.estadoSemirremolqueRepository.find({
+      const semirremolquesDisponibles = (await this.semirremolqueRepository.find({
         where: { id: Not(In(semirremolquesOcupados))},
       })).map(c => ({ ...c, tipo: c.tipo.nombre }));;
 
@@ -342,7 +329,6 @@ export class UnidadService {
     return `This action removes a #${id} unidad`;
   }
 
-<<<<<<< HEAD
 
   async createVehicle(createUnidadDto: CreateVehicleDto) {
     if (createUnidadDto.unidadTipo.toLowerCase() === 'camion') {
@@ -364,7 +350,7 @@ export class UnidadService {
         patente: createUnidadDto.patente,
         capacidad: createUnidadDto.capacidad,
         precio: createUnidadDto.precioKm,
-        estado: await this.estadoAcopladoRepository.findOneBy({ nombre: 'disponible' }),
+        estado: await this.EstadoAcopladoRepository.findOneBy({ nombre: 'disponible' }),
         cantidadDeEjes: createUnidadDto.cantidadEjes
       });
       return this.acopladoRepository.save(nuevoAcoplado);
@@ -376,14 +362,13 @@ export class UnidadService {
         patente: createUnidadDto.patente,
         capacidad: createUnidadDto.capacidad,
         precio: createUnidadDto.precioKm,
-        estado: await this.estadoSemirremolqueRepository.findOneBy({ nombre: 'disponible' }),
+        estado: await this.EstadoSemirremolqueRepository.findOneBy({ nombre: 'disponible' }),
         cantidadDeEjes: createUnidadDto.cantidadEjes
       });
       return this.semirremolqueRepository.save(nuevoSemirremolque);
     }
 
   }
-=======
   async findUnityByDriver(idusuario: number): Promise<any[]> {
     return this.UnidadRepository.find({
       where: { transportistaId: idusuario }, 
@@ -414,18 +399,18 @@ export class UnidadService {
       }
 
       if (unidad.semiremolque) {
-        const semirremolque = await this.estadoSemirremolqueRepository.findOne({ where: { id: unidad.semiremolque.id } });
+        const semirremolque = await this.semirremolqueRepository.findOne({ where: { id: unidad.semiremolque.id } });
         if (semirremolque && estadoSemirremolque) {
           semirremolque.estado = estadoSemirremolque;
-          await this.estadoSemirremolqueRepository.save(semirremolque);
+          await this.semirremolqueRepository.save(semirremolque);
         }
       }
 
       if (unidad.acoplado) {
-        const acoplado = await this.estadoAcopladoRepository.findOne({ where: { id: unidad.acoplado.id } });
+        const acoplado = await this.acopladoRepository.findOne({ where: { id: unidad.acoplado.id } });
         if (acoplado && estadoAcoplado) {
           acoplado.estado = estadoAcoplado;
-          await this.estadoAcopladoRepository.save(acoplado);
+          await this.acopladoRepository.save(acoplado);
         }
       }
 
@@ -437,7 +422,6 @@ export class UnidadService {
       }
   }
 
->>>>>>> origin/cambiosChofer
 }
 
 async finalizarEstadoViaje(viajeId: number): Promise<void> {
@@ -463,18 +447,18 @@ async finalizarEstadoViaje(viajeId: number): Promise<void> {
       }
 
       if (unidad.semiremolque) {
-        const semirremolque = await this.estadoSemirremolqueRepository.findOne({ where: { id: unidad.semiremolque.id } });
+        const semirremolque = await this.semirremolqueRepository.findOne({ where: { id: unidad.semiremolque.id } });
         if (semirremolque && estadoSemirremolque) {
           semirremolque.estado = estadoSemirremolque;
-          await this.estadoSemirremolqueRepository.save(semirremolque);
+          await this.semirremolqueRepository.save(semirremolque);
         }
       }
 
       if (unidad.acoplado) {
-        const acoplado = await this.estadoAcopladoRepository.findOne({ where: { id: unidad.acoplado.id } });
+        const acoplado = await this.acopladoRepository.findOne({ where: { id: unidad.acoplado.id } });
         if (acoplado && estadoAcoplado) {
           acoplado.estado = estadoAcoplado;
-          await this.estadoAcopladoRepository.save(acoplado);
+          await this.acopladoRepository.save(acoplado);
         }
       }
 
