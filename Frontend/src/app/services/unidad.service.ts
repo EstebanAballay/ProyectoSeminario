@@ -36,4 +36,14 @@ export class UnidadService {
         }
     }
 
+    async crearUnidad(data:any): Promise<any> {
+        const url = `${this.apiUrl}/nuevaUnidad`;
+        try {
+            const response = await axios.post(url, data);
+            return response.data;}    
+        catch (error) {
+            console.error('Error al crear la unidad:', error);
+            throw error;
+        }
+    }
 }

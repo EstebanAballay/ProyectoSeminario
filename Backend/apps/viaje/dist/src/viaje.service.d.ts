@@ -47,6 +47,6 @@ export declare class ViajeService {
         choferId: number;
     }[]): Promise<void>;
     rechazarViaje(viajeId: number): Promise<void>;
-    findOne(id: number): string;
+    findOne(id: number): Promise<Viaje>;
     remove(id: number): string;
 }

@@ -28,7 +28,9 @@ export class ViajeService {
         console.log("Token en storage:", localStorage.getItem('token'));
         try {
             const response = await axios.post(url, data);
+            console.log(response.data);
             return response.data;
+            
         }
         catch (error) {
             console.error('Error al crear la unidad:', error);

@@ -2,6 +2,7 @@ import { UnidadService } from './unidad.service';
 import { CreateUnidadDto } from './dto/create-unidad.dto';
 import { UpdateUnidadDto } from './dto/update-unidad.dto';
 import { ConsultarUnidadesDto } from './dto/datosUnidadesFront.dto';
+import { CreateVehicleDto } from './dto/create-Vehicle.dto';
 export declare class UnidadController {
     private readonly unidadService;
     constructor(unidadService: UnidadService);
@@ -24,4 +25,5 @@ export declare class UnidadController {
     }): Promise<void>;
     update(id: string, updateUnidadDto: UpdateUnidadDto): string;
     remove(id: string): string;
+    crearUnidad(createUnidadDto: CreateVehicleDto): Promise<import("./entities/camion.entity").Camion | import("./entities/acoplado.entity").Acoplado | import("./entities/semirremolque.entity").Semirremolque>;
 }

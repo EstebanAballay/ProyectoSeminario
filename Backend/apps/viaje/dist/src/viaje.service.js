@@ -179,7 +179,7 @@ let ViajeService = class ViajeService {
         await this.viajeRepository.update(viajeId, { estadoViaje: { id: 3 } });
     }
     findOne(id) {
-        return `This action returns a #${id} viaje`;
+        return this.viajeRepository.findOne({ where: { ViajeId: id } });
     }
     remove(id) {
         return `This action removes a #${id} viaje`;

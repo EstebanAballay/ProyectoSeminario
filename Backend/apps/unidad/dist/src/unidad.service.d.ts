@@ -9,6 +9,10 @@ import { TipoCamion } from './entities/tipoCamion.entity';
 import { Camion } from './entities/camion.entity';
 import { Unidad } from './entities/unidad.entity';
 import { Transportista } from './entities/transportista.entity';
+import { CreateVehicleDto } from './dto/create-Vehicle.dto';
+import { EstadoCamion } from './entities/estadoCamion.entity';
+import { EstadoAcoplado } from './entities/estadoAcoplado.entity';
+import { EstadoSemirremolque } from './entities/estadoSemirremolque.entity';
 export declare class UnidadService {
     private readonly httpService;
     private semirremolqueRepository;
@@ -18,7 +22,10 @@ export declare class UnidadService {
     private CamionRepository;
     private UnidadRepository;
     private choferRepository;
-    constructor(httpService: HttpService, semirremolqueRepository: Repository<Semirremolque>, acopladoRepository: Repository<Acoplado>, tipoRepository: Repository<Tipo>, tipoCamionRepository: Repository<TipoCamion>, CamionRepository: Repository<Camion>, UnidadRepository: Repository<Unidad>, choferRepository: Repository<Transportista>);
+    private estadoCamionRepository;
+    private estadoAcopladoRepository;
+    private estadoSemirremolqueRepository;
+    constructor(httpService: HttpService, semirremolqueRepository: Repository<Semirremolque>, acopladoRepository: Repository<Acoplado>, tipoRepository: Repository<Tipo>, tipoCamionRepository: Repository<TipoCamion>, CamionRepository: Repository<Camion>, UnidadRepository: Repository<Unidad>, choferRepository: Repository<Transportista>, estadoCamionRepository: Repository<EstadoCamion>, estadoAcopladoRepository: Repository<EstadoAcoplado>, estadoSemirremolqueRepository: Repository<EstadoSemirremolque>);
     testConnection(): Promise<void>;
     private getRandomItem;
     createUnidad(dto: CreateUnidadDto): Promise<Unidad>;
@@ -42,4 +49,5 @@ export declare class UnidadService {
     findOne(id: number): Promise<Unidad[]>;
     update(id: number, updateUnidadDto: UpdateUnidadDto): string;
     remove(id: number): string;
+    createVehicle(createUnidadDto: CreateVehicleDto): Promise<Camion | Acoplado | Semirremolque>;
 }

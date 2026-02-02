@@ -1,4 +1,3 @@
-version: '3.8'
 
 services:
   cobro:
@@ -18,7 +17,9 @@ services:
       - "3001:3001"
     networks:
       - backend-network
-
+    volumes:
+    - .:/app                 # 1. "Espeja" tu carpeta actual a la carpeta /app del contenedor
+    - /app/node_modules      # 2. IMPORTANTE: Protege las librerías internas del contenedor
   mercadopago:
     container_name: mercadopago-service
     build:
@@ -50,6 +51,51 @@ services:
       - backend-network
     depends_on:
       - cobro
+
+  users:
+    build: ./apps/users             # ruta al Dockerfile del microservicio
+    command: npm run start:dev
+    container_name: users-service   # nombre del contenedor
+    env_file: .env                  # variables de entorno
+    ports:
+      - "3003:3003"                # host:contenedor
+    networks:
+      - backend-network
+    volumes:
+      - ./apps/users:/app
+      - /app/node_modules
+    restart: always                 # reinicia si falla
+
+  unidad:
+    build: ./apps/unidad
+    container_name: unidad-service
+    command: npm run start:dev
+    env_file: .env
+    ports:
+      - "3002:3002"
+    networks:
+      - backend-network
+    volumes:
+      - ./apps/unidad:/app
+      - /app/node_modules
+    restart: always
+
+  viaje:
+    build: ./apps/viaje
+    container_name: viaje-service
+    command: npm run start:dev
+    env_file: .env
+    ports:
+      - "3004:3004"
+    networks:
+      - backend-network
+    volumes:
+      - ./apps/viaje:/app
+      - /app/node_modules
+    restart: always
+    depends_on:
+      - users
+      - unidad
 
 networks:
   backend-network:

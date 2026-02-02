@@ -4,26 +4,40 @@ import { Repository } from 'typeorm';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { Cobro } from './entities/cobro.entity';
+import { EstadoCobro } from './entities/estadoCobro.entity';
 
 @Injectable()
 export class CobroService {
     private readonly logger = new Logger(CobroService.name);
 
     constructor(
-        @InjectRepository(Cobro)
-        private readonly cobroRepo: Repository<Cobro>,
+        @InjectRepository(Cobro) private readonly cobroRepo: Repository<Cobro>,
+        @InjectRepository(EstadoCobro) private estadoRepo: Repository<EstadoCobro>, 
         private readonly httpService: HttpService,
+  // ... otros servicios
     ) {}
 
     /**
      * Crea el registro inicial en Supabase.
      */
-    async crearCobro(data: Partial<Cobro>) {
+    async crearCobro(viajeId: number) {
+        //para asegurar que el cliente no modifico el monto de la senia, pido al service de viaje que me envie el viaje seguro
+        const viajeSeguro = await firstValueFrom(
+            this.httpService.get(`http://viaje-service:3004/viaje/${viajeId}`)
+        );
+        const monto = viajeSeguro.data.sena; //asigno el monto correcto segun el viaje
+
+        //busco el estado pendiente
+        const estadoEntity = await this.estadoRepo.findOne({ where: { nombre: 'pendiente' } });
+
+        //armo data, que contiene los datos necesarios para crear el cobro
+        const data = { viajeId, monto, estado: estadoEntity };
+        console.log(data);
         const nuevoCobro = this.cobroRepo.create(data);
         const guardado = await this.cobroRepo.save(nuevoCobro);
         this.logger.log(`✅ Cobro creado: ID ${guardado.id} por $${guardado.monto}`);
         return guardado;
-    }
+    } 
 
     /**
      * Busca un cobro por ID. Fundamental para evitar el error 404 en Postman.
@@ -85,11 +99,13 @@ export class CobroService {
      */
     async confirmarPagoMP(cobroId: string, status: string, paymentId: string) {
         const estadoFinal = status === 'approved' ? 'pagado' : 'rechazado';
-        
+        //busco el estado final por su nombre
+        const estadoEntity = await this.estadoRepo.findOne({ where: { nombre: estadoFinal } });
+
         await this.cobroRepo.update(
             { id: Number(cobroId) },
             { 
-                estado: estadoFinal, 
+                estado: estadoEntity, 
                 transactionId: paymentId 
             }
         );

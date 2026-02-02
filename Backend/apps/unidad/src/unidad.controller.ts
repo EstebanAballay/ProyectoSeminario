@@ -3,6 +3,7 @@ import { UnidadService } from './unidad.service';
 import { CreateUnidadDto } from './dto/create-unidad.dto';
 import { UpdateUnidadDto } from './dto/update-unidad.dto';
 import { ConsultarUnidadesDto } from './dto/datosUnidadesFront.dto';
+import { CreateVehicleDto } from './dto/create-Vehicle.dto';
 
 @Controller('unidad')
 export class UnidadController {
@@ -64,4 +65,10 @@ export class UnidadController {
   remove(@Param('id') id: string) {
     return this.unidadService.remove(+id);
   }
+
+  @Post('nuevaUnidad')
+  async crearUnidad(@Body() createUnidadDto: CreateVehicleDto) {
+    return await this.unidadService.createVehicle(createUnidadDto);
+  }
+
 }

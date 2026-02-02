@@ -7,6 +7,7 @@ import * as L from 'leaflet';
 import 'leaflet-routing-machine';
 import  {ViajeService} from '../services/viaje.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { CobroService } from '../services/cobro.service';
 
 // Solución para el error de los iconos de Leaflet en Angular
 const iconRetinaUrl = 'assets/marker-icon-2x.png';
@@ -39,7 +40,9 @@ export class NuevoViajeComponent implements AfterViewInit {
   constructor(private unidadService: UnidadService,
               private viajeService: ViajeService,
               private loadingService: LoadingService,
+              private CobroService: CobroService,
               private sanitizer: DomSanitizer) {}
+
   //atributo para el total del pedido
   public totalGeneral: number = 0;
 
@@ -388,22 +391,18 @@ export class NuevoViajeComponent implements AfterViewInit {
   }
 
   async guardarViaje() {
-    console.log("pablito", this.data);
     const response = await this.viajeService.crearViaje(this.data);
+    console.log(response);
     //reinicio las variables
+    this.cobrar(response.ViajeId);
     this.data.unidades = [];
   }
-
 
   actualizarTotalGeneral() {
     this.totalGeneral = this.unidadesSeleccionadas.reduce(
       (acum, unidad) => Math.trunc((acum + (unidad.subtotal || 0)*this.data.distancia)*100)/100,
       0
     );
-  }
-
-  public hacerInseguro(html: string): SafeHtml {
-    return this.sanitizer.bypassSecurityTrustHtml(html);
   }
 
   // Dentro de tu clase de componente
@@ -415,7 +414,18 @@ export class NuevoViajeComponent implements AfterViewInit {
       console.log('Unidad eliminada. Unidades restantes:', this.camionesSeleccionados.length);
   }
 
-
+  async cobrar(viajeId: number) {
+    try {
+      // Esperamos la respuesta con 'await'
+      const res = await this.CobroService.generarCobro(viajeId);
+      
+      if (res && res.init_point) {
+        window.location.href = res.init_point;
+      }
+    } catch (err) {
+      console.error('Error al generar link', err);
+    }
+}
 
 }
 

@@ -1,4 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { mainModule } from 'process';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { EstadoCobro } from './estadoCobro.entity';
 
 @Entity({ name: 'cobro', schema: 'microservice_cobro' })
 export class Cobro {
@@ -11,8 +13,9 @@ export class Cobro {
     @Column({ type: 'numeric' })
     monto: number;
 
-    @Column({ type: 'varchar', default: 'pendiente' })
-    estado: string;
+    @ManyToOne(() => EstadoCobro, { eager: true })
+    @JoinColumn({ name: 'estadoId' })
+    estado: EstadoCobro
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     fechaCreacion: Date;

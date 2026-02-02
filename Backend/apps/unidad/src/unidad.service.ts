@@ -13,6 +13,10 @@ import { Unidad } from './entities/unidad.entity'
 import { In, Not } from 'typeorm';
 import { Transportista } from './entities/transportista.entity';
 import { lastValueFrom } from 'rxjs';
+import { CreateVehicleDto } from './dto/create-Vehicle.dto';
+import { EstadoCamion } from './entities/estadoCamion.entity';
+import { EstadoAcoplado } from './entities/estadoAcoplado.entity';
+import { EstadoSemirremolque } from './entities/estadoSemirremolque.entity';
 
 @Injectable()
 export class UnidadService {
@@ -24,7 +28,10 @@ export class UnidadService {
     @InjectRepository(TipoCamion) private tipoCamionRepository: Repository<TipoCamion>,
     @InjectRepository(Camion) private CamionRepository: Repository<Camion>,
     @InjectRepository(Unidad) private UnidadRepository: Repository<Unidad>,
-    @InjectRepository(Transportista) private choferRepository: Repository<Transportista>
+    @InjectRepository(Transportista) private choferRepository: Repository<Transportista>,
+    @InjectRepository(EstadoCamion) private estadoCamionRepository: Repository<EstadoCamion>,
+    @InjectRepository(EstadoAcoplado) private estadoAcopladoRepository: Repository<EstadoAcoplado>,
+    @InjectRepository(EstadoSemirremolque) private estadoSemirremolqueRepository: Repository<EstadoSemirremolque>,
   ) {}
 
   async testConnection() 
@@ -280,7 +287,7 @@ export class UnidadService {
   const { data } = await lastValueFrom(
     this.httpService.get('http://users-service:3003/users/by-ids', {
       params: {
-        ids: idsParaSolicitar.join(',') // Ahora sí es un string "1,2,3"
+        ids: idsParaSolicitar.join(',') 
       }
     })
   );
@@ -309,5 +316,46 @@ export class UnidadService {
 
   remove(id: number) {
     return `This action removes a #${id} unidad`;
+  }
+
+
+  async createVehicle(createUnidadDto: CreateVehicleDto) {
+    if (createUnidadDto.unidadTipo.toLowerCase() === 'camion') {
+      // Lógica para crear un camión
+      const nuevoCamion = this.CamionRepository.create({
+        tipoCamion: await this.tipoCamionRepository.findOneBy({ nombre: createUnidadDto.unidadSubtipo }),
+        patente: createUnidadDto.patente,
+        peso: createUnidadDto.capacidad,
+        precio: createUnidadDto.precioKm,
+        estadoCamion: await this.estadoCamionRepository.findOneBy({ nombre: 'disponible' }),
+        cantidadEjes: createUnidadDto.cantidadEjes
+      });
+      return this.CamionRepository.save(nuevoCamion);
+
+    } else if (createUnidadDto.unidadTipo.toLowerCase() === 'acoplado') {
+      // Lógica para crear un acoplado
+      const nuevoAcoplado = this.acopladoRepository.create({
+        tipo: await this.tipoRepository.findOneBy({ nombre: createUnidadDto.unidadSubtipo }),
+        patente: createUnidadDto.patente,
+        capacidad: createUnidadDto.capacidad,
+        precio: createUnidadDto.precioKm,
+        estado: await this.estadoAcopladoRepository.findOneBy({ nombre: 'disponible' }),
+        cantidadDeEjes: createUnidadDto.cantidadEjes
+      });
+      return this.acopladoRepository.save(nuevoAcoplado);
+
+    } else if (createUnidadDto.unidadTipo.toLowerCase() === 'semirremolque') {
+      // Lógica para crear un semirremolque
+      const nuevoSemirremolque = this.semirremolqueRepository.create({
+        tipo: await this.tipoRepository.findOneBy({ nombre: createUnidadDto.unidadSubtipo }),
+        patente: createUnidadDto.patente,
+        capacidad: createUnidadDto.capacidad,
+        precio: createUnidadDto.precioKm,
+        estado: await this.estadoSemirremolqueRepository.findOneBy({ nombre: 'disponible' }),
+        cantidadDeEjes: createUnidadDto.cantidadEjes
+      });
+      return this.semirremolqueRepository.save(nuevoSemirremolque);
+    }
+
   }
 }

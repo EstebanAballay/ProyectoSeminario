@@ -171,10 +171,9 @@ async getViajesPendientes() {
   const viajesConUnidades = await Promise.all(viajes.map(async (viaje) => {
     try {
       // Hacemos la petición al servicio de unidades
-      // Asumo que tu servicio de unidades responde en el puerto 3002 y acepta un query param
       const { data: unidades } = await lastValueFrom(
         this.httpService.get('http://unidad-service:3002/unidad/', {
-          params: { idViaje: viaje.ViajeId } // Asegúrate que sea la Key correcta (ViajeId o id)
+          params: { idViaje: viaje.ViajeId } 
         })
       );
 
@@ -237,7 +236,7 @@ async getViajesPendientes() {
     await this.viajeRepository.update(viajeId, { estadoViaje: { id: 3 } }); }
 
   findOne(id: number) {
-    return `This action returns a #${id} viaje`;
+    return this.viajeRepository.findOne({ where: { ViajeId: id } });
   }
 
   /*

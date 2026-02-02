@@ -18,6 +18,7 @@ const unidad_service_1 = require("./unidad.service");
 const create_unidad_dto_1 = require("./dto/create-unidad.dto");
 const update_unidad_dto_1 = require("./dto/update-unidad.dto");
 const datosUnidadesFront_dto_1 = require("./dto/datosUnidadesFront.dto");
+const create_Vehicle_dto_1 = require("./dto/create-Vehicle.dto");
 let UnidadController = class UnidadController {
     constructor(unidadService) {
         this.unidadService = unidadService;
@@ -58,6 +59,9 @@ let UnidadController = class UnidadController {
     }
     remove(id) {
         return this.unidadService.remove(+id);
+    }
+    async crearUnidad(createUnidadDto) {
+        return await this.unidadService.createVehicle(createUnidadDto);
     }
 };
 exports.UnidadController = UnidadController;
@@ -123,6 +127,13 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], UnidadController.prototype, "remove", null);
+__decorate([
+    (0, common_1.Post)('nuevaUnidad'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_Vehicle_dto_1.CreateVehicleDto]),
+    __metadata("design:returntype", Promise)
+], UnidadController.prototype, "crearUnidad", null);
 exports.UnidadController = UnidadController = __decorate([
     (0, common_1.Controller)('unidad'),
     __metadata("design:paramtypes", [unidad_service_1.UnidadService])

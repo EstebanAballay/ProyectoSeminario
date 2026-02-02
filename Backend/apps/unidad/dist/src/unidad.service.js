@@ -26,8 +26,11 @@ const unidad_entity_1 = require("./entities/unidad.entity");
 const typeorm_3 = require("typeorm");
 const transportista_entity_1 = require("./entities/transportista.entity");
 const rxjs_1 = require("rxjs");
+const estadoCamion_entity_1 = require("./entities/estadoCamion.entity");
+const estadoAcoplado_entity_1 = require("./entities/estadoAcoplado.entity");
+const estadoSemirremolque_entity_1 = require("./entities/estadoSemirremolque.entity");
 let UnidadService = class UnidadService {
-    constructor(httpService, semirremolqueRepository, acopladoRepository, tipoRepository, tipoCamionRepository, CamionRepository, UnidadRepository, choferRepository) {
+    constructor(httpService, semirremolqueRepository, acopladoRepository, tipoRepository, tipoCamionRepository, CamionRepository, UnidadRepository, choferRepository, estadoCamionRepository, estadoAcopladoRepository, estadoSemirremolqueRepository) {
         this.httpService = httpService;
         this.semirremolqueRepository = semirremolqueRepository;
         this.acopladoRepository = acopladoRepository;
@@ -36,6 +39,9 @@ let UnidadService = class UnidadService {
         this.CamionRepository = CamionRepository;
         this.UnidadRepository = UnidadRepository;
         this.choferRepository = choferRepository;
+        this.estadoCamionRepository = estadoCamionRepository;
+        this.estadoAcopladoRepository = estadoAcopladoRepository;
+        this.estadoSemirremolqueRepository = estadoSemirremolqueRepository;
     }
     async testConnection() {
         try {
@@ -244,6 +250,41 @@ let UnidadService = class UnidadService {
     remove(id) {
         return `This action removes a #${id} unidad`;
     }
+    async createVehicle(createUnidadDto) {
+        if (createUnidadDto.unidadTipo.toLowerCase() === 'camion') {
+            const nuevoCamion = this.CamionRepository.create({
+                tipoCamion: await this.tipoCamionRepository.findOneBy({ nombre: createUnidadDto.unidadSubtipo }),
+                patente: createUnidadDto.patente,
+                peso: createUnidadDto.capacidad,
+                precio: createUnidadDto.precioKm,
+                estadoCamion: await this.estadoCamionRepository.findOneBy({ nombre: 'disponible' }),
+                cantidadEjes: createUnidadDto.cantidadEjes
+            });
+            return this.CamionRepository.save(nuevoCamion);
+        }
+        else if (createUnidadDto.unidadTipo.toLowerCase() === 'acoplado') {
+            const nuevoAcoplado = this.acopladoRepository.create({
+                tipo: await this.tipoRepository.findOneBy({ nombre: createUnidadDto.unidadSubtipo }),
+                patente: createUnidadDto.patente,
+                capacidad: createUnidadDto.capacidad,
+                precio: createUnidadDto.precioKm,
+                estado: await this.estadoAcopladoRepository.findOneBy({ nombre: 'disponible' }),
+                cantidadDeEjes: createUnidadDto.cantidadEjes
+            });
+            return this.acopladoRepository.save(nuevoAcoplado);
+        }
+        else if (createUnidadDto.unidadTipo.toLowerCase() === 'semirremolque') {
+            const nuevoSemirremolque = this.semirremolqueRepository.create({
+                tipo: await this.tipoRepository.findOneBy({ nombre: createUnidadDto.unidadSubtipo }),
+                patente: createUnidadDto.patente,
+                capacidad: createUnidadDto.capacidad,
+                precio: createUnidadDto.precioKm,
+                estado: await this.estadoSemirremolqueRepository.findOneBy({ nombre: 'disponible' }),
+                cantidadDeEjes: createUnidadDto.cantidadEjes
+            });
+            return this.semirremolqueRepository.save(nuevoSemirremolque);
+        }
+    }
 };
 exports.UnidadService = UnidadService;
 exports.UnidadService = UnidadService = __decorate([
@@ -255,7 +296,13 @@ exports.UnidadService = UnidadService = __decorate([
     __param(5, (0, typeorm_1.InjectRepository)(camion_entity_1.Camion)),
     __param(6, (0, typeorm_1.InjectRepository)(unidad_entity_1.Unidad)),
     __param(7, (0, typeorm_1.InjectRepository)(transportista_entity_1.Transportista)),
+    __param(8, (0, typeorm_1.InjectRepository)(estadoCamion_entity_1.EstadoCamion)),
+    __param(9, (0, typeorm_1.InjectRepository)(estadoAcoplado_entity_1.EstadoAcoplado)),
+    __param(10, (0, typeorm_1.InjectRepository)(estadoSemirremolque_entity_1.EstadoSemirremolque)),
     __metadata("design:paramtypes", [axios_1.HttpService,
+        typeorm_2.Repository,
+        typeorm_2.Repository,
+        typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository,

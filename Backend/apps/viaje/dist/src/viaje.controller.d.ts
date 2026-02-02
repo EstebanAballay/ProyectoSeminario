@@ -37,6 +37,6 @@ export declare class ViajeController {
         }[];
     }): Promise<void>;
     rechazarViaje(id: number): Promise<void>;
-    findOne(id: string): string;
+    findOne(id: string): Promise<import("./entities/viaje.entity").Viaje>;
     remove(id: string): string;
 }

@@ -1,15 +1,14 @@
 import { Controller, Post, Param, Body, Get, ParseIntPipe } from '@nestjs/common';
 import { CobroService } from './cobro.service';
-import { Cobro } from './entities/cobro.entity';
 
 @Controller('cobros') // Esta es la base: http://localhost:3001/cobros
 export class CobroController {
     constructor(private readonly cobroService: CobroService) {}
 
     // 1. CREAR COBRO: POST http://localhost:3001/cobros
-    @Post()
-    async crearCobro(@Body() cobroData: Partial<Cobro>) {
-        return await this.cobroService.crearCobro(cobroData);
+    @Post('viajeId/:viajeId')
+    async crearCobro(@Param('viajeId', ParseIntPipe) viajeId: number) {
+        return await this.cobroService.crearCobro(viajeId);
     }
 
     // 2. CONSULTAR: GET http://localhost:3001/cobros/25
