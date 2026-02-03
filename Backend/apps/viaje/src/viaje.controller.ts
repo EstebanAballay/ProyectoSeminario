@@ -85,4 +85,9 @@ export class ViajeController {
   iniciar(@Param('id') id: number) {
     return this.viajeService.enViaje(id);
   }
+
+  @Patch('cancelar/:id')
+  cancelar(@Param('id') id: number) {
+  return this.viajeService.cancelarViaje(id);
+  }
 }

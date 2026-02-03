@@ -60,6 +60,15 @@ let UnidadController = class UnidadController {
         console.log('Asignaciones recibidas:', dto.asignaciones);
         return await this.unidadService.asignarChoferes(dto.asignaciones);
     }
+    async iniciarEstadoViaje(id) {
+        return this.unidadService.iniciarEstadoViaje(id);
+    }
+    async finalizarEstadoViaje(id) {
+        return this.unidadService.finalizarEstadoViaje(id);
+    }
+    findOne(id) {
+        return this.unidadService.findOne(+id);
+    }
     update(id, updateUnidadDto) {
         return this.unidadService.update(+id, updateUnidadDto);
     }
@@ -131,6 +140,27 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UnidadController.prototype, "asignarChoferes", null);
+__decorate([
+    (0, common_1.Patch)('iniciarEstadoViaje/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], UnidadController.prototype, "iniciarEstadoViaje", null);
+__decorate([
+    (0, common_1.Patch)('finalizarEstadoViaje/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], UnidadController.prototype, "finalizarEstadoViaje", null);
+__decorate([
+    (0, common_1.Get)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], UnidadController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Patch)(':id'),
     __param(0, (0, common_1.Param)('id')),

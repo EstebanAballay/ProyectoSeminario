@@ -296,12 +296,12 @@ let UnidadService = class UnidadService {
     async iniciarEstadoViaje(viajeId) {
         const unidades = await this.UnidadRepository.find({
             where: { idViaje: viajeId },
-            relations: ['camion', 'semirremolque', 'acoplado'],
+            relations: ['camion', 'semiremolque', 'acoplado'],
         });
-        const estadoCamion = await this.estadoCamionRepository.findOne({ where: { nombre: 'En Viaje' } });
-        const estadoSemirremolque = await this.EstadoSemirremolqueRepository.findOne({ where: { nombre: 'En Viaje' } });
-        const estadoAcoplado = await this.EstadoAcopladoRepository.findOne({ where: { nombre: 'En Viaje' } });
-        const estadoTransportista = await this.estadoTransportistaRepository.findOne({ where: { nombre: 'En Viaje' } });
+        const estadoCamion = await this.estadoCamionRepository.findOne({ where: { nombre: 'enViaje' } });
+        const estadoSemirremolque = await this.EstadoSemirremolqueRepository.findOne({ where: { nombre: 'enViaje' } });
+        const estadoAcoplado = await this.EstadoAcopladoRepository.findOne({ where: { nombre: 'enViaje' } });
+        const estadoTransportista = await this.estadoTransportistaRepository.findOne({ where: { nombre: 'enViaje' } });
         for (const unidad of unidades) {
             if (unidad.camion) {
                 const camion = await this.CamionRepository.findOne({ where: { id: unidad.camion.id } });
@@ -334,7 +334,7 @@ let UnidadService = class UnidadService {
     async finalizarEstadoViaje(viajeId) {
         const unidades = await this.UnidadRepository.find({
             where: { idViaje: viajeId },
-            relations: ['camion', 'semirremolque', 'acoplado'],
+            relations: ['camion', 'semiremolque', 'acoplado'],
         });
         const estadoCamion = await this.estadoCamionRepository.findOne({ where: { nombre: 'disponible' } });
         const estadoSemirremolque = await this.EstadoSemirremolqueRepository.findOne({ where: { nombre: 'disponible' } });

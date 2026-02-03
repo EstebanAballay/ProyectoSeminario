@@ -282,9 +282,7 @@ async getViajesPendientes() {
     //peticion a unidad-service para actualizar el estado del viaje en las unidades asociadas
 try {
   const response = await firstValueFrom(
-    this.httpService.post('http://unidad-service:3002/unidad/iniciarEstadoViaje', {
-      viajeId: viaje.ViajeId,
-    })
+    this.httpService.patch(`http://unidad-service:3002/unidad/iniciarEstadoViaje/${viaje.ViajeId}`)
   );
   console.log('Respuesta de unidad-service:', response.data);
 }
@@ -324,9 +322,7 @@ catch (error) {
  //peticion a unidad-service para actualizar el estado del viaje en las unidades asociadas
 try {
   const response = await firstValueFrom(
-    this.httpService.post('http://unidad-service:3002/unidad/finalizarEstadoViaje', {
-      viajeId: viaje.ViajeId,
-    })
+    this.httpService.patch(`http://unidad-service:3002/unidad/finalizarEstadoViaje/${viaje.ViajeId}`)
   );
   console.log('Respuesta de unidad-service:', response.data);
 }
@@ -362,7 +358,16 @@ catch (error) {
     viaje.estadoViaje = estadoCancelado;
 
     const viajeGuardado = await this.viajeRepository.save(viaje);
-
+    //cambiar el estado de las unidades asociadas al viaje,usamos la misma funcion que en finalizar viaje
+    try {
+      const response = await firstValueFrom(
+        this.httpService.patch(`http://unidad-service:3002/unidad/finalizarEstadoViaje/${viaje.ViajeId}`)
+      );
+      console.log('Respuesta de unidad-service:', response.data);
+    }
+    catch (error) {
+      console.error('Error al actualizar el estado del viaje en unidad-service:', error.message);
+    }
     return {
       mensaje: `El viaje ${viajeGuardado.ViajeId} fue cancelado correctamente.`,
       viaje: viajeGuardado,

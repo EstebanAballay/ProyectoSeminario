@@ -65,6 +65,9 @@ let ViajeController = class ViajeController {
     iniciar(id) {
         return this.viajeService.enViaje(id);
     }
+    cancelar(id) {
+        return this.viajeService.cancelarViaje(id);
+    }
 };
 exports.ViajeController = ViajeController;
 __decorate([
@@ -151,6 +154,13 @@ __decorate([
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], ViajeController.prototype, "iniciar", null);
+__decorate([
+    (0, common_1.Patch)('cancelar/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", void 0)
+], ViajeController.prototype, "cancelar", null);
 exports.ViajeController = ViajeController = __decorate([
     (0, common_1.Controller)('viaje'),
     __metadata("design:paramtypes", [viaje_service_1.ViajeService])

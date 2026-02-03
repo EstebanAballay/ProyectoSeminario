@@ -43,7 +43,6 @@ export class UnidadController {
     return disponiblesPorTipo
   } 
 
-<<<<<<< HEAD
   @Post('choferesDisponibles')
   async getChoferesDisponibles(@Body() dto: {idViajesEnRango:number[]}) {
     const disponibles = await this.unidadService.getChoferesDisponibles(dto.idViajesEnRango);
@@ -64,9 +63,9 @@ export class UnidadController {
   @Post('asignarChoferes')
   async asignarChoferes(@Body() dto: {asignaciones: {unidadId: number, choferId: number}[]}) {
     console.log('Asignaciones recibidas:', dto.asignaciones);
-    return await this.unidadService.asignarChoferes(dto.asignaciones);
-=======
-@Patch('iniciarEstadoViaje/:id')
+    return await this.unidadService.asignarChoferes(dto.asignaciones);}
+
+  @Patch('iniciarEstadoViaje/:id')
   async iniciarEstadoViaje(@Param('id') id: number) {
     return this.unidadService.iniciarEstadoViaje(id);
   }
@@ -79,7 +78,6 @@ export class UnidadController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.unidadService.findOne(+id);
->>>>>>> origin/cambiosChofer
   }
 
   @Patch(':id')
@@ -92,13 +90,9 @@ export class UnidadController {
     return this.unidadService.remove(+id);
   }
 
-<<<<<<< HEAD
   @Post('nuevaUnidad')
   async crearUnidad(@Body() createUnidadDto: CreateVehicleDto) {
     return await this.unidadService.createVehicle(createUnidadDto);
   }
-=======
-
->>>>>>> origin/cambiosChofer
 
 }

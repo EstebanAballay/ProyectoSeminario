@@ -47,4 +47,8 @@ export declare class ViajeController {
         mensaje: string;
         viaje: import("./entities/viaje.entity").Viaje;
     }>;
+    cancelar(id: number): Promise<{
+        mensaje: string;
+        viaje: import("./entities/viaje.entity").Viaje;
+    }>;
 }

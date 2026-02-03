@@ -202,9 +202,7 @@ let ViajeService = class ViajeService {
         viaje.estadoViaje = estadoEnViaje;
         await this.viajeRepository.save(viaje);
         try {
-            const response = await (0, rxjs_1.firstValueFrom)(this.httpService.post('http://unidad-service:3002/unidad/iniciarEstadoViaje', {
-                viajeId: viaje.ViajeId,
-            }));
+            const response = await (0, rxjs_1.firstValueFrom)(this.httpService.patch(`http://unidad-service:3002/unidad/iniciarEstadoViaje/${viaje.ViajeId}`));
             console.log('Respuesta de unidad-service:', response.data);
         }
         catch (error) {
@@ -231,9 +229,7 @@ let ViajeService = class ViajeService {
         viaje.estadoViaje = estadoFinalizado;
         await this.viajeRepository.save(viaje);
         try {
-            const response = await (0, rxjs_1.firstValueFrom)(this.httpService.post('http://unidad-service:3002/unidad/finalizarEstadoViaje', {
-                viajeId: viaje.ViajeId,
-            }));
+            const response = await (0, rxjs_1.firstValueFrom)(this.httpService.patch(`http://unidad-service:3002/unidad/finalizarEstadoViaje/${viaje.ViajeId}`));
             console.log('Respuesta de unidad-service:', response.data);
         }
         catch (error) {
@@ -260,6 +256,13 @@ let ViajeService = class ViajeService {
         }
         viaje.estadoViaje = estadoCancelado;
         const viajeGuardado = await this.viajeRepository.save(viaje);
+        try {
+            const response = await (0, rxjs_1.firstValueFrom)(this.httpService.patch(`http://unidad-service:3002/unidad/finalizarEstadoViaje/${viaje.ViajeId}`));
+            console.log('Respuesta de unidad-service:', response.data);
+        }
+        catch (error) {
+            console.error('Error al actualizar el estado del viaje en unidad-service:', error.message);
+        }
         return {
             mensaje: `El viaje ${viajeGuardado.ViajeId} fue cancelado correctamente.`,
             viaje: viajeGuardado,
