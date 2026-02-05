@@ -31,7 +31,7 @@ const estadoAcoplado_entity_1 = require("./entities/estadoAcoplado.entity");
 const estadoSemirremolque_entity_1 = require("./entities/estadoSemirremolque.entity");
 const estadoTransportista_entity_1 = require("./entities/estadoTransportista.entity");
 let UnidadService = class UnidadService {
-    constructor(httpService, semirremolqueRepository, acopladoRepository, tipoRepository, tipoCamionRepository, CamionRepository, UnidadRepository, choferRepository, estadoCamionRepository, EstadoSemirremolqueRepository, EstadoAcopladoRepository, estadoTransportistaRepository, transportistaRepository) {
+    constructor(httpService, semirremolqueRepository, acopladoRepository, tipoRepository, tipoCamionRepository, CamionRepository, UnidadRepository, estadoCamionRepository, EstadoSemirremolqueRepository, EstadoAcopladoRepository, estadoTransportistaRepository, transportistaRepository) {
         this.httpService = httpService;
         this.semirremolqueRepository = semirremolqueRepository;
         this.acopladoRepository = acopladoRepository;
@@ -39,7 +39,6 @@ let UnidadService = class UnidadService {
         this.tipoCamionRepository = tipoCamionRepository;
         this.CamionRepository = CamionRepository;
         this.UnidadRepository = UnidadRepository;
-        this.choferRepository = choferRepository;
         this.estadoCamionRepository = estadoCamionRepository;
         this.EstadoSemirremolqueRepository = EstadoSemirremolqueRepository;
         this.EstadoAcopladoRepository = EstadoAcopladoRepository;
@@ -96,6 +95,7 @@ let UnidadService = class UnidadService {
         return this.tipoRepository.find();
     }
     consultarTiposCamiones() {
+        console.log("el error salta despues");
         return this.tipoCamionRepository.find();
     }
     async findDisponibles(unidadesOcupadas) {
@@ -204,7 +204,7 @@ let UnidadService = class UnidadService {
     async getChoferesDisponibles(idViajesEnRango) {
         if (!idViajesEnRango) {
             console.log('No hay viajes en el rango proporcionado.');
-            const allChoferes = await this.choferRepository.find();
+            const allChoferes = await this.transportistaRepository.find();
             const idsParaSolicitar = allChoferes.map(c => c.idUsuario);
             const { data } = await (0, rxjs_1.lastValueFrom)(this.httpService.get('http://users-service:3003/users/by-ids', {
                 params: {
@@ -224,7 +224,7 @@ let UnidadService = class UnidadService {
                 where: { idUsuario: (0, typeorm_3.Not)((0, typeorm_3.In)(idsOcupados)) },
             };
         }
-        const choferesDisponibles = await this.choferRepository.find(opcionesBusqueda);
+        const choferesDisponibles = await this.transportistaRepository.find(opcionesBusqueda);
         console.log('IDs de choferes disponibles:', choferesDisponibles.map(c => c.idUsuario));
         if (choferesDisponibles.length === 0)
             return [];
@@ -240,18 +240,9 @@ let UnidadService = class UnidadService {
         for (const asignacion of asignaciones)
             this.UnidadRepository.update(asignacion.unidadId, { transportista: { idUsuario: asignacion.choferId } });
     }
-    findAll() {
-        return `This action returns all unidad`;
-    }
     findOne(id) {
         const unidad = this.UnidadRepository.find({ where: { idViaje: id }, relations: ['camion', 'semiremolque', 'acoplado'] });
         return unidad;
-    }
-    update(id, updateUnidadDto) {
-        return `This action updates a #${id} unidad`;
-    }
-    remove(id) {
-        return `This action removes a #${id} unidad`;
     }
     async createVehicle(createUnidadDto) {
         if (createUnidadDto.unidadTipo.toLowerCase() === 'camion') {
@@ -290,7 +281,7 @@ let UnidadService = class UnidadService {
     }
     async findUnityByDriver(idusuario) {
         return this.UnidadRepository.find({
-            where: { transportistaId: idusuario },
+            where: { transportista: { idUsuario: idusuario } },
         });
     }
     async iniciarEstadoViaje(viajeId) {
@@ -324,7 +315,7 @@ let UnidadService = class UnidadService {
                     await this.acopladoRepository.save(acoplado);
                 }
             }
-            const transportista = await this.transportistaRepository.findOne({ where: { idUsuario: unidad.transportistaId } });
+            const transportista = await this.transportistaRepository.findOne({ where: { idUsuario: unidad.transportista.idUsuario } });
             if (transportista && estadoTransportista) {
                 transportista.estado = estadoTransportista;
                 await this.transportistaRepository.save(transportista);
@@ -362,12 +353,15 @@ let UnidadService = class UnidadService {
                     await this.acopladoRepository.save(acoplado);
                 }
             }
-            const transportista = await this.transportistaRepository.findOne({ where: { idUsuario: unidad.transportistaId } });
+            const transportista = await this.transportistaRepository.findOne({ where: { idUsuario: unidad.transportista.idUsuario } });
             if (transportista && estadoTransportista) {
                 transportista.estado = estadoTransportista;
                 await this.transportistaRepository.save(transportista);
             }
         }
+    }
+    async findAll() {
+        return await this.UnidadRepository.find();
     }
 };
 exports.UnidadService = UnidadService;
@@ -379,14 +373,12 @@ exports.UnidadService = UnidadService = __decorate([
     __param(4, (0, typeorm_1.InjectRepository)(tipoCamion_entity_1.TipoCamion)),
     __param(5, (0, typeorm_1.InjectRepository)(camion_entity_1.Camion)),
     __param(6, (0, typeorm_1.InjectRepository)(unidad_entity_1.Unidad)),
-    __param(7, (0, typeorm_1.InjectRepository)(transportista_entity_1.Transportista)),
-    __param(8, (0, typeorm_1.InjectRepository)(estadoCamion_entity_1.EstadoCamion)),
-    __param(9, (0, typeorm_1.InjectRepository)(estadoSemirremolque_entity_1.EstadoSemirremolque)),
-    __param(10, (0, typeorm_1.InjectRepository)(estadoAcoplado_entity_1.EstadoAcoplado)),
-    __param(11, (0, typeorm_1.InjectRepository)(estadoTransportista_entity_1.estadoTransportista)),
-    __param(12, (0, typeorm_1.InjectRepository)(transportista_entity_1.Transportista)),
+    __param(7, (0, typeorm_1.InjectRepository)(estadoCamion_entity_1.EstadoCamion)),
+    __param(8, (0, typeorm_1.InjectRepository)(estadoSemirremolque_entity_1.EstadoSemirremolque)),
+    __param(9, (0, typeorm_1.InjectRepository)(estadoAcoplado_entity_1.EstadoAcoplado)),
+    __param(10, (0, typeorm_1.InjectRepository)(estadoTransportista_entity_1.estadoTransportista)),
+    __param(11, (0, typeorm_1.InjectRepository)(transportista_entity_1.Transportista)),
     __metadata("design:paramtypes", [axios_1.HttpService,
-        typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository,

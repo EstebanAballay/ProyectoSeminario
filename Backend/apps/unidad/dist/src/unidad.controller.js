@@ -16,7 +16,6 @@ exports.UnidadController = void 0;
 const common_1 = require("@nestjs/common");
 const unidad_service_1 = require("./unidad.service");
 const create_unidad_dto_1 = require("./dto/create-unidad.dto");
-const update_unidad_dto_1 = require("./dto/update-unidad.dto");
 const datosUnidadesFront_dto_1 = require("./dto/datosUnidadesFront.dto");
 const create_Vehicle_dto_1 = require("./dto/create-Vehicle.dto");
 let UnidadController = class UnidadController {
@@ -26,16 +25,11 @@ let UnidadController = class UnidadController {
     create(createUnidadDto) {
         return this.unidadService.createUnidad(createUnidadDto);
     }
-    finndAll() {
-        return this.unidadService.findAll();
-    }
-    async findAll(id) {
-        return this.unidadService.findUnityByDriver(Number(id));
-    }
     consultarTiposAcoplados() {
         return this.unidadService.consultarTiposAcoplados();
     }
     consultarTiposCamiones() {
+        console.log("el erro salta despues");
         return this.unidadService.consultarTiposCamiones();
     }
     async consultarUnidadesDisponibles(dto) {
@@ -50,12 +44,6 @@ let UnidadController = class UnidadController {
         console.log('Choferes disponibles:', disponibles);
         return disponibles;
     }
-    async buscarUnidades(idViaje) {
-        if (idViaje) {
-            return this.unidadService.findOne(idViaje);
-        }
-        return this.unidadService.findAll();
-    }
     async asignarChoferes(dto) {
         console.log('Asignaciones recibidas:', dto.asignaciones);
         return await this.unidadService.asignarChoferes(dto.asignaciones);
@@ -66,17 +54,20 @@ let UnidadController = class UnidadController {
     async finalizarEstadoViaje(id) {
         return this.unidadService.finalizarEstadoViaje(id);
     }
+    async crearUnidad(createUnidadDto) {
+        return await this.unidadService.createVehicle(createUnidadDto);
+    }
+    async findAll(id) {
+        return this.unidadService.findUnityByDriver(Number(id));
+    }
     findOne(id) {
         return this.unidadService.findOne(+id);
     }
-    update(id, updateUnidadDto) {
-        return this.unidadService.update(+id, updateUnidadDto);
-    }
-    remove(id) {
-        return this.unidadService.remove(+id);
-    }
-    async crearUnidad(createUnidadDto) {
-        return await this.unidadService.createVehicle(createUnidadDto);
+    async buscarUnidades(idViaje) {
+        if (idViaje) {
+            return this.unidadService.findOne(idViaje);
+        }
+        return this.unidadService.findAll();
     }
 };
 exports.UnidadController = UnidadController;
@@ -87,19 +78,6 @@ __decorate([
     __metadata("design:paramtypes", [create_unidad_dto_1.CreateUnidadDto]),
     __metadata("design:returntype", Promise)
 ], UnidadController.prototype, "create", null);
-__decorate([
-    (0, common_1.Get)(),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Object)
-], UnidadController.prototype, "finndAll", null);
-__decorate([
-    (0, common_1.Get)(':id/'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], UnidadController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)('tiposAcoplados'),
     __metadata("design:type", Function),
@@ -127,13 +105,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UnidadController.prototype, "getChoferesDisponibles", null);
 __decorate([
-    (0, common_1.Get)(),
-    __param(0, (0, common_1.Query)('idViaje')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", Promise)
-], UnidadController.prototype, "buscarUnidades", null);
-__decorate([
     (0, common_1.Post)('asignarChoferes'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -155,6 +126,20 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UnidadController.prototype, "finalizarEstadoViaje", null);
 __decorate([
+    (0, common_1.Post)('nuevaUnidad'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_Vehicle_dto_1.CreateVehicleDto]),
+    __metadata("design:returntype", Promise)
+], UnidadController.prototype, "crearUnidad", null);
+__decorate([
+    (0, common_1.Get)(':id/'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UnidadController.prototype, "findAll", null);
+__decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
@@ -162,27 +147,12 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UnidadController.prototype, "findOne", null);
 __decorate([
-    (0, common_1.Patch)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
+    (0, common_1.Get)(),
+    __param(0, (0, common_1.Query)('idViaje')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_unidad_dto_1.UpdateUnidadDto]),
-    __metadata("design:returntype", void 0)
-], UnidadController.prototype, "update", null);
-__decorate([
-    (0, common_1.Delete)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], UnidadController.prototype, "remove", null);
-__decorate([
-    (0, common_1.Post)('nuevaUnidad'),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_Vehicle_dto_1.CreateVehicleDto]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
-], UnidadController.prototype, "crearUnidad", null);
+], UnidadController.prototype, "buscarUnidades", null);
 exports.UnidadController = UnidadController = __decorate([
     (0, common_1.Controller)('unidad'),
     __metadata("design:paramtypes", [unidad_service_1.UnidadService])

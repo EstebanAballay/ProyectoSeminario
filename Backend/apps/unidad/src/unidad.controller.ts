@@ -15,15 +15,6 @@ export class UnidadController {
     return this.unidadService.createUnidad(createUnidadDto);
   }
 
-  @Get()
-  finndAll(): any {
-    return this.unidadService.findAll();}
-
-
-  @Get(':id/')
-  async findAll(@Param('id') id: String): Promise<any> {
-    return this.unidadService.findUnityByDriver(Number(id));}
-    
   @Get('tiposAcoplados')
   consultarTiposAcoplados() {
     return this.unidadService.consultarTiposAcoplados();
@@ -31,6 +22,7 @@ export class UnidadController {
 
   @Get('tiposCamiones')
   consultarTiposCamiones() {
+    console.log("el erro salta despues")
     return this.unidadService.consultarTiposCamiones();
   }
 
@@ -50,16 +42,6 @@ export class UnidadController {
     return disponibles;
   }
 
-  @Get() 
-  async buscarUnidades(@Query('idViaje') idViaje?: number) {
-    if (idViaje) {
-      // Si llega el parámetro, buscamos por viaje
-      return this.unidadService.findOne(idViaje);
-    }
-    // Si no llega parámetro, devuelve todas (opcional)
-    return this.unidadService.findAll();
-  }
-
   @Post('asignarChoferes')
   async asignarChoferes(@Body() dto: {asignaciones: {unidadId: number, choferId: number}[]}) {
     console.log('Asignaciones recibidas:', dto.asignaciones);
@@ -75,24 +57,27 @@ export class UnidadController {
     return this.unidadService.finalizarEstadoViaje(id);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.unidadService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUnidadDto: UpdateUnidadDto) {
-    return this.unidadService.update(+id, updateUnidadDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.unidadService.remove(+id);
-  }
-
   @Post('nuevaUnidad')
   async crearUnidad(@Body() createUnidadDto: CreateVehicleDto) {
     return await this.unidadService.createVehicle(createUnidadDto);
   }
 
+    @Get(':id/')
+  async findAll(@Param('id') id: String): Promise<any> {
+    return this.unidadService.findUnityByDriver(Number(id));}
+    
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.unidadService.findOne(+id);
+  }
+  
+  @Get() 
+  async buscarUnidades(@Query('idViaje') idViaje?: number) {
+    if (idViaje) {
+      // Si llega el parámetro, buscamos por viaje
+      return this.unidadService.findOne(idViaje);
+    }
+    // Si no llega parámetro, devuelve todas (opcional)
+    return this.unidadService.findAll();
+  }
 }

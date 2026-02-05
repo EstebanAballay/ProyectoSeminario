@@ -14,7 +14,6 @@ export class CobroService {
         @InjectRepository(Cobro) private readonly cobroRepo: Repository<Cobro>,
         @InjectRepository(EstadoCobro) private estadoRepo: Repository<EstadoCobro>, 
         private readonly httpService: HttpService,
-  // ... otros servicios
     ) {}
 
     /**
@@ -55,13 +54,14 @@ export class CobroService {
      */
     async generarPagoMP(cobroId: number) {
         const cobro = await this.obtenerPorId(cobroId);
-
+        console.log("estoy intentando generar el link de pago,afuera del try");
         try {
+            console.log("estoy intentando generar el link de pago");
             const response = await firstValueFrom(
                 this.httpService.post(`${process.env.MP_SERVICE_URL}/mercadopago/create`, {
                     cobroId: cobro.id,
                     monto: cobro.monto,
-                    // Usamos la URL completa definida en tu .env para el túnel de Ngrok
+                    // Usamos la URL completa definida en el .env para el túnel de Ngrok
                     notificationUrl: process.env.NGROK_WEBHOOK_URL 
                 })
             );

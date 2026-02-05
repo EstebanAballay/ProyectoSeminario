@@ -1,5 +1,4 @@
 import { CreateUnidadDto } from './dto/create-unidad.dto';
-import { UpdateUnidadDto } from './dto/update-unidad.dto';
 import { HttpService } from '@nestjs/axios';
 import { Semirremolque } from './entities/semirremolque.entity';
 import { Acoplado } from './entities/acoplado.entity';
@@ -22,13 +21,12 @@ export declare class UnidadService {
     private tipoCamionRepository;
     private CamionRepository;
     private UnidadRepository;
-    private choferRepository;
     private estadoCamionRepository;
     private EstadoSemirremolqueRepository;
     private EstadoAcopladoRepository;
     private estadoTransportistaRepository;
     private transportistaRepository;
-    constructor(httpService: HttpService, semirremolqueRepository: Repository<Semirremolque>, acopladoRepository: Repository<Acoplado>, tipoRepository: Repository<Tipo>, tipoCamionRepository: Repository<TipoCamion>, CamionRepository: Repository<Camion>, UnidadRepository: Repository<Unidad>, choferRepository: Repository<Transportista>, estadoCamionRepository: Repository<EstadoCamion>, EstadoSemirremolqueRepository: Repository<EstadoSemirremolque>, EstadoAcopladoRepository: Repository<EstadoAcoplado>, estadoTransportistaRepository: Repository<estadoTransportista>, transportistaRepository: Repository<Transportista>);
+    constructor(httpService: HttpService, semirremolqueRepository: Repository<Semirremolque>, acopladoRepository: Repository<Acoplado>, tipoRepository: Repository<Tipo>, tipoCamionRepository: Repository<TipoCamion>, CamionRepository: Repository<Camion>, UnidadRepository: Repository<Unidad>, estadoCamionRepository: Repository<EstadoCamion>, EstadoSemirremolqueRepository: Repository<EstadoSemirremolque>, EstadoAcopladoRepository: Repository<EstadoAcoplado>, estadoTransportistaRepository: Repository<estadoTransportista>, transportistaRepository: Repository<Transportista>);
     testConnection(): Promise<void>;
     private getRandomItem;
     createUnidad(dto: CreateUnidadDto): Promise<Unidad>;
@@ -48,12 +46,10 @@ export declare class UnidadService {
         unidadId: number;
         choferId: number;
     }[]): void;
-    findAll(): string;
     findOne(id: number): Promise<Unidad[]>;
-    update(id: number, updateUnidadDto: UpdateUnidadDto): string;
-    remove(id: number): string;
     createVehicle(createUnidadDto: CreateVehicleDto): Promise<Camion | Acoplado | Semirremolque>;
     findUnityByDriver(idusuario: number): Promise<any[]>;
     iniciarEstadoViaje(viajeId: number): Promise<void>;
     finalizarEstadoViaje(viajeId: number): Promise<void>;
+    findAll(): Promise<Unidad[]>;
 }

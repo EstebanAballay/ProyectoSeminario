@@ -8,7 +8,6 @@ export declare class Unidad {
     camion: Camion;
     semiremolque?: Semirremolque;
     acoplado?: Acoplado;
-    transportistaId: number;
     transportista: Transportista;
     subtotal: number;
 }

@@ -38,7 +38,7 @@ export class MercadoPagoService {
    */
   async createPreference(cobroId: number, monto: number, notificationUrl: string) {
     const preference = new Preference(this.client);
-
+    console.log("he logrado entrar a la funcion para crear el link de mercadopago")
     const result = await preference.create({
       body: {
         items: [
@@ -57,13 +57,14 @@ export class MercadoPagoService {
         notification_url: notificationUrl,
 
         back_urls: {
-          success: 'https://tu-frontend.com/pago-exitoso',
-          failure: 'https://tu-frontend.com/pago-fallido',
+          success: 'http://localhost:4200/menu',
+          failure: 'http://localhost:4200/nuevoviaje'
         },
-        auto_return: 'approved',
+        // auto_return: 'approved', hay que sacar esta porqueria, sino no nos deja pasar sin tener https
       },
     });
 
+    console.log('📦 ENVIANDO A MERCADO PAGO:', JSON.stringify(result, null, 2));
     return result;
-  }
-}
+  } 
+} 

@@ -29,7 +29,6 @@ export class UnidadService {
     @InjectRepository(TipoCamion) private tipoCamionRepository: Repository<TipoCamion>,
     @InjectRepository(Camion) private CamionRepository: Repository<Camion>,
     @InjectRepository(Unidad) private UnidadRepository: Repository<Unidad>,
-    @InjectRepository(Transportista) private choferRepository: Repository<Transportista>,
     @InjectRepository(EstadoCamion) private estadoCamionRepository: Repository<EstadoCamion>,
     @InjectRepository(EstadoSemirremolque) private EstadoSemirremolqueRepository: Repository<EstadoSemirremolque>,
     @InjectRepository(EstadoAcoplado) private EstadoAcopladoRepository: Repository<EstadoAcoplado>,
@@ -46,7 +45,6 @@ export class UnidadService {
             console.error('DB connection failed:', error);
             }
         }
-
 
   //Funcion para obtener un item random de un array
   private getRandomItem<T>(items: T[]): T {
@@ -102,6 +100,7 @@ export class UnidadService {
   }
 
   consultarTiposCamiones(): Promise<TipoCamion[]> {
+    console.log("el error salta despues")
     return this.tipoCamionRepository.find();
   }
 
@@ -246,7 +245,7 @@ export class UnidadService {
     // Si no hay viajes, no hay unidades que buscar, entonces devuelvo todos los choferes
     if (!idViajesEnRango) {
       console.log('No hay viajes en el rango proporcionado.');
-      const allChoferes = await this.choferRepository.find();
+      const allChoferes = await this.transportistaRepository.find();
       const idsParaSolicitar = allChoferes.map(c => c.idUsuario);
 
       const { data } = await lastValueFrom(
@@ -279,7 +278,7 @@ export class UnidadService {
   }
 
   // Busco los choferes disponibles (Entities)
-  const choferesDisponibles = await this.choferRepository.find(opcionesBusqueda);
+  const choferesDisponibles = await this.transportistaRepository.find(opcionesBusqueda);
 
   console.log('IDs de choferes disponibles:', choferesDisponibles.map(c => c.idUsuario));
 
@@ -302,11 +301,6 @@ export class UnidadService {
     for (const asignacion of asignaciones)
       this.UnidadRepository.update(asignacion.unidadId,{transportista: { idUsuario: asignacion.choferId }});
   }
-
-
-  findAll() {
-    return `This action returns all unidad`;
-  }
   
 /*
    async findUnityByDriver(idusuario: number): Promise<Unidad[]> {
@@ -320,15 +314,6 @@ export class UnidadService {
     const unidad = this.UnidadRepository.find({where: {idViaje:id}, relations:['camion','semiremolque','acoplado']});
     return unidad;
   }
-
-  update(id: number, updateUnidadDto: UpdateUnidadDto) {
-    return `This action updates a #${id} unidad`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} unidad`;
-  }
-
 
   async createVehicle(createUnidadDto: CreateVehicleDto) {
     if (createUnidadDto.unidadTipo.toLowerCase() === 'camion') {
@@ -367,11 +352,11 @@ export class UnidadService {
       });
       return this.semirremolqueRepository.save(nuevoSemirremolque);
     }
-
   }
+
   async findUnityByDriver(idusuario: number): Promise<any[]> {
     return this.UnidadRepository.find({
-      where: { transportistaId: idusuario }, 
+      where: { transportista: { idUsuario: idusuario } }, 
     });
   }
 
@@ -415,7 +400,7 @@ export class UnidadService {
       }
 
       //cambiar estado del transportista
-      const transportista = await this.transportistaRepository.findOne({ where: { idUsuario: unidad.transportistaId } });
+      const transportista = await this.transportistaRepository.findOne({ where: { idUsuario: unidad.transportista.idUsuario } });
       if (transportista && estadoTransportista) {
         transportista.estado = estadoTransportista;
         await this.transportistaRepository.save(transportista);
@@ -463,13 +448,16 @@ async finalizarEstadoViaje(viajeId: number): Promise<void> {
       }
 
       //cambiar estado del transportista
-      const transportista = await this.transportistaRepository.findOne({ where: { idUsuario: unidad.transportistaId } });
+      const transportista = await this.transportistaRepository.findOne({ where: { idUsuario: unidad.transportista.idUsuario } });
       if (transportista && estadoTransportista) {
         transportista.estado = estadoTransportista;
         await this.transportistaRepository.save(transportista);
       }
   }
 
-}
+  }
 
+  async findAll() {
+    return await this.UnidadRepository.find();
+  }
 }

@@ -27,6 +27,7 @@ export class UnidadService {
     }
 
     async consultarCamiones(): Promise<string[]> {
+        console.log("llego hasta aca")
         try {
             const response = await axios.get<string[]>(`${this.apiUrl}/tiposCamiones`);
             return response.data;
