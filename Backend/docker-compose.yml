@@ -20,6 +20,37 @@ services:
     volumes:
     - .:/app                 # 1. "Espeja" tu carpeta actual a la carpeta /app del contenedor
     - /app/node_modules      # 2. IMPORTANTE: Protege las librerías internas del contenedor
+
+  unidad:
+    build: ./apps/unidad
+    container_name: unidad-service
+    command: npm run start:dev
+    env_file: .env
+    ports:
+      - "3002:3002"
+    networks:
+      - backend-network
+    volumes:
+      - ./apps/unidad:/app
+      - /app/node_modules
+    restart: always
+
+  viaje:
+    build: ./apps/viaje
+    container_name: viaje-service
+    command: npm run start:dev
+    env_file: .env
+    ports:
+      - "3004:3004"
+    networks:
+      - backend-network
+    volumes:
+      - ./apps/viaje:/app
+      - /app/node_modules
+    restart: always
+    depends_on:
+      - users
+      - unidad
   mercadopago:
     container_name: mercadopago-service
     build:
@@ -67,38 +98,6 @@ services:
       - ./apps/users:/app
       - /app/node_modules
     restart: always                 # reinicia si falla
-
-  unidad:
-    build: ./apps/unidad
-    container_name: unidad-service
-    command: npm run start:dev
-    env_file: .env
-    ports:
-      - "3002:3002"
-    networks:
-      - backend-network
-    volumes:
-      - ./apps/unidad:/app
-      - /app/node_modules
-    restart: always
-
-  viaje:
-    build: ./apps/viaje
-    container_name: viaje-service
-    command: npm run start:dev
-    env_file: 
-      - .env
-    ports:
-      - "3004:3004"
-    networks:
-      - backend-network
-    volumes:
-      - ./apps/viaje:/app
-      - /app/node_modules
-    restart: always
-    depends_on:
-      - users
-      - unidad
 
 networks:
   backend-network:

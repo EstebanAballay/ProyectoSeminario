@@ -109,6 +109,23 @@ export class CobroService {
                 transactionId: paymentId 
             }
         );
+        console.log(`💰 Cobro ${cobroId} actualizado a ${estadoFinal} en base de datos.`);
+
+        // 2. Si el pago fue aprobado, notificamos al microservicio de Viaje
+        if (status === 'approved') {
+            // Necesitamos el cobro para obtener el viajeId asociado
+            const cobro = await this.obtenerPorId(Number(cobroId));
+
+            try {
+                // Llamada interna al puerto 3004 del microservicio de Viaje
+                await firstValueFrom(
+                    this.httpService.patch(`http://viaje-service:3004/viaje/${cobro.viajeId}/confirmar-pago`, {})
+                );
+                console.log(`🚀 Sincronización exitosa: Viaje ${cobro.viajeId} actualizado a PAGADO.`);
+            } catch (error) {
+                console.error(`❌ Error de sincronización: No se pudo avisar al microservicio de Viaje. ${error.message}`);
+            }
+        }
 
         this.logger.log(`🔔 WEBHOOK PROCESADO: Cobro ${cobroId} actualizado a [${estadoFinal}]`);
         return { success: true };

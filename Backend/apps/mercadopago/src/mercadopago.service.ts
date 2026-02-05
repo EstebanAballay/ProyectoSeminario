@@ -63,8 +63,6 @@ export class MercadoPagoService {
         // auto_return: 'approved', hay que sacar esta porqueria, sino no nos deja pasar sin tener https
       },
     });
-
-    console.log('📦 ENVIANDO A MERCADO PAGO:', JSON.stringify(result, null, 2));
     return result;
   } 
 } 
