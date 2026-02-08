@@ -58,7 +58,7 @@ El proyecto está dockerizado para facilitar el despliegue en cualquier entorno.
 ### Pasos
 1.  **Clonar el repositorio:**
     ```bash
-    git clone [https://github.com/tu-usuario/grafo-logistica.git](https://github.com/tu-usuario/grafo-logistica.git)
+    git clone https://github.com/EstebanAballay/ProyectoSeminario.git
     cd grafo-logistica
     ```
 
