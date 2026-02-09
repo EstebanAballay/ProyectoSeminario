@@ -65,17 +65,18 @@ El proyecto está dockerizado para facilitar el despliegue en cualquier entorno.
 2.  **Configurar Variables de Entorno:**
     Renombrar el archivo `.env.example` a `.env` en cada microservicio y configurar las credenciales de base de datos y API Keys de Mercado Pago.
 
-3.  **Levantar la infraestructura:**
-    Ejecutar el script de orquestación:
+3.  **Levantar el Backend:**
+    Ejecutar el script de orquestación en grafo-logistica/Backend:
     ```bash
     docker-compose up --build
     ```
     *Esto levantará simultáneamente los contenedores del Backend, Frontend y la conexión a la base de datos.*
-
-4.  **Acceso:**
-    * Frontend: `http://localhost:4200`
-    * API Gateway: `http://localhost:3000`
-
+    
+5. **Ejecutar el Frontend**
+   Ejecutar este comando en grafo-logistica/Frontend para ejecutar angular con certificado ssl local.
+   ```bash
+    ng serve --ssl
+    ```
 ---
 
 ## 👥 Equipo de Desarrollo
