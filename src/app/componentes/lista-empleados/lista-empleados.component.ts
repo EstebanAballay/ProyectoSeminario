@@ -12,7 +12,8 @@ import { EmpleadosService, Empleado } from '../../servicios/empleados';
 })
 export class ListaEmpleadosComponent implements OnInit {
 
-  empleados: Empleado[] = [];
+  empleadosOriginal: Empleado[] = []; // Guardamos la lista completa acá
+  empleados: Empleado[] = [];         // Esta es la que se muestra en la tabla
 
   constructor(
     private router: Router,
@@ -20,7 +21,22 @@ export class ListaEmpleadosComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.empleados = this.empleadosService.getEmpleados();
+    this.cargarEmpleados();
+  }
+
+  cargarEmpleados() {
+    this.empleadosOriginal = this.empleadosService.getEmpleados();
+    this.empleados = [...this.empleadosOriginal]; // Empezamos mostrando todos
+  }
+
+  filtrarPorRol(event: any) {
+    const rolSeleccionado = event.target.value;
+    
+    if (rolSeleccionado === '') {
+      this.empleados = [...this.empleadosOriginal];
+    } else {
+      this.empleados = this.empleadosOriginal.filter(emp => emp.rol === rolSeleccionado);
+    }
   }
 
   irAEditar(id: number) {
@@ -30,7 +46,7 @@ export class ListaEmpleadosComponent implements OnInit {
   borrar(id: number) {
     if (confirm('¿Seguro que querés dar de baja a este empleado?')) {
       this.empleadosService.borrarEmpleado(id);
-      this.empleados = this.empleadosService.getEmpleados();
+      this.cargarEmpleados(); // Recargamos después de borrar
     }
   }
 }

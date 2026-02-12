@@ -1,0 +1,115 @@
+.main-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #0b1d3a, #07152b);
+  padding: 0 0 40px 0;
+  box-sizing: border-box;
+}
+
+header {
+  order: 1;
+  background-color: #f4f1e8 !important;
+  width: 100%;
+  padding: 20px 0;
+  display: flex;
+  justify-content: center;
+  border-bottom: 5px solid #0b1d3a;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.welcome-title {
+  order: 2;
+  text-align: center;
+  color: #f4f1e8;
+  font-size: 28px;
+  letter-spacing: 3px;
+  margin: 40px 0;
+  font-weight: 800;
+  visibility: hidden;
+  position: relative;
+}
+
+.welcome-title::after {
+  content: "EMPLEADOS";
+  visibility: visible;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+}
+
+/* ===== ESTILOS DEL FILTRO ===== */
+.filter-container {
+  order: 3;
+  width: 90%;
+  margin: 0 auto 20px auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.filter-container label {
+  color: #f4f1e8;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.filter-container select {
+  background: #f4f1e8;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: #0b1d3a;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+}
+
+/* ===== TABLA ===== */
+.tabla-logistica {
+  order: 4;
+  width: 90%;
+  margin: 0 auto;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #f4f1e8;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.tabla-logistica thead { background: #0b1d3a; }
+.tabla-logistica th { color: white; text-align: left; padding: 18px 20px; }
+.tabla-logistica td { padding: 18px 20px; color: #0b1d3a; border-top: 1px solid rgba(0, 0, 0, 0.1); }
+.tabla-logistica tbody tr:hover { background: #ece7da; }
+
+.btn-icon {
+  background: #f6f4ec;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 16px;
+  margin: 0 6px;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  transition: transform 0.15s ease;
+}
+
+/* ===== BOTÓN REGISTRAR (DERECHA) ===== */
+.menu-button {
+  order: 5;
+  align-self: flex-end;
+  margin-top: 35px;
+  margin-right: 5%;
+  background: #f4f1e8;
+  border: none;
+  border-radius: 999px;
+  padding: 14px 30px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0b1d3a;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+}
