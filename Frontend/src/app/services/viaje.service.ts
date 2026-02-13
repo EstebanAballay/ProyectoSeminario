@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import axios from '../../api/axiosClient';
+import { config } from '../config/env';
 
 @Injectable({ providedIn: 'root' })
 
 export class ViajeService {
-    private apiUrl = 'http://localhost:3004/viaje';
-    
+    private apiUrl = `${config.services.viajes}/viaje`;
+
     async getUnidadesDisponibles(fechaInicio: Date, fechaFin: Date, camiones:any ): Promise<any> {
         console.log(camiones);
         // Convertimos las fechas al formato ISO (o el que espere tu back)
@@ -90,6 +91,17 @@ export class ViajeService {
         }
         catch(error){
             console.error('Error al rechazar el viaje:', error);
+            throw error;
+        }
+    }
+
+    async getViajesPendientesPago(): Promise<any> {
+        const url = `${this.apiUrl}/viajesPorPagar`;
+        try {
+            const response = await axios.get(url);
+            return response.data;
+        } catch (error) {
+            console.error('Error al obtener viajes pendientes de pago:', error);
             throw error;
         }
     }

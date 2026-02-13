@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import axios from 'axios';
+import { config } from '../config/env';
 
 @Injectable({ providedIn: 'root' })
 
 export class UnidadService {
-    private apiUrl = 'http://localhost:3002/unidad';
+    private apiUrl = `${config.services.unidad}/unidad`;
 
     async postViaje(endpoint: string): Promise<any> {
         try {

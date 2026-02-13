@@ -7,12 +7,12 @@ import { MenuComponent } from './menu.component/menu.component';
 import { NuevoViajeComponent } from './nuevo-viaje.component/nuevo-viaje.component';
 import { MisViajesComponent } from './mis-viajes.component/mis-viajes.component';
 import { PagoSeniaComponent } from './pago-senia.component/pago-senia.component';
-import { Path } from 'leaflet';
 import { AdminPanel } from './admin-panel/admin-panel.component'; 
 import { RoleGuard } from './guards/role.guard';
 import { ConsultarViajes } from './consultar-viajes-admin/consultar-viajes.component';
 import { MenucamioneroComponent } from './menu-camionero/menucamionero.component';
 import {AbmUnidadesComponent} from './abm-unidades.component/abm-unidades.component'
+import { ConsultarPagos } from './consultar-pagos/consultar-pagos';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'paginainicio', pathMatch: 'full' },
@@ -34,6 +34,7 @@ export const routes: Routes = [
   { path: 'admin/consultar-viajes', component: ConsultarViajes, canActivate: [RoleGuard], data: { role: 'admin' }},
   { path: 'admin/unidades',component:AbmUnidadesComponent},
   { path: 'menucamionero', component: MenucamioneroComponent },
+  { path: 'consultar-pagos', component: ConsultarPagos, canActivate: [RoleGuard], data: { role: 'client' } },
 
       //{ path: 'agregar-empleados', component: RegistroEmpleadosComponent },
       //{ path: 'gestion-clientes', component: GestionClientesComponent },

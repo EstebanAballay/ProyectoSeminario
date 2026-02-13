@@ -415,13 +415,17 @@ export class NuevoViajeComponent implements AfterViewInit {
   }
 
   async cobrar(viajeId: number) {
+    let tipo = 'senia'
     try {
       // Esperamos la respuesta con 'await'
-      const res = await this.CobroService.generarCobro(viajeId);
+      const res = await this.CobroService.generarCobro(tipo,viajeId);
       
+      //abrimos la ventana de mercado pago
       if (res && res.init_point) {
         window.location.href = res.init_point;
       }
+
+      //verificamos el pago
     } catch (err) {
       console.error('Error al generar link', err);
     }

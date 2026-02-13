@@ -45,7 +45,7 @@ services:
     networks:
       - backend-network
     volumes:
-      - ./apps/viaje:/app
+      - .:/app
       - /app/node_modules
     restart: always
     depends_on:

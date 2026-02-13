@@ -1,7 +1,11 @@
-import { mainModule } from 'process';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { EstadoCobro } from './estadoCobro.entity';
 
+export enum tipoCobro {
+    SENIA = 'senia',
+    RESTO = 'resto'
+}
+    
 @Entity({ name: 'cobro', schema: 'microservice_cobro' })
 export class Cobro {
     @PrimaryGeneratedColumn()
@@ -22,4 +26,8 @@ export class Cobro {
 
     @Column({ type: 'varchar', nullable: true })
     transactionId?: string;
+
+    @Column({type: 'enum', enum: tipoCobro, default: tipoCobro.SENIA})
+    tipo: tipoCobro; // Esto es vital para el Webhook
 }
+

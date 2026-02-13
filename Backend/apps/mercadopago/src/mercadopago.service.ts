@@ -31,9 +31,9 @@ export class MercadoPagoService {
     } catch (error) {
       throw new Error(`Error al obtener detalles del pago ${paymentId}: ${error.message}`);
     }
-  }
-
-  /**
+  } 
+ 
+  /** 
    * Genera el link de pago incluyendo la URL de notificación de Ngrok.
    */
   async createPreference(cobroId: number, monto: number, notificationUrl: string) {
@@ -57,10 +57,10 @@ export class MercadoPagoService {
         notification_url: notificationUrl,
 
         back_urls: {
-          success: 'http://localhost:4200/menu',
-          failure: 'http://localhost:4200/nuevoviaje'
+          success: 'https://localhost:4200/menu',
+          failure: 'https://localhost:4200/nuevoviaje'
         },
-        // auto_return: 'approved', hay que sacar esta porqueria, sino no nos deja pasar sin tener https
+        auto_return: 'approved'
       },
     });
     return result;
