@@ -1,0 +1,112 @@
+/* Contenedor principal con el degradado de la empresa */
+.main-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #0b1d3a, #07152b);
+  padding: 60px 0;
+  box-sizing: border-box;
+  align-items: center;
+}
+
+/* Título de la sección (Editar o Nueva) */
+.welcome-title {
+  color: #f4f1e8;
+  font-size: 32px;
+  letter-spacing: 3px;
+  margin-bottom: 40px;
+  font-weight: 800;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+/* La tarjeta beige que contiene el formulario */
+.menu-options {
+  background: #f4f1e8;
+  padding: 40px;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 600px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+.section-title {
+  color: #0b1d3a;
+  font-weight: 800;
+  font-size: 18px;
+  margin-bottom: 25px;
+  border-bottom: 2px solid rgba(11, 29, 58, 0.1);
+  padding-bottom: 10px;
+  text-transform: uppercase;
+}
+
+/* Organización de los inputs */
+.input-group {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.input-group input, .input-group select {
+  flex: 1;
+  padding: 14px;
+  border: 2px solid rgba(11, 29, 58, 0.1);
+  border-radius: 12px;
+  background: white;
+  color: #0b1d3a;
+  font-size: 16px;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.input-group input:focus, .input-group select:focus {
+  border-color: #0b1d3a;
+  box-shadow: 0 0 8px rgba(11, 29, 58, 0.2);
+}
+
+/* Estilo de los botones */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.menu-button {
+  background: #0b1d3a;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.menu-button:hover:not(:disabled) {
+  background: #162e55;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.menu-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.cancel-link {
+  background: transparent;
+  color: #0b1d3a;
+  border: 2px solid #0b1d3a;
+  border-radius: 12px;
+  padding: 14px;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancel-link:hover {
+  background: rgba(11, 29, 58, 0.05);
+}

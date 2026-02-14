@@ -9,7 +9,7 @@ describe('NuevoEmpleadoComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ NuevoEmpleadoComponent ],
-      imports: [ ReactiveFormsModule ] // Importante para que no falle el test
+      imports: [ ReactiveFormsModule ] 
     })
     .compileComponents();
   });

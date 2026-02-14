@@ -4,17 +4,19 @@
   </h2>
 
   <form class="menu-options" [formGroup]="unidadForm" (ngSubmit)="guardarUnidad()">
-
     <div class="form-section">
       <p class="section-title">Datos de la Unidad</p>
+      
       <div class="input-group">
-        <input type="text" placeholder="Tipo" formControlName="tipo">
+        <input type="text" placeholder="Tipo (Camión, Remolque...)" formControlName="tipo">
         <input type="text" placeholder="Patente" formControlName="patente">
       </div>
+      
       <div class="input-group">
         <input type="text" placeholder="Marca" formControlName="marca">
         <input type="text" placeholder="Modelo" formControlName="modelo">
       </div>
+      
       <div class="input-group">
         <select formControlName="estado">
           <option value="" disabled>Seleccione estado</option>
@@ -27,11 +29,12 @@
 
     <div class="actions">
       <button type="submit" class="menu-button" [disabled]="unidadForm.invalid">
-        💾 {{ esEdicion ? 'Guardar Cambios' : 'Guardar Unidad' }}
+        {{ esEdicion ? '💾 Guardar Cambios' : '💾 Guardar Unidad' }}
       </button>
 
-      <button type="button" class="cancel-link" (click)="cancelar()">Cancelar</button>
+      <button type="button" class="cancel-link" (click)="cancelar()">
+        ✖ Cancelar
+      </button>
     </div>
-
   </form>
 </div>

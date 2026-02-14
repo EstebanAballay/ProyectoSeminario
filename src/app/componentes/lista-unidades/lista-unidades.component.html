@@ -1,9 +1,15 @@
 <div class="main-container">
-  <div class="header-acciones">
-    <h2 class="welcome-title">Unidades</h2>
-    <button routerLink="/nueva-unidad" class="menu-button">
-      + Registrar Unidad
-    </button>
+  
+  <h2 class="welcome-title">Unidades</h2>
+
+  <div class="filter-container">
+    <label for="tipoFilter">Filtrar por Tipo:</label>
+    <select id="tipoFilter" (change)="filtrarPorTipo($event)">
+      <option value="">Todas las unidades</option>
+      <option value="camión">Camión</option>
+      <option value="remolque">Remolque</option>
+      <option value="utilitario">Utilitario</option>
+    </select>
   </div>
 
   <table class="tabla-logistica">
@@ -31,4 +37,9 @@
       </tr>
     </tbody>
   </table>
+
+  <button routerLink="/nueva-unidad" class="menu-button">
+    + Registrar Unidad
+  </button>
+
 </div>

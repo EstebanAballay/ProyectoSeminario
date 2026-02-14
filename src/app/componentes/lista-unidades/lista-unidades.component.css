@@ -1,0 +1,136 @@
+/* 1. CONTENEDOR RAIZ */
+.main-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #0b1d3a, #07152b);
+  padding: 40px 0;
+  box-sizing: border-box;
+  align-items: center;
+}
+
+/* 2. TÍTULO: Ahora dice UNIDADES */
+.welcome-title {
+  order: 1;
+  text-align: center;
+  color: #f4f1e8;
+  font-size: 32px;
+  letter-spacing: 3px;
+  margin-bottom: 30px;
+  font-weight: 800;
+  visibility: hidden; /* Oculta el texto original del HTML */
+  position: relative;
+  width: 100%;
+}
+
+.welcome-title::after {
+  content: "UNIDADES"; /* Cambiamos EMPLEADOS por UNIDADES */
+  visibility: visible;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+}
+
+/* 3. FILTRO (Igual al de empleados) */
+.filter-container {
+  order: 2;
+  width: 90%;
+  margin-bottom: 25px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.filter-container label {
+  color: #f4f1e8;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.filter-container select {
+  background: #f4f1e8;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: #0b1d3a;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+}
+
+/* 4. TABLA DE UNIDADES */
+.tabla-logistica {
+  order: 3;
+  width: 90%;
+  margin: 0 auto;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #f4f1e8; /* El mismo beige */
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.tabla-logistica thead {
+  background: #0b1d3a; /* Azul oscuro para el cabezal */
+}
+
+.tabla-logistica th {
+  color: white;
+  text-align: left;
+  padding: 18px 20px;
+  font-weight: 600;
+}
+
+.tabla-logistica td {
+  padding: 18px 20px;
+  color: #0b1d3a;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.tabla-logistica tbody tr:hover {
+  background: #ece7da; /* Efecto hover igual al otro */
+}
+
+/* 5. ICONOS DE ACCIÓN */
+.btn-icon {
+  background: #f6f4ec;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 16px;
+  margin: 0 6px;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  transition: transform 0.15s ease;
+}
+
+.btn-icon:hover {
+  transform: translateY(-2px);
+}
+
+/* 6. BOTÓN REGISTRAR UNIDAD (Derecha) */
+.menu-button {
+  order: 4;
+  align-self: flex-end;
+  margin-top: 35px;
+  margin-right: 5%;
+  background: #f4f1e8;
+  color: #0b1d3a;
+  border: none;
+  border-radius: 999px;
+  padding: 14px 30px;
+  font-size: 15px;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+}
+
+.menu-button:hover {
+  background: #ffffff;
+  transform: translateY(-2px);
+}
