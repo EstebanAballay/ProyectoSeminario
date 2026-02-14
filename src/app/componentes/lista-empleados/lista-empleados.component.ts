@@ -30,12 +30,16 @@ export class ListaEmpleadosComponent implements OnInit {
   }
 
   filtrarPorRol(event: any) {
-    const rolSeleccionado = event.target.value;
+    // Pasamos el valor seleccionado a minúsculas para comparar
+    const rolSeleccionado = event.target.value.toLowerCase();
     
     if (rolSeleccionado === '') {
       this.empleados = [...this.empleadosOriginal];
     } else {
-      this.empleados = this.empleadosOriginal.filter(emp => emp.rol === rolSeleccionado);
+      this.empleados = this.empleadosOriginal.filter(emp => 
+        // Normalizamos el rol del empleado a minúsculas antes de la igualdad
+        emp.rol.toLowerCase() === rolSeleccionado
+      );
     }
   }
 
