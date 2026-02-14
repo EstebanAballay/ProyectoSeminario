@@ -283,6 +283,7 @@ async getViajesPendientes() {
   }
 
   remove(id: number) {
+    console.log('unidad eliminada')
     return this.viajeRepository.delete(id);
   }
 

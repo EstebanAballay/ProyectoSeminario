@@ -19,6 +19,7 @@ export class UsersService {
 
   async login(email: string, password: string) {
     try {
+      console.log(`${this.apiUrl}/login`)
       const response = await axiosService.post(`${this.apiUrl}/login`, { email, password });
       // guardar token en localStorage
       if (response.data.token) {

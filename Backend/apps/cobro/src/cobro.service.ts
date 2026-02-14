@@ -6,6 +6,7 @@ import { firstValueFrom } from 'rxjs';
 import { Cobro,tipoCobro } from './entities/cobro.entity';
 import { EstadoCobro } from './entities/estadoCobro.entity';
 import { CreateCobroDto } from './entities/create-cobro-dto';
+import { Abonante } from './entities/abonante.entity';
 
 @Injectable()
 export class CobroService {
@@ -14,6 +15,7 @@ export class CobroService {
     constructor(
         @InjectRepository(Cobro) private readonly cobroRepo: Repository<Cobro>,
         @InjectRepository(EstadoCobro) private estadoRepo: Repository<EstadoCobro>, 
+        @InjectRepository(Abonante) private abonanteRepo: Repository<Abonante>,
         private readonly httpService: HttpService,
     ) {}
 
@@ -40,7 +42,6 @@ export class CobroService {
 
         //armo data, que contiene los datos necesarios para crear el cobro
         const data = { viajeId: Number(dto.viajeId), monto:montoACobrar, estado: estadoEntity, tipo: dto.tipo };
-        console.log(data);
         const nuevoCobro = this.cobroRepo.create(data);
         const guardado = await this.cobroRepo.save(nuevoCobro);
         this.logger.log(`✅ Cobro creado: ID ${guardado.id} por $${guardado.monto}`);
@@ -94,10 +95,29 @@ export class CobroService {
                 this.httpService.get(`${process.env.MP_SERVICE_URL}/mercadopago/verificar/${paymentId}`)
             );
 
+            console.log(response.data.payer);
+            const payer = response.data.payer
+            //creamos el abonante cuando recibimos sus datos
+            const nuevoAbonante = this.abonanteRepo.create({
+                nombre: payer.nombre,
+                apellido: payer.apellido,
+                numeroDocumento: payer.numeroDocumento,
+                tipoDocumento: payer.tipoDocumento,
+                email: payer.email,
+                telefono: payer.telefono
+            })
+            const guardado = await this.abonanteRepo.save(nuevoAbonante);
+
             const { cobroId, status } = response.data;
+           
+            //asignamos al abonante al cobro creado anteriormente. Hay que pasarlo un objeto,sino usar .save pero es mas lento
+            const cobroEncontrado = await this.cobroRepo.findOne({where:{transactionId:paymentId}})
+            console.log(cobroEncontrado)
             //si el pago es aprobado, ordenamos actualizar el estado del cobro y del viaje
             if (status === 'approved') {
                 await this.confirmarPagoMP(cobroId, status, paymentId);
+                await this.cobroRepo.update({transactionId:paymentId},{ abonante: { id: guardado.id } as any })
+
             }
         } catch (error) {
             this.logger.error(`Error verificando pago ${paymentId}: ${error.message}`);

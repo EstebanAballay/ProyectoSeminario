@@ -45,12 +45,13 @@ services:
     networks:
       - backend-network
     volumes:
-      - .:/app
+      - ./apps/viaje:/app
       - /app/node_modules
     restart: always
     depends_on:
       - users
       - unidad
+
   mercadopago:
     container_name: mercadopago-service
     build:

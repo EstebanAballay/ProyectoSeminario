@@ -7,6 +7,9 @@ RUN npm install
 
 COPY . .
 
+#Comando necesario en linux,borrar si estas en windows
+RUN chmod +x node_modules/.bin/nest
+
 RUN npm install -g @nestjs/cli
 
 RUN npm run build

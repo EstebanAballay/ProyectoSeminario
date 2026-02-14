@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { EstadoCobro } from './estadoCobro.entity';
+import { Abonante } from './abonante.entity'
 
 export enum tipoCobro {
     SENIA = 'senia',
@@ -28,6 +29,10 @@ export class Cobro {
     transactionId?: string;
 
     @Column({type: 'enum', enum: tipoCobro, default: tipoCobro.SENIA})
-    tipo: tipoCobro; // Esto es vital para el Webhook
+    tipo: tipoCobro; //enum sencillo para los tipos de cobro
+
+    @ManyToOne(()=>Abonante, {nullable: true})
+    @JoinColumn({name: 'abonanteId'})
+    abonante: Abonante
 }
 
