@@ -50,6 +50,7 @@
     "pg": "^8.16.3",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
+    "sweetalert2": "^11.26.18",
     "typeorm": "^0.3.27"
   },
   "devDependencies": {

@@ -152,18 +152,18 @@ export class UnidadService {
 
     console.log('Los tipos de los camiones disponibles son:', camiones.map(c => c.tipo));
 
-  // Función auxiliar para elegir un elemento aleatorio
-  const elegirRandom = <T>(array: T[]): T | undefined => {
-    if (!array || array.length === 0) return undefined;
-    const index = Math.floor(Math.random() * array.length);
-    return array[index];
-  };
-  
-  //lo hice para debugear nomas
-  if (!camionesPedidos || !Array.isArray(camionesPedidos)) {
-    console.error('camionesPedidos no está definido o no es un array:', camionesPedidos);
-    return { unidadesFormadas: [], errores: ['camionesPedidos no está definido o no es un array']};
-  }
+    // Función auxiliar para elegir un elemento aleatorio
+    const elegirRandom = <T>(array: T[]): T | undefined => {
+      if (!array || array.length === 0) return undefined;
+      const index = Math.floor(Math.random() * array.length);
+      return array[index];
+    };
+    
+    //lo hice para debugear nomas
+    if (!camionesPedidos || !Array.isArray(camionesPedidos)) {
+      console.error('camionesPedidos no está definido o no es un array:', camionesPedidos);
+      return { unidadesFormadas: [], errores: ['camionesPedidos no está definido o no es un array']};
+    }
   
     for (const [index, pedido] of camionesPedidos.entries()) {
       const { tipo, semirremolque, acoplado } = pedido;

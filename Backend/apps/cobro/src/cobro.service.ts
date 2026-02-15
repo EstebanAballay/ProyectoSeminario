@@ -3,8 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
-import { Cobro } from './entities/cobro.entity';
+import { Cobro,tipoCobro } from './entities/cobro.entity';
 import { EstadoCobro } from './entities/estadoCobro.entity';
+import { CreateCobroDto } from './entities/create-cobro-dto';
+import { Abonante } from './entities/abonante.entity';
 
 @Injectable()
 export class CobroService {
@@ -13,25 +15,33 @@ export class CobroService {
     constructor(
         @InjectRepository(Cobro) private readonly cobroRepo: Repository<Cobro>,
         @InjectRepository(EstadoCobro) private estadoRepo: Repository<EstadoCobro>, 
+        @InjectRepository(Abonante) private abonanteRepo: Repository<Abonante>,
         private readonly httpService: HttpService,
     ) {}
 
     /**
      * Crea el registro inicial en Supabase.
      */
-    async crearCobro(viajeId: number) {
+    async crearCobro(dto: CreateCobroDto) {
+        console.log(dto);
         //para asegurar que el cliente no modifico el monto de la senia, pido al service de viaje que me envie el viaje seguro
-        const viajeSeguro = await firstValueFrom(
-            this.httpService.get(`http://viaje-service:3004/viaje/${viajeId}`)
-        );
-        const monto = viajeSeguro.data.sena; //asigno el monto correcto segun el viaje
+        const viajeSeguro = await firstValueFrom( this.httpService.get(`http://viaje-service:3004/viaje/${Number(dto.viajeId)}`));
+        //verifico si el cobro es una senia o un resto segun lo que me venga del dto y genero el cobro con el monto correspondiente
+        let montoACobrar = 0;
+        switch(dto.tipo){
+            case tipoCobro.SENIA:
+                montoACobrar = viajeSeguro.data.sena
+                break
+            case tipoCobro.RESTO:
+                montoACobrar = viajeSeguro.data.resto
+                break
+        }
 
         //busco el estado pendiente
         const estadoEntity = await this.estadoRepo.findOne({ where: { nombre: 'pendiente' } });
 
         //armo data, que contiene los datos necesarios para crear el cobro
-        const data = { viajeId, monto, estado: estadoEntity };
-        console.log(data);
+        const data = { viajeId: Number(dto.viajeId), monto:montoACobrar, estado: estadoEntity, tipo: dto.tipo };
         const nuevoCobro = this.cobroRepo.create(data);
         const guardado = await this.cobroRepo.save(nuevoCobro);
         this.logger.log(`✅ Cobro creado: ID ${guardado.id} por $${guardado.monto}`);
@@ -80,14 +90,34 @@ export class CobroService {
      */
     async verificarYConfirmarPago(paymentId: string) {
         try {
+            //le pregutnamos a mp si el pago fue hecho
             const response = await firstValueFrom(
                 this.httpService.get(`${process.env.MP_SERVICE_URL}/mercadopago/verificar/${paymentId}`)
             );
 
-            const { cobroId, status } = response.data;
+            console.log(response.data.payer);
+            const payer = response.data.payer
+            //creamos el abonante cuando recibimos sus datos
+            const nuevoAbonante = this.abonanteRepo.create({
+                nombre: payer.nombre,
+                apellido: payer.apellido,
+                numeroDocumento: payer.numeroDocumento,
+                tipoDocumento: payer.tipoDocumento,
+                email: payer.email,
+                telefono: payer.telefono
+            })
+            const guardado = await this.abonanteRepo.save(nuevoAbonante);
 
+            const { cobroId, status } = response.data;
+           
+            //asignamos al abonante al cobro creado anteriormente. Hay que pasarlo un objeto,sino usar .save pero es mas lento
+            const cobroEncontrado = await this.cobroRepo.findOne({where:{transactionId:paymentId}})
+            console.log(cobroEncontrado)
+            //si el pago es aprobado, ordenamos actualizar el estado del cobro y del viaje
             if (status === 'approved') {
                 await this.confirmarPagoMP(cobroId, status, paymentId);
+                await this.cobroRepo.update({transactionId:paymentId},{ abonante: { id: guardado.id } as any })
+
             }
         } catch (error) {
             this.logger.error(`Error verificando pago ${paymentId}: ${error.message}`);
@@ -98,10 +128,11 @@ export class CobroService {
      * Impacta el cambio de estado en la base de datos de Supabase.
      */
     async confirmarPagoMP(cobroId: string, status: string, paymentId: string) {
+        //nombre de los estados 
         const estadoFinal = status === 'approved' ? 'pagado' : 'rechazado';
         //busco el estado final por su nombre
         const estadoEntity = await this.estadoRepo.findOne({ where: { nombre: estadoFinal } });
-
+        //actualizamos el estado del cobro
         await this.cobroRepo.update(
             { id: Number(cobroId) },
             { 
@@ -117,11 +148,20 @@ export class CobroService {
             const cobro = await this.obtenerPorId(Number(cobroId));
 
             try {
-                // Llamada interna al puerto 3004 del microservicio de Viaje
-                await firstValueFrom(
-                    this.httpService.patch(`http://viaje-service:3004/viaje/${cobro.viajeId}/confirmar-pago`, {})
-                );
-                console.log(`🚀 Sincronización exitosa: Viaje ${cobro.viajeId} actualizado a PAGADO.`);
+                // Llamada interna al puerto 3004 del microservicio de Viaje para actualizar su estado
+                if (cobro.tipo == 'senia') {
+                    await firstValueFrom(
+                        this.httpService.patch(`http://viaje-service:3004/viaje/${cobro.viajeId}/pago-senia`, {})
+                    );
+                    console.log(`🚀 Sincronización exitosa: Viaje ${cobro.viajeId} actualizado a PAGADO.`);
+                }
+                else if (cobro.tipo == 'resto') {
+                    await firstValueFrom(
+                        this.httpService.patch(`http://viaje-service:3004/viaje/${cobro.viajeId}/pago-resto`, {})
+                    );
+                    console.log(`🚀 Sincronización exitosa: Viaje ${cobro.viajeId} actualizado a PAGADO.`);
+                }
+
             } catch (error) {
                 console.error(`❌ Error de sincronización: No se pudo avisar al microservicio de Viaje. ${error.message}`);
             }

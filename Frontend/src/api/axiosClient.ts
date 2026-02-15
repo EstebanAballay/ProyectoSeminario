@@ -2,7 +2,6 @@ import axios, { InternalAxiosRequestConfig, AxiosError } from 'axios';
 import { config } from '../app/config/env';
 
 const axiosService = axios.create({
-  baseURL: config.baseUrl,
   headers: {
     'Content-Type': 'application/json',
   },

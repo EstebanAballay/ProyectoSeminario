@@ -24,8 +24,10 @@ async function bootstrap() {
     const app = await NestFactory.create(AppModule);
 
     // 2. Habilitar CORS (Importante para la comunicación de red)
-    app.enableCors();
-
+    app.enableCors({
+        origin: true,
+        credentials: true,
+    });
     // 3. Escuchar en el puerto definido
     const port = process.env.PORT_COBRO || 3001;
     await app.listen(port);

@@ -8,7 +8,8 @@ import 'leaflet-routing-machine';
 import  {ViajeService} from '../services/viaje.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { CobroService } from '../services/cobro.service';
-
+import Swal from 'sweetalert2';
+ 
 // Solución para el error de los iconos de Leaflet en Angular
 const iconRetinaUrl = 'assets/marker-icon-2x.png';
 const iconUrl = 'assets/marker-icon.png';
@@ -251,7 +252,7 @@ export class NuevoViajeComponent implements AfterViewInit {
     });
     //creo la hora de llegada mockeada
     const horaMockeada = new Date();
-    horaMockeada.setHours(17, 0, 0, 0); // 17hs, 0 minutos, 0 segundos, 0 ms
+    horaMockeada.setHours(1, 0, 0, 0); // 17hs, 0 minutos, 0 segundos, 0 ms
 
     //rellleno data ahora
     this.data.destinoInicio = origen;
@@ -264,6 +265,7 @@ export class NuevoViajeComponent implements AfterViewInit {
     this.data.origenCoords = { lat: this.origenCoords!.lat, lng: this.origenCoords!.lon };
     this.data.destinoCoords = { lat: this.destinoCoords!.lat, lng: this.destinoCoords!.lon };
 
+    console.log('datos del viaje', this.data)
     if (!this.origenCoords || !this.destinoCoords) {
       alert("❌ Debés seleccionar origen y destino en el mapa o con el formulario.");
       return;
@@ -280,7 +282,29 @@ export class NuevoViajeComponent implements AfterViewInit {
     //aca busco el viaje
     try {
       const disponibles = await this.viajeService.getUnidadesDisponibles(fechaInicio, fechaFin, this.camionesSeleccionados);
-      console.log("✅ Unidades disponibles encontradas:", disponibles);
+      console.log("✅ Unidades disponibles encontradas:", disponibles.errores);
+
+      //compruebo si llegaron todas las unidades que pedi, si solo una no llego, me lo dice en el array de errores del back
+      if (disponibles.errores.length > 0) {
+          
+          // Ocultamos el loading antes de mostrar la alerta
+          this.loadingService.hide(); 
+
+          // Mostramos el "Cartel Rojo" usando SweetAlert2
+          await Swal.fire({
+            icon: 'error',
+            title: 'Sin disponibilidad',
+            text: 'No todos los tipos de vehiculos seleccionados estan disponibles para la fecha deseada. Por favor seleccione una nueva fecha',
+            confirmButtonText: 'Aceptar',
+            confirmButtonColor: '#d33', // Color rojo para el botón
+            allowOutsideClick: false,   // Obliga a dar click en Aceptar
+            allowEscapeKey: false
+          });
+
+          // El 'return' es clave: detiene la ejecución aquí y no abre el resumen
+          return; 
+        }
+
       this.abrirResumen(disponibles);
     }
     catch (error) {
@@ -391,10 +415,11 @@ export class NuevoViajeComponent implements AfterViewInit {
   }
 
   async guardarViaje() {
+    this.loadingService.show()
     const response = await this.viajeService.crearViaje(this.data);
     console.log(response);
-    //reinicio las variables
     this.cobrar(response.ViajeId);
+    //reinicio las variables
     this.data.unidades = [];
   }
 
@@ -415,17 +440,22 @@ export class NuevoViajeComponent implements AfterViewInit {
   }
 
   async cobrar(viajeId: number) {
+    //abrimos la pantalla de carga
+    let tipo = 'senia'
     try {
       // Esperamos la respuesta con 'await'
-      const res = await this.CobroService.generarCobro(viajeId);
-      
+      const res = await this.CobroService.generarCobro(tipo,viajeId);
+      //abrimos la ventana de mercado pago
       if (res && res.init_point) {
+        //cerramos la pantallita
+        this.loadingService.hide()
         window.location.href = res.init_point;
       }
+      //verificamos el pago
     } catch (err) {
       console.error('Error al generar link', err);
     }
-}
+  }
 
 }
 

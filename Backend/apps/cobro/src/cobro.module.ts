@@ -6,10 +6,11 @@ import { WebhookController } from './webhooks/webhook.controller';
 import { CobroService } from './cobro.service';
 import { Cobro } from './entities/cobro.entity';
 import { EstadoCobro } from './entities/estadoCobro.entity';
+import { Abonante } from './entities/abonante.entity';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([Cobro,EstadoCobro]),
+        TypeOrmModule.forFeature([Cobro,EstadoCobro,Abonante]),
         HttpModule,
     ],
     controllers: [

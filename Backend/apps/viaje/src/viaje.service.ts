@@ -67,16 +67,18 @@ export class ViajeService {
     if (data.unidades && data.unidades.length > 0) {
       for (const unidad of data.unidades) {
         const nuevaUnidad = await this.agregarUnidad(unidad, savedViaje.ViajeId);
-        const subtotalCalculado = Math.trunc((nuevaUnidad.subtotal * data.distancia) * 100) / 100;
         
+        //multiplico y divido por 100 para quedarme con 2 decimales
+        const subtotalCalculado = Math.trunc((nuevaUnidad.subtotal * data.distancia) * 100) / 100;
+        console.log('subtotal: ',typeof(subtotalCalculado));
         savedViaje.unidades.push(nuevaUnidad.id);
-        savedViaje.total += subtotalCalculado;
+        savedViaje.total = Number(savedViaje.total) + Number(subtotalCalculado);
       }
     }
 
     savedViaje.sena = Math.trunc((savedViaje.total * 0.1) * 100) / 100;
     savedViaje.resto = Math.trunc((savedViaje.total - savedViaje.sena) * 100) / 100;
-    
+    console.log('el viaje guardado quedo asi: ',savedViaje);
     await this.viajeRepository.save(savedViaje);
 
     // RETORNO CON RELACIÓN: Elimina el null en la respuesta inmediata
@@ -113,7 +115,9 @@ export class ViajeService {
       const response = await firstValueFrom(
         this.httpService.post('http://unidad-service:3002/unidad/unidadesDisponibles', dto)
       );
+ 
       return response.data;
+      
     } catch (error) {
       console.error('Error al buscar la unidad:', error.message);
       return [];
@@ -175,12 +179,21 @@ export class ViajeService {
     }
   }
 
-  async confirmarPagoViaje(viajeId: number) {
+  async confirmarPagoViajeSenia(viajeId: number) {
     await this.viajeRepository.update(viajeId, { 
       estadoViaje: { id: 2 } 
     });
     
-    console.log(`✅ Viaje ${viajeId} actualizado a estado: Confirmado`);
+    console.log(`✅ Viaje ${viajeId} actualizado a estado: Pendiente de confirmacion`);
+    return { success: true };
+  }
+
+  async confirmarPagoViajeResto(viajeId: number) {
+    await this.viajeRepository.update(viajeId, { 
+      estadoViaje: { id: 5 } 
+    });
+    
+    console.log(`✅ Viaje ${viajeId} actualizado a estado: Pago Confirmado`);
     return { success: true };
   }
 
@@ -272,6 +285,7 @@ async getViajesPendientes() {
   }
 
   remove(id: number) {
+    console.log('unidad eliminada')
     return this.viajeRepository.delete(id);
   }
 
@@ -390,4 +404,39 @@ async getViajesPendientes() {
       viaje: viajeGuardado,
     };
   }
+     
+  async getViajesPendientesPago(user) {
+    // 1. Busco el estado Pendiente de pago
+    const estadoPendientePago = await this.estadoViajeRepository.findOne({ where: { id: 4 } });
+    
+    // 2. Busco los viajes en ese estado y del usuario
+    const viajes = await this.viajeRepository.find({ where: { estadoViaje: estadoPendientePago, usuarioId: user.id  } });
+
+    // 3. "Hidratamos" cada viaje buscando sus unidades en el otro microservicio
+    const viajesConUnidades = await Promise.all(viajes.map(async (viaje) => {
+      try { 
+        // Hacemos la petición al servicio de unidades
+        const { data: unidades } = await lastValueFrom(
+          this.httpService.get('http://unidad-service:3002/unidad/', {
+            params: { idViaje: viaje.ViajeId } 
+          })
+        );
+
+        // 4. Retornamos el viaje original + el array de unidades real
+        return {
+          ...viaje,      // Copia todas las propiedades del viaje (origen, destino, etc)
+          unidades: unidades // Agrega/Sobreescribe la propiedad unidades con el array lleno
+        };
+
+      } catch (error) {
+        console.error(`Error al buscar unidades para viaje ${viaje.ViajeId}`, error);
+        // Si falla el microservicio de unidades, devolvemos el viaje con lista vacía para no romper todo
+        return { ...viaje, unidades: [] };
+      }
+    }));
+
+    console.log('Viajes completos recuperados:', viajesConUnidades);
+    return viajesConUnidades;
+  }
 }
+

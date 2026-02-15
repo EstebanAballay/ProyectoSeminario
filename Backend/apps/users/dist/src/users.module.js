@@ -21,7 +21,7 @@ exports.UsuariosModule = UsuariosModule = __decorate([
         imports: [typeorm_1.TypeOrmModule.forFeature([user_entity_1.User]),
             jwt_1.JwtModule.register({
                 secret: 'TU_SECRETO_SUPER_SEGURO',
-                signOptions: { expiresIn: '1h' },
+                signOptions: { expiresIn: '1d' },
             }),
         ],
         providers: [users_service_1.UsersService],
