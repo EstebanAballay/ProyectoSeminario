@@ -23,7 +23,7 @@ export declare class UnidadController {
     }): Promise<void>;
     iniciarEstadoViaje(id: number): Promise<void>;
     finalizarEstadoViaje(id: number): Promise<void>;
-    crearUnidad(createUnidadDto: CreateVehicleDto): Promise<import("./entities/camion.entity").Camion | import("./entities/acoplado.entity").Acoplado | import("./entities/semirremolque.entity").Semirremolque>;
+    crearUnidad(createUnidadDto: CreateVehicleDto): Promise<import("./entities/camion.entity").Camion | import("./entities/semirremolque.entity").Semirremolque | import("./entities/acoplado.entity").Acoplado>;
     findAll(id: String): Promise<any>;
     findOne(id: string): Promise<import("./entities/unidad.entity").Unidad[]>;
     buscarUnidades(idViaje?: number): Promise<import("./entities/unidad.entity").Unidad[]>;

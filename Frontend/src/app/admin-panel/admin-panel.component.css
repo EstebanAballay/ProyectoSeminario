@@ -118,3 +118,26 @@
   font-size: 1.1rem;
   box-shadow: 4px 4px 10px rgba(0,0,0,0.3);
 }
+.label-card button {
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #052c4f, #1c65d1); /* Azul oscuro a azul más claro */
+  color: #f4f0e6; /* Beige claro del header/tarjeta */
+  font-weight: 700;
+  font-size: 0.95rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
+}
+
+.label-card button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+  background: linear-gradient(135deg, #1c65d1, #052c4f); /* Invertimos el gradiente al pasar el mouse */
+}
+
+.label-card button:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
