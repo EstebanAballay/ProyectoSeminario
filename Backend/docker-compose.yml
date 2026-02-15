@@ -1,0 +1,106 @@
+
+services:
+  cobro:
+    container_name: cobro-service
+    build:
+      context: .
+      dockerfile: ./apps/cobro/Dockerfile
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - PORT_COBRO=${PORT_COBRO}
+      - NGROK_URL=${NGROK_URL}
+      - NGROK_WEBHOOK_URL=${NGROK_WEBHOOK_URL} 
+      - MP_SERVICE_URL=${MP_SERVICE_URL}
+    env_file:
+      - .env
+    ports:
+      - "3001:3001"
+    networks:
+      - backend-network
+    volumes:
+    - .:/app                 # 1. "Espeja" tu carpeta actual a la carpeta /app del contenedor
+    - /app/node_modules      # 2. IMPORTANTE: Protege las librerías internas del contenedor
+
+  unidad:
+    build: ./apps/unidad
+    container_name: unidad-service
+    command: npm run start:dev
+    env_file: .env
+    ports:
+      - "3002:3002"
+    networks:
+      - backend-network
+    volumes:
+      - ./apps/unidad:/app
+      - /app/node_modules
+    restart: always
+
+  viaje:
+    build: ./apps/viaje
+    container_name: viaje-service
+    command: npm run start:dev
+    env_file: .env
+    ports:
+      - "3004:3004"
+    networks:
+      - backend-network
+    volumes:
+      - ./apps/viaje:/app
+      - /app/node_modules
+    restart: always
+    depends_on:
+      - users
+      - unidad
+
+
+  mercadopago:
+    container_name: mercadopago-service
+    build:
+      context: .
+      dockerfile: ./apps/mercadopago/Dockerfile
+    env_file: .env
+    working_dir: /app/apps/mercadopago
+    ports:
+      - "3005:3005"
+    networks:
+      - backend-network
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run start:dev mercadopago
+    
+  # NUEVO SERVICIO: Ngrok para Webhooks automáticos
+  ngrok:
+    image: ngrok/ngrok:latest
+    container_name: ngrok-service
+    restart: always
+    environment:
+      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
+    command:
+      - "http"
+      - "--domain=unmullioned-bethany-studiously.ngrok-free.dev"
+      - "cobro-service:3001" 
+    ports:
+      - "4040:4040" # Interfaz para monitorear los Webhooks en localhost:4040
+    networks:
+      - backend-network
+    depends_on:
+      - cobro
+
+  users:
+    build: ./apps/users             # ruta al Dockerfile del microservicio
+    command: npm run start:dev
+    container_name: users-service   # nombre del contenedor
+    env_file: .env                  # variables de entorno
+    ports:
+      - "3003:3003"                # host:contenedor
+    networks:
+      - backend-network
+    volumes:
+      - ./apps/users:/app
+      - /app/node_modules
+    restart: always                 # reinicia si falla
+
+networks:
+  backend-network:
+    driver: bridge

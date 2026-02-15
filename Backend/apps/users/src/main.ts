@@ -1,0 +1,19 @@
+import { NestFactory } from '@nestjs/core';
+import { UsersService } from './users.service';
+import {AppModule} from '../app.module';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  app.enableCors({
+    origin: ['http://localhost:4200'],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
+
+  const usersService = app.get(UsersService);
+
+
+ await app.listen(3003, '0.0.0.0');
+  console.log(`Servidor corriendo en puerto ${process.env.PORT || 3003}`);
+}
+bootstrap();

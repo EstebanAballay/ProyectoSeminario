@@ -1,0 +1,89 @@
+<div class="container-fluid mt-4">
+  <div class="row">
+    
+    <div class="col-md-4">
+      <h3>Mis Viajes Asignados</h3>
+      <div class="list-group">
+        <button *ngFor="let viaje of viajes" 
+                class="list-group-item list-group-item-action"
+                [class.active]="viajeSeleccionado?.ViajeId === viaje.ViajeId"
+                (click)="seleccionarViaje(viaje)">
+          
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">Destino: {{ viaje.destinoFin }}</h5>
+            <small>{{ viaje.fechaInicio | date:'shortDate' }}</small>
+          </div>
+          <p class="mb-1">Origen: {{ viaje.destinoInicio }}</p>
+          
+          <span class="badge" 
+                [ngClass]="viaje.estadoViaje.nombre === 'En viaje' ? 'bg-warning' : 'bg-success'">
+            {{ viaje.estadoViaje.nombre }}
+          </span>
+        </button>
+
+        <div *ngIf="viajes.length === 0" class="alert alert-info mt-3">
+          No tienes viajes activos o pendientes.
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-8" *ngIf="viajeSeleccionado">
+      <div class="card">
+        <div class="card-header bg-dark text-white">
+          Detalle del Viaje #{{ viajeSeleccionado.ViajeId }}
+        </div>
+        
+        <div class="card-body">
+          <div class="row mb-3">
+            <div class="col-6">
+              <h6>Salida</h6>
+              <p>📅 {{ viajeSeleccionado.fechaInicio | date:'dd/MM/yyyy' }} <br> 
+                 ⏰ {{ viajeSeleccionado.horaSalida }}</p>
+              <p>📍 {{ viajeSeleccionado.destinoInicio }}</p>
+            </div>
+            <div class="col-6">
+              <h6>Llegada Estimada</h6>
+              <p>📅 {{ viajeSeleccionado.fechaFin | date:'dd/MM/yyyy' }} <br> 
+                 ⏰ {{ viajeSeleccionado.horaLlegada }}</p>
+              <p>📍 {{ viajeSeleccionado.destinoFin }}</p>
+            </div>
+          </div>
+
+          <div class="alert alert-secondary">
+            <h6>🚛 Unidad Asignada</h6>
+            <ul *ngFor="let u of viajeSeleccionado.unidades">
+               <li><strong>Camión ID:</strong> {{ u.camionId || 'N/A' }}</li> 
+               <li><strong>Semirremolque ID:</strong> {{ u.semirremolqueId || 'N/A' }}</li> 
+            </ul>
+          </div>
+
+          <div id="map" class="map-container mb-3"></div>
+
+          <div class="d-grid gap-2 d-md-block text-center">
+            
+            <button class="btn btn-primary btn-lg me-2" 
+                    (click)="iniciarRecorrido()"
+                    [disabled]="viajeSeleccionado.estadoViaje.nombre === 'En viaje'">
+              <i class="bi bi-truck"></i> Iniciar Viaje (En Viaje)
+            </button>
+
+            <button class="btn btn-success btn-lg me-2" 
+                    (click)="finalizarRecorrido()"
+                    [disabled]="viajeSeleccionado.estadoViaje.nombre !== 'En viaje'">
+              <i class="bi bi-check-circle"></i> Finalizar
+            </button>
+
+            <button class="btn btn-danger btn-lg" 
+                    (click)="cancelarRecorrido()"
+                    [disabled]="viajeSeleccionado.estadoViaje.nombre !== 'En viaje'">
+              <i class="bi bi-x-circle"></i> Cancelar
+            </button>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

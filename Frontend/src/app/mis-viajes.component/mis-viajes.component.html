@@ -1,0 +1,58 @@
+<div class="header">
+    <div class="logo">
+        <!-- Podés reemplazar la imagen por tu logo real -->
+        <img src="assets/logo.png" alt="Logo Grafo">
+    </div>
+    <div class="profile-icon">👤</div>
+</div>
+
+<div class="titulo">    
+    <h2 class="titulo">Mis viajes</h2>
+</div>
+
+<div class="filters-bar">
+    <div class="filter-group">
+      <label>Destino</label>
+      <input type="text" [(ngModel)]="filtroDestino" (input)="aplicarFiltros()" placeholder="Ej: Olavarría...">
+    </div>
+
+    <div class="filter-group">
+      <label>Fecha</label>
+      <input type="date" [(ngModel)]="filtroFecha" (change)="aplicarFiltros()">
+    </div>
+
+    <div class="filter-group">
+      <label>Estado</label>
+      <select [(ngModel)]="filtroEstado" (change)="aplicarFiltros()">
+        <option value="">Todos</option>
+        <option value="PreCargado">PreCargado</option>
+        <option value="En viaje">En viaje</option>
+        <option value="Finalizado">Finalizado</option>
+      </select>
+    </div>
+</div>
+
+
+    <div *ngFor="let viaje of viajesFiltrados" class="card">
+        <div class="card-content">
+        <div class="info">
+            <!-- Muestro solo el nombre hasta la primera -->
+            <h3>{{ viaje.destinoInicio.slice(0, viaje.destinoInicio.indexOf(',')) }}</h3>
+            <p>{{ viaje.fechaInicio }}</p>
+            <h3 class="destino">{{ viaje.destinoFin.slice(0, viaje.destinoFin.indexOf(',')) }}</h3>
+        </div>
+        <button (click)="toggleDetalles(viaje)" class="btn-toggle">▼</button>
+        </div>
+
+        <!-- Detalles -->
+        <div *ngIf="viaje.mostrarDetalles" class="detalles">
+            <div class="info-texto">
+                <p>Estado: {{ viaje.estadoViaje.nombre }}</p>
+                <p>Número de viaje: {{ viaje.ViajeId }}</p>
+                <p>Distancia: {{ viaje.distancia }} Km</p>
+                <p>Precio: {{ viaje.total }} Ars</p>
+            </div>
+            <button class="btn-descargar">📥 Descargar</button>
+        </div>
+    </div>
+

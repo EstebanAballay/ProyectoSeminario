@@ -1,0 +1,11 @@
+# Ignorar carpetas generadas
+dist/
+Backend/apps/**/dist/
+node_modules
+dist/
+Backend/apps/**/dist/
+
+*.env
+*.env.*
+.env
+Backend/**/*.env.*

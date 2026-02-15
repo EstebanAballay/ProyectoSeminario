@@ -1,0 +1,15 @@
+.map-container {
+  height: 350px; /* Altura del mapa */
+  width: 100%;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+}
+
+.list-group-item.active {
+  background-color: #343a40; /* Color oscuro al seleccionar */
+  border-color: #343a40;
+}
+
+.badge {
+  font-size: 0.9em;
+}

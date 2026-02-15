@@ -1,0 +1,60 @@
+# === Compiled output ===
+/dist
+node_modules/
+/build
+
+# === Dependencies ===
+node_modules/     # sin barra inicial evita errores en monorepos
+package-lock.json # opcional, si no querés versionar los locks (depende de tu equipo)
+yarn.lock         # idem para yarn
+
+# === Logs ===
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# === OS files ===
+.DS_Store
+Thumbs.db
+
+# === Test output ===
+/coverage
+/.nyc_output
+
+# === IDEs and editors ===
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# === VSCode ===
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# === Temp directories ===
+.temp
+.tmp
+
+# === Runtime data ===
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# === Diagnostic reports ===
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+*.env
+*.env.*
+.env
+Backend/**/*.env.*

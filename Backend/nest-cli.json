@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "monorepo": true,
+  "compilerOptions": {
+    "deleteOutDir": true
+  },
+  "projects": {
+    "cobro": {
+      "type": "application",
+      "root": "apps/cobro",
+      "entryFile": "main",
+      "sourceRoot": "apps/cobro/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/cobro/tsconfig.app.json"
+      }
+    },
+    "maps": {
+      "type": "application",
+      "root": "apps/maps",
+      "entryFile": "main",
+      "sourceRoot": "apps/maps/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/maps/tsconfig.app.json"
+      }
+    },
+    "mercadopago": {
+      "type": "application",
+      "root": "apps/mercadopago",
+      "entryFile": "main",
+      "sourceRoot": "apps/mercadopago/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/mercadopago/tsconfig.app.json"
+      }
+    },
+    "unidad": {
+      "type": "application",
+      "root": "apps/unidad",
+      "entryFile": "main",
+      "sourceRoot": "apps/unidad/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/unidad/tsconfig.app.json"
+      }
+    },
+    "users": {
+      "type": "application",
+      "root": "apps/users",
+      "entryFile": "main",
+      "sourceRoot": "apps/users/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/users/tsconfig.app.json"
+      }
+    },
+    "viaje": {
+      "type": "application",
+      "root": "apps/viaje",
+      "entryFile": "main",
+      "sourceRoot": "apps/viaje/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/viaje/tsconfig.app.json"
+      }
+    }
+  }
+}
