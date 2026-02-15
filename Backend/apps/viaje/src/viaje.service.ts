@@ -115,7 +115,9 @@ export class ViajeService {
       const response = await firstValueFrom(
         this.httpService.post('http://unidad-service:3002/unidad/unidadesDisponibles', dto)
       );
+ 
       return response.data;
+      
     } catch (error) {
       console.error('Error al buscar la unidad:', error.message);
       return [];

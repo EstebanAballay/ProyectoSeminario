@@ -26,7 +26,7 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./register.component/register.component').then(m => m.RegisterComponent)
   },
-  { path: 'paginainicio', component: PaginainicioComponent, canActivate: [RoleGuard], data: { role: 'client' }  },
+  { path: 'paginainicio', component: PaginainicioComponent  },
   { path: 'menu', component: MenuComponent, canActivate: [RoleGuard], data: { role: 'client' } },
   { path: 'misviajes', component: MisViajesComponent, canActivate: [RoleGuard], data: { role: 'client' } }, 
   { path: 'nuevoviaje', component: NuevoViajeComponent, canActivate: [RoleGuard], data: { role: 'client' }  },
