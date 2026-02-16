@@ -1,24 +1,29 @@
 import {
-  BadRequestException,
   Injectable,
   UnauthorizedException,
 } from "@nestjs/common";
-import { RegisterDto } from "./dto/register.dto";
-
 import { JwtService } from "@nestjs/jwt";
 import * as bcryptjs from "bcryptjs";
-import { UsersService } from "../users/src/users.service";
 import { LoginDto } from "./dto/login.dto";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { User } from "./entities/user.entity";
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly usersService: UsersService,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService
   ) {}
-  
+
+
+
   async login({ email, password }: LoginDto) {
-    const user = await this.usersService.findOneByEmailWithPassword(email);
+    const user = await this.userRepository.findOne({
+      where: { email },
+      select: ['id', 'nombre', 'email', 'password_hash', 'role'],
+    });
 
     if (!user) {
       throw new UnauthorizedException("Invalid email");
@@ -30,7 +35,7 @@ export class AuthService {
       throw new UnauthorizedException("Invalid password");
     }
 
-    const payload = { id: user.id, email: user.email, role: user.role }; // info que contiene el token
+    const payload = { id: user.id, email: user.email, role: user.role };
 
     const token = await this.jwtService.signAsync(payload);
 

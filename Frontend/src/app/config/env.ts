@@ -1,9 +1,9 @@
 export const config = {
-  baseUrl: 'http://localhost:3003',
+  baseUrl: 'http://localhost:3007',
   endpoints: {
     auth: {
-      login: 'user/login',
-      register: 'user/register',
+      login: 'auth/login',
+      register: 'auth/register',
     },
   },
 }

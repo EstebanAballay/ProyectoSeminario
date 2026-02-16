@@ -43,7 +43,10 @@ export class LoginComponent implements OnInit, OnDestroy {
 
       // Guardar JWT en localStorage
       localStorage.setItem('token', result.token);
-
+      console.log(
+        'Token guardado:',
+        localStorage.getItem('token')
+      );
       // Decodificar JWT usando la función importada
       const payload = parseJwt(result.token);
 

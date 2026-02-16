@@ -15,6 +15,22 @@ services:
       - /app/node_modules
     restart: always                 # reinicia si falla
 
+  auth:
+    build: ./apps/auth
+    command: npm run start:dev
+    container_name: auth-service
+    env_file: .env
+    ports:
+      - "3007:3007"
+    networks:
+      - backend-network
+    volumes:
+      - ./apps/auth:/app
+      - /app/node_modules
+    restart: always
+    depends_on:
+      - users
+
   cobro:
     container_name: cobro-service
     build:

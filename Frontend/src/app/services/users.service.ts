@@ -5,11 +5,12 @@ import axiosService from '../../api/axiosClient';
   providedIn: 'root'
 })
 export class UsersService {
-  private apiUrl = '/users';
+  private authUrl = 'http://localhost:3007/auth';
+  private usersUrl = 'http://localhost:3003/users';
 
   async register(userData: any) {
     try {
-      const response = await axiosService.post(`${this.apiUrl}/register`, userData);
+      const response = await axiosService.post(`${this.usersUrl}/register`, userData);
       return response.data;
     } catch (error: any) {
       throw error;
@@ -19,7 +20,7 @@ export class UsersService {
   async login(email: string, password: string) {
     console.log('intentando loguear');
     try {
-      const response = await axiosService.post(`${this.apiUrl}/login`, { email, password });
+      const response = await axiosService.post(`${this.authUrl}/login`, { email, password });
         console.log('respuesta backend:', response.data);
       // guardar token en localStorage
       if (response.data.token) {
@@ -31,5 +32,20 @@ export class UsersService {
       throw error;
     }
   }
+  async getMe() {
+  const token = localStorage.getItem('token');
+  console.log('TOKEN ENVIADO:', token);
+  if (!token) {
+    throw new Error('No hay token');
+  }
+
+  const response = await axiosService.get('/users/me', {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  return response.data;
+}
 }
 
