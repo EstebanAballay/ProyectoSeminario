@@ -20,12 +20,10 @@ export class ViajeController {
   @Post('viajesRango')
   findDisponibles(
     @Query('fechaInicio') fechaInicio?: string, 
-    @Query('fechaFin') fechaFin?: string,
-    @Body() camiones?: ConsultarUnidadesDto){
+    @Body() dtoViaje?: ConsultarUnidadesDto){
       const inicio = fechaInicio ? new Date(fechaInicio) : undefined;
-      const fin = fechaFin ? new Date(fechaFin) : undefined;
-      console.log('Fechas recibidas:', inicio, fin);
-      return this.viajeService.buscarUnidadesDisponibles(inicio, fin, camiones);
+      console.log('Fechas recibidas:', inicio);
+      return this.viajeService.buscarUnidadesDisponibles(inicio, dtoViaje);
   }
 
 
