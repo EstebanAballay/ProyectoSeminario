@@ -7,20 +7,22 @@ import { config } from '../config/env';
 export class ViajeService {
     private apiUrl = `${config.services.viajes}/viaje`;
 
-    async getUnidadesDisponibles(fechaInicio: Date, fechaFin: Date, camiones:any ): Promise<any> {
+   
+    async getUnidadesDisponibles(fechaInicio: Date, camiones:any, origenCoords:any, destinoCoords:any): Promise<any> {
+        const dto = {camiones:camiones, origenCoords:origenCoords, destinoCoords:destinoCoords}
+
         console.log(camiones);
         // Convertimos las fechas al formato ISO (o el que espere tu back)
         const inicio = fechaInicio.toISOString();
-        const fin = fechaFin.toISOString();
 
-        const url = `${this.apiUrl}/viajesRango?fechaInicio=${inicio}&fechaFin=${fin}`;
+        const url = `${this.apiUrl}/viajesRango?fechaInicio=${inicio}`;
 
         try {
-        const response = await axios.post(url,camiones);
-        return response.data;
+            const response = await axios.post(url,{camiones,dto});
+            return response.data;
         } catch (error) {
-        console.error('Error al obtener unidades disponibles:', error);
-        throw error;
+            console.error('Error al obtener unidades disponibles:', error);
+            throw error;
         }
     }
 

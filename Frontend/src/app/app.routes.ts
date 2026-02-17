@@ -11,7 +11,7 @@ import { AdminPanel } from './admin-panel/admin-panel.component';
 import { RoleGuard } from './guards/role.guard';
 import { ConsultarViajes } from './consultar-viajes-admin/consultar-viajes.component';
 import { MenucamioneroComponent } from './menu-camionero/menucamionero.component';
-import {AbmUnidadesComponent} from './abm-unidades.component/abm-unidades.component'
+import { AbmUnidadesComponent } from './abm-unidades.component/abm-unidades.component'
 import { ConsultarPagos } from './consultar-pagos/consultar-pagos';
 
 export const routes: Routes = [

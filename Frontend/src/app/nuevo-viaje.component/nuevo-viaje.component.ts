@@ -9,7 +9,8 @@ import  {ViajeService} from '../services/viaje.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { CobroService } from '../services/cobro.service';
 import Swal from 'sweetalert2';
- 
+import { Router } from '@angular/router';
+
 // Solución para el error de los iconos de Leaflet en Angular
 const iconRetinaUrl = 'assets/marker-icon-2x.png';
 const iconUrl = 'assets/marker-icon.png';
@@ -42,7 +43,7 @@ export class NuevoViajeComponent implements AfterViewInit {
               private viajeService: ViajeService,
               private loadingService: LoadingService,
               private CobroService: CobroService,
-              private sanitizer: DomSanitizer) {}
+              private router: Router) {}
 
   //atributo para el total del pedido
   public totalGeneral: number = 0;
@@ -159,7 +160,7 @@ export class NuevoViajeComponent implements AfterViewInit {
       }
 
       // Selección de destino solo si origen confirmado
-      if (this.origenConfirmado && !this.destinoCoords) {
+      if (!this.destinoCoords) {
         this.destinoCoords = { lat, lon };
         this.destinoInput.nativeElement.value = placeName;
 
@@ -239,9 +240,6 @@ export class NuevoViajeComponent implements AfterViewInit {
     const destino = this.destinoInput.nativeElement.value;
     const fecha = this.fechaSalidaInput.nativeElement.value;
     const fechaInicio = new Date(fecha);
-    //calculo fecha fin sumando 3 dias
-    const fechaFin = new Date(fecha);
-    fechaFin.setDate(fechaFin.getDate() + 3); // viaje de 3 dias
 
     console.log("🚚 Datos del viaje:", { 
       origen, 
@@ -250,17 +248,13 @@ export class NuevoViajeComponent implements AfterViewInit {
       camiones: this.camionesSeleccionados, 
       distancia: this.distancia
     });
-    //creo la hora de llegada mockeada
-    const horaMockeada = new Date();
-    horaMockeada.setHours(1, 0, 0, 0); // 17hs, 0 minutos, 0 segundos, 0 ms
-
     //rellleno data ahora
     this.data.destinoInicio = origen;
     this.data.destinoFin = destino;
     this.data.fechaInicio = fechaInicio;
-    this.data.fechaFin = fechaFin;
+    this.data.fechaFin = '';                //fecha lo dejo vacio,porque se calcula luego en el back
     this.data.horaSalida = this.horaSalida;
-    this.data.horaLlegada = horaMockeada;
+    this.data.horaLlegada ='' ;             //hora lo dejo vacio,porque se calcula luego en el back
     this.data.distancia = this.distancia;
     this.data.origenCoords = { lat: this.origenCoords!.lat, lng: this.origenCoords!.lon };
     this.data.destinoCoords = { lat: this.destinoCoords!.lat, lng: this.destinoCoords!.lon };
@@ -281,11 +275,11 @@ export class NuevoViajeComponent implements AfterViewInit {
 
     //aca busco el viaje
     try {
-      const disponibles = await this.viajeService.getUnidadesDisponibles(fechaInicio, fechaFin, this.camionesSeleccionados);
+      const disponibles = await this.viajeService.getUnidadesDisponibles(fechaInicio, this.camionesSeleccionados,this.data.origenCoords,this.data.destinoCoords);
       console.log("✅ Unidades disponibles encontradas:", disponibles.errores);
 
       //compruebo si llegaron todas las unidades que pedi, si solo una no llego, me lo dice en el array de errores del back
-      if (disponibles.errores.length > 0) {
+      if (disponibles.errores.length > 0 || disponibles.errores==undefined) {
           
           // Ocultamos el loading antes de mostrar la alerta
           this.loadingService.hide(); 
@@ -455,6 +449,15 @@ export class NuevoViajeComponent implements AfterViewInit {
     } catch (err) {
       console.error('Error al generar link', err);
     }
+  }
+
+  logout() {
+    // 1. Limpiar datos de sesión (opcional pero recomendado)
+    localStorage.removeItem('token'); 
+    localStorage.clear(); 
+
+    // 2. Redirigir al login
+    this.router.navigate(['/login']);
   }
 
 }

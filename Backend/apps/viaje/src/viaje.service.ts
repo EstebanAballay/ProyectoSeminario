@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateViajeDto } from './dto/create-viaje.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { LessThanOrEqual, MoreThanOrEqual, Repository, Not} from 'typeorm';
+import { LessThanOrEqual,LessThan,MoreThan, MoreThanOrEqual, Repository, Not} from 'typeorm';
 import { EstadoViaje } from './entities/estadoViaje.entity';
 import { Viaje } from './entities/viaje.entity';
 import { HttpService } from '@nestjs/axios';
@@ -101,21 +101,24 @@ export class ViajeService {
   }
 
   // 2. MÉTODO PARA EL CONTROLLER (Arregla el segundo error de compilación)
-  async buscarUnidadesDisponibles(fechaInicio: Date, fechaFin: Date, camiones: any) {
+  async buscarUnidadesDisponibles(fechaInicio: Date, dtoViaje:any) {
+    console.log(dtoViaje);
+    const {fecha,hora} = await this.calcularFechaRegreso(dtoViaje.dto.origenCoords,dtoViaje.dto.destinoCoords,BASE_COORDS,fechaInicio,TIEMPO_MUERTO);
+    
     const viajesEnRango = await this.viajeRepository.find({
       where: [
-        { fechaInicio: LessThanOrEqual(fechaFin), fechaFin: MoreThanOrEqual(fechaInicio) },
+        { fechaInicio: LessThanOrEqual(new Date(fecha)), fechaFin: MoreThanOrEqual(fechaInicio)},
       ]
     });
     
     const unidadesOcupadas = viajesEnRango.flatMap(v => v.unidades || []);
     
     try {
-      const dto = { unidadesOcupadas: unidadesOcupadas, camiones: camiones };
+      const dto = { unidadesOcupadas: unidadesOcupadas, camiones: dtoViaje.camiones };
       const response = await firstValueFrom(
         this.httpService.post('http://unidad-service:3002/unidad/unidadesDisponibles', dto)
       );
- 
+      console.log(response.data);
       return response.data;
       
     } catch (error) {
