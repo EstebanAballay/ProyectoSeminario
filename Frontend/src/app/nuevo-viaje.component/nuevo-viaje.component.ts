@@ -158,7 +158,7 @@ export class NuevoViajeComponent implements AfterViewInit {
       }
 
       // Selección de destino solo si origen confirmado
-      if (this.origenConfirmado && !this.destinoCoords) {
+      if (!this.destinoCoords) {
         this.destinoCoords = { lat, lon };
         this.destinoInput.nativeElement.value = placeName;
 
