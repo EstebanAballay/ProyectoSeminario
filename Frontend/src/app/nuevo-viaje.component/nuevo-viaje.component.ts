@@ -9,7 +9,8 @@ import  {ViajeService} from '../services/viaje.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { CobroService } from '../services/cobro.service';
 import Swal from 'sweetalert2';
- 
+import { Router } from '@angular/router';
+
 // Solución para el error de los iconos de Leaflet en Angular
 const iconRetinaUrl = 'assets/marker-icon-2x.png';
 const iconUrl = 'assets/marker-icon.png';
@@ -41,7 +42,8 @@ export class NuevoViajeComponent implements AfterViewInit {
   constructor(private unidadService: UnidadService,
               private viajeService: ViajeService,
               private loadingService: LoadingService,
-              private CobroService: CobroService) {}
+              private CobroService: CobroService,
+              private router: Router) {}
 
   //atributo para el total del pedido
   public totalGeneral: number = 0;
@@ -447,6 +449,15 @@ export class NuevoViajeComponent implements AfterViewInit {
     } catch (err) {
       console.error('Error al generar link', err);
     }
+  }
+
+  logout() {
+    // 1. Limpiar datos de sesión (opcional pero recomendado)
+    localStorage.removeItem('token'); 
+    localStorage.clear(); 
+
+    // 2. Redirigir al login
+    this.router.navigate(['/login']);
   }
 
 }

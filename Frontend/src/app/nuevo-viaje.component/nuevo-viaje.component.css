@@ -13,10 +13,10 @@
 }
 
 .profile-icon {
-    width: 35px;
-    height: 35px;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
-    background-color: #eee;
+    background-color: #fffefe;
     display: flex;
     align-items: center;
     justify-content: center;
