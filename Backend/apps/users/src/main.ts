@@ -8,8 +8,8 @@ async function bootstrap() {
 
   // CORS TOTAL: No rebota nada, ideal para desarrollo
   app.enableCors({
-    origin: true, 
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    origin: ['http://localhost:4200', 'https://localhost:4200'],
     credentials: true,
   });
 

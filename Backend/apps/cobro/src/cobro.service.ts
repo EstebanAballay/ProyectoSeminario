@@ -3,9 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
-import { Cobro } from './entities/cobro.entity';
+import { Cobro, tipoCobro } from './entities/cobro.entity';
 import { EstadoCobro } from './entities/estadoCobro.entity';
 import * as nodemailer from 'nodemailer';
+import { CreateCobroDto } from './entities/create-cobro-dto';
+import { Abonante } from './entities/abonante.entity';
 
 @Injectable()
 export class CobroService {
@@ -16,141 +18,239 @@ export class CobroService {
         port: 587,
         secure: false,
         auth: {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS,
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
         },
     });
 
     constructor(
-        @InjectRepository(Cobro) private readonly cobroRepo: Repository<Cobro>,
-        @InjectRepository(EstadoCobro) private estadoRepo: Repository<EstadoCobro>, 
+        @InjectRepository(Cobro)
+        private readonly cobroRepo: Repository<Cobro>,
+
+        @InjectRepository(EstadoCobro)
+        private readonly estadoRepo: Repository<EstadoCobro>,
+
+        @InjectRepository(Abonante)
+        private readonly abonanteRepo: Repository<Abonante>,
+
         private readonly httpService: HttpService,
     ) {}
 
-    async crearCobro(viajeId: number) {
+    // ================================
+    // CREAR COBRO
+    // ================================
+    async crearCobro(dto: CreateCobroDto) {
         const viajeSeguro = await firstValueFrom(
-            this.httpService.get(`http://viaje-service:3004/viaje/${viajeId}`)
+        this.httpService.get(
+            `http://viaje-service:3004/viaje/${Number(dto.viajeId)}`,
+        ),
         );
-        const monto = viajeSeguro.data.sena;
 
-        const estadoEntity = await this.estadoRepo.findOne({ where: { nombre: 'pendiente' } });
+        let montoACobrar = 0;
 
-        const data = { viajeId, monto, estado: estadoEntity };
-        console.log(data);
-        const nuevoCobro = this.cobroRepo.create(data);
+        switch (dto.tipo) {
+        case tipoCobro.SENIA:
+            montoACobrar = viajeSeguro.data.sena;
+            break;
+        case tipoCobro.RESTO:
+            montoACobrar = viajeSeguro.data.resto;
+            break;
+        }
+
+        const estadoEntity = await this.estadoRepo.findOne({
+        where: { nombre: 'pendiente' },
+        });
+
+        const nuevoCobro = this.cobroRepo.create({
+        viajeId: Number(dto.viajeId),
+        monto: montoACobrar,
+        estado: estadoEntity,
+        tipo: dto.tipo,
+        });
+
         const guardado = await this.cobroRepo.save(nuevoCobro);
-        this.logger.log(`✅ Cobro creado: ID ${guardado.id} por $${guardado.monto}`);
-        return guardado;
-    } 
 
+        this.logger.log(
+        `✅ Cobro creado: ID ${guardado.id} por $${guardado.monto}`,
+        );
+
+        return guardado;
+    }
+
+    // ================================
+    // OBTENER POR ID
+    // ================================
     async obtenerPorId(id: number) {
         const cobro = await this.cobroRepo.findOne({ where: { id } });
+
         if (!cobro) {
-            throw new NotFoundException(`El cobro con ID ${id} no existe.`);
+        throw new NotFoundException(
+            `El cobro con ID ${id} no existe.`,
+        );
         }
+
         return cobro;
     }
 
+    // ================================
+    // GENERAR LINK MP
+    // ================================
     async generarPagoMP(cobroId: number) {
         const cobro = await this.obtenerPorId(cobroId);
-        console.log("estoy intentando generar el link de pago,afuera del try");
+
         try {
-            console.log("estoy intentando generar el link de pago");
-            const response = await firstValueFrom(
-                this.httpService.post(`${process.env.MP_SERVICE_URL}/mercadopago/create`, {
-                    cobroId: cobro.id,
-                    monto: cobro.monto,
-                    notificationUrl: process.env.NGROK_WEBHOOK_URL 
-                })
-            );
-
-            this.logger.log(`⏳ Link generado para cobro ${cobroId}. Notificaciones en: ${process.env.NGROK_WEBHOOK_URL}`);
-            return response.data;
-        } catch (error) {
-            this.logger.error(`❌ Error al conectar con MP-Service: ${error.message}`);
-            throw error;
-        }
-    }
-
-    async verificarYConfirmarPago(paymentId: string) {
-        try {
-            const response = await firstValueFrom(
-                this.httpService.get(`${process.env.MP_SERVICE_URL}/mercadopago/verificar/${paymentId}`)
-            );
-
-            const { cobroId, status } = response.data;
-
-            if (status === 'approved') {
-                await this.confirmarPagoMP(cobroId, status, paymentId);
-            }
-        } catch (error) {
-            this.logger.error(`Error verificando pago ${paymentId}: ${error.message}`);
-        }
-    }
-
-    async confirmarPagoMP(cobroId: string, status: string, paymentId: string) {
-        const estadoFinal = status === 'approved' ? 'pagado' : 'rechazado';
-
-        const estadoEntity = await this.estadoRepo.findOne({ where: { nombre: estadoFinal } });
-
-        await this.cobroRepo.update(
-            { id: Number(cobroId) },
-            { 
-                estado: estadoEntity, 
-                transactionId: paymentId 
-            }
+        const response = await firstValueFrom(
+            this.httpService.post(
+            `${process.env.MP_SERVICE_URL}/mercadopago/create`,
+            {
+                cobroId: cobro.id,
+                monto: cobro.monto,
+                notificationUrl: process.env.NGROK_WEBHOOK_URL,
+            },
+            ),
         );
 
-        console.log(`💰 Cobro ${cobroId} actualizado a ${estadoFinal} en base de datos.`);
+        this.logger.log(`⏳ Link generado para cobro ${cobroId}`);
 
+        return response.data;
+        } catch (error) {
+        this.logger.error(
+            `❌ Error al conectar con MP-Service: ${error.message}`,
+        );
+        throw error;
+        }
+    }
+
+    // ================================
+    // VERIFICAR PAGO (WEBHOOK)
+    // ================================
+    async verificarYConfirmarPago(paymentId: string) {
+        try {
+        const response = await firstValueFrom(
+            this.httpService.get(
+            `${process.env.MP_SERVICE_URL}/mercadopago/verificar/${paymentId}`,
+            ),
+        );
+
+        const { cobroId, status, payer } = response.data;
+
+        // Crear abonante
+        const nuevoAbonante = this.abonanteRepo.create({
+            nombre: payer.nombre,
+            apellido: payer.apellido,
+            numeroDocumento: payer.numeroDocumento,
+            tipoDocumento: payer.tipoDocumento,
+            email: payer.email,
+            telefono: payer.telefono,
+        });
+
+        const abonanteGuardado =
+            await this.abonanteRepo.save(nuevoAbonante);
+
+        // Confirmar pago
         if (status === 'approved') {
+            await this.confirmarPagoMP(
+            cobroId,
+            status,
+            paymentId,
+            abonanteGuardado.id,
+            );
+        }
+        } catch (error) {
+        this.logger.error(
+            `Error verificando pago ${paymentId}: ${error.message}`,
+        );
+        }
+    }
 
-            const cobro = await this.obtenerPorId(Number(cobroId));
+    // ================================
+    // CONFIRMAR PAGO
+    // ================================
+    async confirmarPagoMP(
+        cobroId: string,
+        status: string,
+        paymentId: string,
+        abonanteId: number,
+    ) {
+        const estadoFinal =
+        status === 'approved' ? 'pagado' : 'rechazado';
 
-            try {
-                await firstValueFrom(
-                    this.httpService.patch(`http://viaje-service:3004/viaje/${cobro.viajeId}/confirmar-pago`, {})
-                );
+        const estadoEntity = await this.estadoRepo.findOne({
+        where: { nombre: estadoFinal },
+        });
 
-                console.log(`🚀 Sincronización exitosa: Viaje ${cobro.viajeId} actualizado a PAGADO.`);
+        await this.cobroRepo.update(
+        { id: Number(cobroId) },
+        {
+            estado: estadoEntity,
+            transactionId: paymentId,
+            abonante: { id: abonanteId } as any,
+        },
+        );
 
+        const cobro = await this.obtenerPorId(Number(cobroId));
 
-                const viajeResponse = await firstValueFrom(
-                    this.httpService.get(`http://viaje-service:3004/viaje/${cobro.viajeId}`)
-                );
-
-                const viaje = viajeResponse.data;
-
-                const userResponse = await firstValueFrom(
-                    this.httpService.get(`http://users-service:3003/users/${viaje.usuarioId}`)
-                );
-
-                const usuario = userResponse.data;
-
-                try {
-                    await this.transporter.sendMail({
-                        from: `"Sistema Logística" <${process.env.SMTP_USER}>`,
-                        to: usuario.email,
-                        subject: 'Pago acreditado ✅',
-                        html: `
-                            <h2>¡Pago confirmado!</h2>
-                            <p>Tu pago para el viaje #${viaje.ViajeId} fue acreditado correctamente.</p>
-                            <p><strong>Monto:</strong> $${cobro.monto}</p>
-                            <p>Gracias por confiar en nosotros.</p>
-                        `,
-                    });
-
-                    console.log('📧 Email enviado correctamente');
-                } catch (mailError) {
-                    console.error('❌ Error enviando email:', mailError.message);
-                }
-
-            } catch (error) {
-                console.error(`❌ Error de sincronización: No se pudo avisar al microservicio de Viaje. ${error.message}`);
-            }
+        // Si fue aprobado → actualizar viaje
+        if (status === 'approved') {
+        if (cobro.tipo === tipoCobro.SENIA) {
+            await firstValueFrom(
+            this.httpService.patch(
+                `http://viaje-service:3004/viaje/${cobro.viajeId}/pago-senia`,
+                {},
+            ),
+            );
+        } else if (cobro.tipo === tipoCobro.RESTO) {
+            await firstValueFrom(
+            this.httpService.patch(
+                `http://viaje-service:3004/viaje/${cobro.viajeId}/pago-resto`,
+                {},
+            ),
+            );
         }
 
-        this.logger.log(`🔔 WEBHOOK PROCESADO: Cobro ${cobroId} actualizado a [${estadoFinal}]`);
+        // Obtener datos para email
+        const viajeResponse = await firstValueFrom(
+            this.httpService.get(
+            `http://viaje-service:3004/viaje/${cobro.viajeId}`,
+            ),
+        );
+
+        const viaje = viajeResponse.data;
+
+        const userResponse = await firstValueFrom(
+            this.httpService.get(
+            `http://users-service:3003/users/${viaje.usuarioId}`,
+            ),
+        );
+
+        const usuario = userResponse.data;
+
+        // Enviar email
+        try {
+            await this.transporter.sendMail({
+            from: `"Sistema Logística" <${process.env.SMTP_USER}>`,
+            to: usuario.email,
+            subject: 'Pago acreditado ✅',
+            html: `
+                <h2>¡Pago confirmado!</h2>
+                <p>Tu pago para el viaje #${viaje.id} fue acreditado correctamente.</p>
+                <p><strong>Monto:</strong> $${cobro.monto}</p>
+                <p>Gracias por confiar en nosotros.</p>
+            `,
+            });
+
+            this.logger.log('📧 Email enviado correctamente');
+        } catch (mailError) {
+            this.logger.error(
+            `❌ Error enviando email: ${mailError.message}`,
+            );
+        }
+        }
+
+        this.logger.log(
+        `🔔 WEBHOOK PROCESADO: Cobro ${cobroId} actualizado a [${estadoFinal}]`,
+        );
+
         return { success: true };
     }
 }

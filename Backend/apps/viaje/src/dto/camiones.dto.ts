@@ -6,4 +6,6 @@ class CamionTipoDto {
 
 export class ConsultarUnidadesDto {
   camiones: CamionTipoDto[];
+  origenCoords: any;
+  destinoCoords: any;
 }

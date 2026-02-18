@@ -3,7 +3,7 @@
     <div class="logo">
         <img src="assets/logo.png" alt="Logo Grafo" />
     </div>
-    <div class="profile-icon">👤</div>
+    <div class="profile-icon" routerLink="/login" (click)="logout()">👤</div>
 </div>
 
 <!-- Contenido -->
@@ -16,8 +16,6 @@
             <div>
                 <label for="origen">Origen:</label>
                 <input id="origen" type="text" #origenInput placeholder="Ej: Córdoba" />
-                <!-- Botón para confirmar origen -->
-                <button type="button" (click)="confirmarOrigen()">OK</button>
             </div>
 
             <div>
@@ -117,38 +115,46 @@
 <!-- Modal de confirmación de viaje -->
 <div *ngIf="mostrarResumen" class="overlay">
   <div class="modal-resumen">
-    <h2>Resumen del viaje</h2>
 
+    <div class="modal-header">
+        <h2>Resumen del viaje</h2>
+    </div>
+
+    <div class="modal-body">
         <div class="datos-viaje-vulnerables" style="background-color: #ffffff; padding: 10px; border: 1px solid rgb(138, 136, 136); margin-bottom: 10px;">
-        <h3>Datos del Trayecto:</h3>
-        <p>
-            <strong>Origen:</strong> 
-            <span [innerHTML]="data.destinoInicio"></span>
-        </p>
-        <p>
-            <strong>Destino:</strong> 
-            <span [innerHTML]="data.destinoFin"></span>
-        </p>
+            <h3>Datos del Trayecto:</h3>
+            <p>
+                <strong>Origen:</strong> 
+                <span [innerHTML]="data.destinoInicio"></span>
+            </p>
+            <p>
+                <strong>Destino:</strong> 
+                <span [innerHTML]="data.destinoFin"></span>
+            </p>
+        </div>
+
+        <div class="detalle">
+            <h3>Unidades seleccionados:</h3>
+            <ul>
+                    <div *ngFor="let unidad of unidadesSeleccionadas" style="background: #f9f9f9; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+                        <p><strong>Camión:</strong> {{ unidad.camion?.patente }} ({{ unidad.camion?.tipo }})</p>
+                        <p><strong>Semirremolque:</strong> {{ unidad.semirremolque?.patente }} ({{ unidad.semirremolque?.tipo }})</p>
+                        <p><strong>Acoplado:</strong> {{ unidad.acoplado?.patente }} ({{ unidad.acoplado?.tipo }})</p>
+                        <p><strong>Carga total:</strong> {{ unidad.cargaTotal }} kg</p>
+                        <p><strong>Subtotal:</strong> ${{ unidad.subtotal }}</p>
+                    </div>
+                    Total general: ${{ totalGeneral }}
+                <hr>
+            </ul>
+        </div>
     </div>
 
-    <div class="detalle">
-      <h3>Unidades seleccionados:</h3>
-      <ul>
-            <div *ngFor="let unidad of unidadesSeleccionadas" style="background: #f9f9f9; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
-                <p><strong>Camión:</strong> {{ unidad.camion?.patente }} ({{ unidad.camion?.tipo }})</p>
-                <p><strong>Semirremolque:</strong> {{ unidad.semirremolque?.patente }} ({{ unidad.semirremolque?.tipo }})</p>
-                <p><strong>Acoplado:</strong> {{ unidad.acoplado?.patente }} ({{ unidad.acoplado?.tipo }})</p>
-                <p><strong>Carga total:</strong> {{ unidad.cargaTotal }} kg</p>
-                <p><strong>Subtotal:</strong> ${{ unidad.subtotal }}</p>
-            </div>
-            Total general: ${{ totalGeneral }}
-        <hr>
-      </ul>
+    <div class="modal-footer">
+        <div class="acciones">
+        <button class="btn-cancelar" (click)="cerrarResumen()">Cancelar</button>
+        <button class="btn-confirmar" (click)="confirmarViaje()">✅ Confirmar creación del viaje</button>
+        </div>
     </div>
-
-    <div class="acciones">
-      <button class="btn-cancelar" (click)="cerrarResumen()">Cancelar</button>
-      <button class="btn-confirmar" (click)="confirmarViaje()">✅ Confirmar creación del viaje</button>
+  
     </div>
-  </div>
 </div>

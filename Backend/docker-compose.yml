@@ -51,6 +51,7 @@ services:
     depends_on:
       - users
       - unidad
+
   mercadopago:
     container_name: mercadopago-service
     build:

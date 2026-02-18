@@ -20,12 +20,10 @@ export class ViajeController {
   @Post('viajesRango')
   findDisponibles(
     @Query('fechaInicio') fechaInicio?: string, 
-    @Query('fechaFin') fechaFin?: string,
-    @Body() camiones?: ConsultarUnidadesDto){
+    @Body() dtoViaje?: ConsultarUnidadesDto){
       const inicio = fechaInicio ? new Date(fechaInicio) : undefined;
-      const fin = fechaFin ? new Date(fechaFin) : undefined;
-      console.log('Fechas recibidas:', inicio, fin);
-      return this.viajeService.buscarUnidadesDisponibles(inicio, fin, camiones);
+      console.log('Fechas recibidas:', inicio);
+      return this.viajeService.buscarUnidadesDisponibles(inicio, dtoViaje);
   }
 
 
@@ -65,16 +63,22 @@ export class ViajeController {
     return this.viajeService.asignarChoferes(dto.viajeId, dto.asignaciones);
   }
 
+  @Get('viajesPorPagar')
+  @UseGuards(AuthGuard)
+  async getViajesPorPagar(@GetUser() user: any) {
+    return await this.viajeService.getViajesPendientesPago(user);
+  }
+
+
   @Patch('rechazarViaje/:id')
   async rechazarViaje(@Param('id') id: number) {
     return this.viajeService.rechazarViaje(id);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.viajeService.findOne(+id);
+  findOne(@Param('id') id: number) {
+    return this.viajeService.findOne(id);
   }
-
 
   @Delete(':id')
   remove(@Param('id') id: string) {
@@ -96,8 +100,13 @@ export class ViajeController {
   return this.viajeService.cancelarViaje(id);
   }
 
-@Patch(':id/confirmar-pago')
-async confirmarPago(@Param('id') id: string) {
-  return this.viajeService.confirmarPagoViaje(+id);
-}
+  @Patch(':id/pago-senia')
+  async confirmarPagoSenia(@Param('id') id: string) {
+    return this.viajeService.confirmarPagoViajeSenia(+id);
+  }
+
+  @Patch(':id/pago-resto')
+  async confirmarPagResto(@Param('id') id: string) {
+    return this.viajeService.confirmarPagoViajeResto(+id);
+  }
 }

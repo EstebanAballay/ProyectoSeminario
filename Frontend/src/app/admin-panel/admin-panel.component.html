@@ -53,15 +53,18 @@
         </div>
       </a>
 
-      <a routerLink="gestion-pagos" class="menu-item">
-        <div class="icon-badge">
-          <i class="fa-solid fa-sack-dollar"></i>
-        </div>
-        <div class="label-card">
-          <span>Gestion de Pagos</span>
-        </div>
-      </a>
 
+<div class="menu-item">
+  <div class="icon-badge">
+    <i class="fa-solid fa-envelope"></i>
+  </div>
+  <div class="label-card">
+    <input type="email" [(ngModel)]="email" placeholder="Ingresa email" />
+    <button (click)="descargar()">Enviar reporte</button>
+  </div>
+</div>
+
+      
     </div>
   </main>
 </div>
