@@ -61,18 +61,40 @@ El proyecto está dockerizado para facilitar el despliegue en cualquier entorno.
     git clone https://github.com/EstebanAballay/ProyectoSeminario.git
     cd grafo-logistica
     ```
-
-2.  **Configurar Variables de Entorno:**
+2. **Instalar librerias en el front:**
+   Recuerda agregar el archivo CSS de Leaflet en el angular.json en la sección de styles:
+   "node_modules/leaflet/dist/leaflet.css"
+   Instalar en grafo-logistica/Frontend:
+   ```bash
+    npm install sweetalert2
+    npm install leaflet @bluehalo/ngx-leaflet
+    npm install axios
+    ```
+   
+4. **Instalar librerias en el back:**
+   Las librerías relacionadas a jwt irán en: grafo-logistica/Backend/apps/auth
+   pdfmake se instalará en: grafo-logistica/Backend/apps/cobro
+   La correspondiente a mercado pago se instalará en: grafo-logistica/Backend/apps/mercadopago
+   TypeOrm irá en todos los microservicios que tengan entidades.
+   ```bash
+    npm install jsonwebtoken
+    npm install @nestjs/jwt passport-jwt
+    npm install pdfmake
+    npm install @nestjs/typeorm typeorm pg
+    npm install mercadopago
+    ```
+ 
+5.  **Configurar Variables de Entorno:**
     Renombrar el archivo `.env.example` a `.env` en cada microservicio y configurar las credenciales de base de datos y API Keys de Mercado Pago.
 
-3.  **Levantar el Backend:**
+6.  **Levantar el Backend:**
     Ejecutar el script de orquestación en grafo-logistica/Backend:
     ```bash
     docker-compose up --build
     ```
     *Esto levantará simultáneamente los contenedores del Backend, Frontend y la conexión a la base de datos.*
     
-5. **Ejecutar el Frontend**
+7. **Ejecutar el Frontend**
    Ejecutar este comando en grafo-logistica/Frontend para ejecutar angular con certificado ssl local.
    ```bash
     ng serve --ssl
