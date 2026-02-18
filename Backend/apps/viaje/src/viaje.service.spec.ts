@@ -83,7 +83,8 @@ describe('ViajeService - createViaje', () => {
       .mockImplementation(async (viaje: any) => viaje);
 
     // Act: llamamos al método real
-    const result = await service.createViaje(dto as any);
+    const user = { id: 1, email: 'reportes.grafo@gmail.com', nombre: 'Grafo Logística' };
+    const result = await service.createViaje(dto as any, user);
 
     // Assert: compara con el resultado esperado
     expect(result).toEqual({

@@ -1,19 +1,24 @@
 import { NestFactory } from '@nestjs/core';
-import { UsersService } from './users.service';
-import {AppModule} from '../app.module';
+import { Logger, ValidationPipe } from '@nestjs/common';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
+  const logger = new Logger('Users-Microservice');
   const app = await NestFactory.create(AppModule);
+
+  // CORS TOTAL: No rebota nada, ideal para desarrollo
   app.enableCors({
-    origin: 'http://localhost:4200',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    origin: true, 
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
 
-  const usersService = app.get(UsersService);
+  // Validaciones globales para evitar datos basura
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 
-
-  await app.listen(process.env.PORT || 3003);
-  console.log(`Servidor corriendo en puerto ${process.env.PORT || 3003}`);
+  const port = process.env.PORT_USERS || 3003;
+  await app.listen(port);
+  
+  logger.log(`🚀 Microservicio de Usuarios listo en: http://localhost:${port}`);
 }
 bootstrap();

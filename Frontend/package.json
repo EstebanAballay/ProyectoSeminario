@@ -17,7 +17,7 @@
     "@angular/google-maps": "^20.2.3",
     "@angular/platform-browser": "^20.0.0",
     "@angular/router": "^20.0.0",
-    "@fortawesome/fontawesome-free": "^7.1.0",
+    "@fortawesome/fontawesome-free": "^7.2.0",
     "@mercadopago/sdk-js": "^0.0.3",
     "@types/leaflet-routing-machine": "^3.2.9",
     "axios": "^1.13.2",

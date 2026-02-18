@@ -149,3 +149,40 @@
     flex-direction: column;
   }
 }
+.acciones-detalles {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.btn-cancelar {
+    background-color: #e74c3c; /* Rojo alerta */
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.btn-cancelar:hover {
+    background-color: #c0392b;
+}
+.acciones-detalles {
+    display: flex !important; /* Forzamos el contenedor */
+    gap: 10px;
+    margin-top: 15px;
+    padding: 10px 0;
+}
+
+.btn-cancelar {
+    background-color: #e74c3c !important;
+    color: white !important;
+    display: block !important;
+    visibility: visible !important;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}

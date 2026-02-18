@@ -7,15 +7,21 @@ import { Viaje } from './entities/viaje.entity';
 import { HttpModule } from '@nestjs/axios';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthGuard } from '../viajeAuth/auth.guard';
-
+import { MailService } from './mail.service'; 
 @Module({
   imports: [
     JwtModule.register({
-      secret: 'no utilizar en producción', // DEBE ser la misma que en el microservicio Auth
+      secret: 'no utilizar en producción', 
       signOptions: { expiresIn: '24h' },
     }),
-    TypeOrmModule.forFeature([Viaje,EstadoViaje]),HttpModule],
+    TypeOrmModule.forFeature([Viaje, EstadoViaje]),
+    HttpModule,
+  ],
   controllers: [ViajeController],
-  providers: [ViajeService,AuthGuard],
+  providers: [
+    ViajeService, 
+    AuthGuard, 
+    MailService
+  ],
 })
 export class ViajeModule {}

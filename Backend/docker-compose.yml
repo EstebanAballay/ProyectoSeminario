@@ -67,23 +67,19 @@ services:
       - /app/node_modules
     command: npm run start:dev mercadopago
     
-  # NUEVO SERVICIO: Ngrok para Webhooks automáticos
+  # NUEVO SERVICIO: Ngrok para Webhooks automáticosngrok:
   ngrok:
     image: ngrok/ngrok:latest
     container_name: ngrok-service
     restart: always
     environment:
       - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
-    command:
-      - "http"
-      - "--domain=unmullioned-bethany-studiously.ngrok-free.dev"
-      - "cobro-service:3001" 
+    # Usamos la sintaxis de cadena simple y movemos el dominio al final
+    command: http cobro-service:3001 --pooling-enabled --domain=unmullioned-bethany-studiously.ngrok-free.dev
     ports:
-      - "4040:4040" # Interfaz para monitorear los Webhooks en localhost:4040
+      - "4040:4040"
     networks:
       - backend-network
-    depends_on:
-      - cobro
 
   users:
     build: ./apps/users             # ruta al Dockerfile del microservicio
