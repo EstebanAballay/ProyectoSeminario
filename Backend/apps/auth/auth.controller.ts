@@ -9,12 +9,12 @@ import {
   Request,
   UseGuards,
 } from "@nestjs/common";
-import { LoginDto } from "./dto/login.dto";
+import { LoginDto } from "./src/dto/login.dto";
 import { AuthService } from "./auth.service";
-import { AuthGuard } from "./guard/auth.guard";
-import { RolesGuard } from "./guard/roles.guard";
+import { AuthGuard } from "./src/guard/auth.guard";
+import { RolesGuard } from "./src/guard/roles.guard";
 import { Role } from "../users/src/role.enum";
-import { Auth } from "./decorators/auth.decorator";
+import { Auth } from "./src/decorators/auth.decorator";
 
 interface RequestWithUser extends Request {
   user: { email: string; role: string };
