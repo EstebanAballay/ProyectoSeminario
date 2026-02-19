@@ -19,11 +19,9 @@ const typeorm_1 = require("typeorm");
 const role_enum_1 = require("./role.enum");
 const typeorm_2 = require("@nestjs/typeorm");
 const bcrypt = require("bcrypt");
-const jwt_1 = require("@nestjs/jwt");
 let UsersService = class UsersService {
-    constructor(userRepo, jwtService) {
+    constructor(userRepo) {
         this.userRepo = userRepo;
-        this.jwtService = jwtService;
     }
     async crearUsuario(dto) {
         const existente = await this.userRepo.findOne({
@@ -49,28 +47,11 @@ let UsersService = class UsersService {
         delete guardado.password_hash;
         return guardado;
     }
-    async login(dto) {
-        console.log('intentando login');
-        const usuario = await this.userRepo.findOne({ where: { email: dto.email } });
-        if (!usuario) {
-            console.log('no encuentra el usuario');
-            throw new common_1.UnauthorizedException('Email o contraseña incorrecta');
-        }
-        const isMatch = await bcrypt.compare(dto.password, usuario.password_hash);
-        console.log('verificando contraseña');
-        if (!isMatch) {
-            console.log('no coinciden');
-            throw new common_1.UnauthorizedException('Email o contraseña incorrecta');
-        }
-        const token = this.jwtService.sign({ id: usuario.id, email: usuario.email, role: usuario.role });
-        const { password_hash, ...rest } = usuario;
-        return { ...rest, token };
-    }
     async findOneByEmail(email) {
         return await this.userRepo.findOneBy({ email });
     }
-    findOneByEmailWithPassword(email) {
-        return this.userRepo.findOne({
+    async findOneByEmailWithPassword(email) {
+        return await this.userRepo.findOne({
             where: { email },
             select: ['id', 'nombre', 'email', 'password_hash', 'role'],
         });
@@ -80,7 +61,6 @@ exports.UsersService = UsersService;
 exports.UsersService = UsersService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_2.InjectRepository)(user_entity_1.User)),
-    __metadata("design:paramtypes", [typeorm_1.Repository,
-        jwt_1.JwtService])
+    __metadata("design:paramtypes", [typeorm_1.Repository])
 ], UsersService);
 //# sourceMappingURL=users.service.js.map

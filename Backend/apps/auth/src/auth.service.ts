@@ -20,6 +20,7 @@ export class AuthService {
 
 
   async login({ email, password }: LoginDto) {
+    console.log("login del src llamado")
     const user = await this.userRepository.findOne({
       where: { email },
       select: ['id', 'nombre', 'email', 'password_hash', 'role'],

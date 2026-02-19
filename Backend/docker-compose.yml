@@ -5,7 +5,7 @@ services:
     build: ./apps/users             # ruta al Dockerfile del microservicio
     command: npm run start:dev
     container_name: users-service   # nombre del contenedor
-    env_file: .env                  # variables de entorno
+    env_file: ./apps/users/.env             # variables de entorno
     ports:
       - "3003:3003"                # host:contenedor
     networks:
@@ -19,7 +19,7 @@ services:
     build: ./apps/auth
     command: npm run start:dev
     container_name: auth-service
-    env_file: .env
+    env_file: ./apps/auth/.env
     ports:
       - "3007:3007"
     networks:

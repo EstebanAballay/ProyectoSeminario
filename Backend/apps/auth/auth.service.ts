@@ -3,8 +3,6 @@ import {
   Injectable,
   UnauthorizedException,
 } from "@nestjs/common";
-import { RegisterDto } from "./dto/register.dto";
-
 import { JwtService } from "@nestjs/jwt";
 import * as bcryptjs from "bcryptjs";
 import { UsersService } from "../users/src/users.service";
@@ -18,6 +16,7 @@ export class AuthService {
   ) {}
   
   async login({ email, password }: LoginDto) {
+    console.log('login llamado de auth')
     const user = await this.usersService.findOneByEmailWithPassword(email);
 
     if (!user) {

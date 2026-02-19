@@ -12,9 +12,7 @@ import { UsuariosModule } from './src/users.module';
   autoLoadEntities: true,
   synchronize: true,
   logging: true,
-  ssl: {
-    rejectUnauthorized: false,
-  },
+  ssl: false,
 }),
     UsuariosModule,
   ],
