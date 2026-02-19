@@ -1,4 +1,4 @@
-import { Role } from '../../../auth/common/enums/role.enum';
+import { Role } from '../role.enum';
 export declare class User {
     id: number;
     nombre: string;
@@ -8,6 +8,6 @@ export declare class User {
     celular: string;
     CUIT: string;
     direccion: string;
-    passwordHash: string;
+    password_hash: string;
     role: Role;
 }

@@ -4,8 +4,13 @@ import { UsersService } from '../services/users.service';
 
 interface Usuario {
   id: string;
-  email: string;
   nombre: string;
+  apellido: string;
+  dni: string;
+  email: string;
+  celular: string;
+  CUIT: string;
+  direccion: string;
   role: string;
 }
 
@@ -24,7 +29,7 @@ export class PerfilComponent implements OnInit {
 
     async ngOnInit() {
     try {
-        const user = await this.usersService.getMe();
+        const user = await this.usersService.getPerfil();
         console.log('usuario desde backend:', user);
         this.usuario = user;
     } catch (e) {

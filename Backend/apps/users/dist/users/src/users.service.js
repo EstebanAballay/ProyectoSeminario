@@ -16,20 +16,12 @@ exports.UsersService = void 0;
 const common_1 = require("@nestjs/common");
 const user_entity_1 = require("./entities/user.entity");
 const typeorm_1 = require("typeorm");
+const role_enum_1 = require("./role.enum");
 const typeorm_2 = require("@nestjs/typeorm");
 const bcrypt = require("bcrypt");
 let UsersService = class UsersService {
     constructor(userRepo) {
         this.userRepo = userRepo;
-    }
-    async testConnection() {
-        try {
-            const count = await this.userRepo.count();
-            console.log('DB connection works, User count:', count);
-        }
-        catch (error) {
-            console.error('DB connection failed:', error);
-        }
     }
     async crearUsuario(dto) {
         const existente = await this.userRepo.findOne({
@@ -42,12 +34,44 @@ let UsersService = class UsersService {
         const passwordHash = await bcrypt.hash(dto.password, salt);
         const nuevoUsuario = this.userRepo.create({
             nombre: dto.nombre,
+            apellido: dto.apellido,
+            dni: dto.dni,
             email: dto.email,
-            passwordHash,
+            celular: dto.celular,
+            CUIT: dto.CUIT,
+            direccion: dto.direccion,
+            password_hash: passwordHash,
+            role: role_enum_1.Role.CLIENT,
         });
         const guardado = await this.userRepo.save(nuevoUsuario);
-        delete guardado.passwordHash;
+        delete guardado.password_hash;
         return guardado;
+    }
+    async findOneByEmail(email) {
+        return await this.userRepo.findOneBy({ email });
+    }
+    async findOneByEmailWithPassword(email) {
+        return await this.userRepo.findOne({
+            where: { email },
+            select: ['id', 'nombre', 'email', 'password_hash', 'role'],
+        });
+    }
+    async perfil(email) {
+        console.log('perfil de service de users back iniciado');
+        return this.userRepo.findOne({
+            where: { email },
+            select: [
+                'id',
+                'nombre',
+                'apellido',
+                'dni',
+                'email',
+                'celular',
+                'CUIT',
+                'direccion',
+                'role',
+            ],
+        });
     }
 };
 exports.UsersService = UsersService;

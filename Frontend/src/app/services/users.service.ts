@@ -32,20 +32,16 @@ export class UsersService {
       throw error;
     }
   }
-  async getMe() {
-  const token = localStorage.getItem('token');
-  console.log('TOKEN ENVIADO:', token);
-  if (!token) {
-    throw new Error('No hay token');
-  }
-
-  const response = await axiosService.get('/users/me', {
-    headers: {
-      Authorization: `Bearer ${token}`
+  async getPerfil() {
+    console.log('getPerfil de service front iniciado');
+    try {
+      const response = await axiosService.get(`${this.usersUrl}/perfil`);
+      console.log('Respuesta del perfil:', response.data);
+      return response.data;
+    } catch (error: any) {
+      console.error('Error al obtener perfil:', error.response?.data || error.message);
+      throw error;
     }
-  });
-
-  return response.data;
-}
+  }
 }
 

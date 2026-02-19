@@ -54,4 +54,21 @@ const salt = await bcrypt.genSalt(10);
       select: ['id', 'nombre', 'email', 'password_hash', 'role'],
     });
   }
+
+  async perfil(email: string) {
+    console.log('perfil de service de users back iniciado')
+    return this.userRepo.findOne({
+      where: { email },
+      select: [
+        'nombre',
+        'apellido',
+        'dni',
+        'email',
+        'celular',
+        'CUIT',
+        'direccion',
+      ],
+    });
+  }
+
 }
