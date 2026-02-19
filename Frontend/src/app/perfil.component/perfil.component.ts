@@ -28,6 +28,7 @@ export class PerfilComponent implements OnInit {
   usuarioEditable: Usuario | null = null;
   modoEdicion = false;
   guardando = false;
+  erroresCampos: Partial<Record<'nombre' | 'apellido' | 'email' | 'celular' | 'CUIT' | 'direccion', string>> = {};
 
   constructor(private usersService: UsersService) {}
 
@@ -45,11 +46,48 @@ export class PerfilComponent implements OnInit {
   activarEdicion() {
     if (!this.usuario) return;
     this.usuarioEditable = { ...this.usuario };
+    this.erroresCampos = {};
     this.modoEdicion = true;
+  }
+
+  limpiarErrorCampo(campo: 'nombre' | 'apellido' | 'email' | 'celular' | 'CUIT' | 'direccion') {
+    if (this.erroresCampos[campo]) {
+      delete this.erroresCampos[campo];
+    }
+  }
+
+  private validarCamposRequeridos() {
+    this.erroresCampos = {};
+
+    if (!this.usuarioEditable) {
+      return false;
+    }
+
+    const campos: Array<'nombre' | 'apellido' | 'email' | 'celular' | 'CUIT' | 'direccion'> = [
+      'nombre',
+      'apellido',
+      'email',
+      'celular',
+      'CUIT',
+      'direccion',
+    ];
+
+    for (const campo of campos) {
+      const valor = this.usuarioEditable[campo];
+      if (!valor || !String(valor).trim()) {
+        this.erroresCampos[campo] = 'Debe completar todos los campos';
+      }
+    }
+
+    return Object.keys(this.erroresCampos).length === 0;
   }
 
   async guardarCambios() {
     if (!this.usuarioEditable) return;
+
+    if (!this.validarCamposRequeridos()) {
+      return;
+    }
 
     this.guardando = true;
     try {
@@ -65,8 +103,15 @@ export class PerfilComponent implements OnInit {
       const actualizado = await this.usersService.actualizarPerfil(payload);
       this.usuario = actualizado;
       this.usuarioEditable = { ...actualizado };
+      this.erroresCampos = {};
       this.modoEdicion = false;
-    } catch (e) {
+    } catch (e: any) {
+      const mensaje = e?.response?.data?.message;
+      const mensajeNormalizado = Array.isArray(mensaje) ? mensaje.join(' ') : String(mensaje ?? '').toLowerCase();
+
+      if (mensajeNormalizado.includes('email ya está registrado') || mensajeNormalizado.includes('email ya esta registrado')) {
+        this.erroresCampos.email = 'El email ya está registrado';
+      }
       console.error('Error al guardar cambios', e);
     } finally {
       this.guardando = false;
