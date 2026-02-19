@@ -9,12 +9,72 @@
   @if (usuario) {
     <h2>Mi perfil</h2>
 
-    <div class="dato"><span class="label">Nombre:</span><span>{{ usuario.nombre }}</span></div>
-    <div class="dato"><span class="label">Apellido:</span><span>{{ usuario.apellido }}</span></div>
+    <div class="dato">
+      <span class="label">Nombre:</span>
+      @if (modoEdicion && usuarioEditable) {
+        <input class="input-dato" [(ngModel)]="usuarioEditable.nombre" />
+      } @else {
+        <span>{{ usuario.nombre }}</span>
+      }
+    </div>
+
+    <div class="dato">
+      <span class="label">Apellido:</span>
+      @if (modoEdicion && usuarioEditable) {
+        <input class="input-dato" [(ngModel)]="usuarioEditable.apellido" />
+      } @else {
+        <span>{{ usuario.apellido }}</span>
+      }
+    </div>
+
     <div class="dato"><span class="label">DNI:</span><span>{{ usuario.dni }}</span></div>
-    <div class="dato"><span class="label">Email:</span><span>{{ usuario.email }}</span></div>
-    <div class="dato"><span class="label">Celular:</span><span>{{ usuario.celular }}</span></div>
-    <div class="dato"><span class="label">CUIT:</span><span>{{ usuario.CUIT }}</span></div>
-    <div class="dato"><span class="label">Dirección:</span><span>{{ usuario.direccion }}</span></div>
+
+    <div class="dato">
+      <span class="label">Email:</span>
+      @if (modoEdicion && usuarioEditable) {
+        <input class="input-dato" [(ngModel)]="usuarioEditable.email" />
+      } @else {
+        <span>{{ usuario.email }}</span>
+      }
+    </div>
+
+    <div class="dato">
+      <span class="label">Celular:</span>
+      @if (modoEdicion && usuarioEditable) {
+        <input class="input-dato" [(ngModel)]="usuarioEditable.celular" />
+      } @else {
+        <span>{{ usuario.celular }}</span>
+      }
+    </div>
+
+    <div class="dato">
+      <span class="label">CUIT:</span>
+      @if (modoEdicion && usuarioEditable) {
+        <input class="input-dato" [(ngModel)]="usuarioEditable.CUIT" />
+      } @else {
+        <span>{{ usuario.CUIT }}</span>
+      }
+    </div>
+
+    <div class="dato">
+      <span class="label">Dirección:</span>
+      @if (modoEdicion && usuarioEditable) {
+        <input class="input-dato" [(ngModel)]="usuarioEditable.direccion" />
+      } @else {
+        <span>{{ usuario.direccion }}</span>
+      }
+    </div>
+
+    @if (modoEdicion) {
+      <button type="button" class="modificar-button" [disabled]="guardando" (click)="guardarCambios()">
+        {{ guardando ? 'guardando...' : 'guardar cambios' }}
+      </button>
+    } @else {
+      <button type="button" class="modificar-button" (click)="activarEdicion()">
+        modificar datos
+      </button>
+    }
+  } @else {
+    <p class="sin-usuario">No hay usuario autenticado</p>
   }
 </div>

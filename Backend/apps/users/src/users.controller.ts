@@ -1,7 +1,8 @@
-import { Controller, Post, Body, Get, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards, Req, Put } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AuthGuard } from './guard/auth.guard';
+import { UpdatePerfilDto } from './dto/update-perfil.dto';
 @Controller('users')
 export class UsersController {
     constructor(private readonly usersService: UsersService) {}
@@ -18,5 +19,12 @@ export class UsersController {
     const email = req.user.email;
     return this.usersService.perfil(email);
     }
+
+        @Put('perfil')
+        @UseGuards(AuthGuard)
+        async actualizarPerfil(@Req() req: any, @Body() dto: UpdatePerfilDto) {
+            const email = req.user.email;
+            return this.usersService.actualizarPerfil(email, dto);
+        }
 
 }

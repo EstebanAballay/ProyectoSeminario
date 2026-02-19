@@ -43,5 +43,15 @@ export class UsersService {
       throw error;
     }
   }
+
+  async actualizarPerfil(userData: any) {
+    try {
+      const response = await axiosService.put(`${this.usersUrl}/perfil`, userData);
+      return response.data;
+    } catch (error: any) {
+      console.error('Error al actualizar perfil:', error.response?.data || error.message);
+      throw error;
+    }
+  }
 }
 

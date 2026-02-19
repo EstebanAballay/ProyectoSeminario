@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Role } from './role.enum';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdatePerfilDto } from './dto/update-perfil.dto';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -60,6 +61,7 @@ const salt = await bcrypt.genSalt(10);
     return this.userRepo.findOne({
       where: { email },
       select: [
+        'id',
         'nombre',
         'apellido',
         'dni',
@@ -67,8 +69,34 @@ const salt = await bcrypt.genSalt(10);
         'celular',
         'CUIT',
         'direccion',
+        'role',
       ],
     });
+  }
+
+  async actualizarPerfil(emailActual: string, dto: UpdatePerfilDto) {
+    const usuario = await this.userRepo.findOne({ where: { email: emailActual } });
+
+    if (!usuario) {
+      throw new BadRequestException('Usuario no encontrado');
+    }
+
+    if (dto.email && dto.email !== emailActual) {
+      const existeEmail = await this.userRepo.findOne({ where: { email: dto.email } });
+      if (existeEmail) {
+        throw new BadRequestException('El email ya está registrado');
+      }
+    }
+
+    usuario.nombre = dto.nombre ?? usuario.nombre;
+    usuario.apellido = dto.apellido ?? usuario.apellido;
+    usuario.email = dto.email ?? usuario.email;
+    usuario.celular = dto.celular ?? usuario.celular;
+    usuario.CUIT = dto.CUIT ?? usuario.CUIT;
+    usuario.direccion = dto.direccion ?? usuario.direccion;
+
+    await this.userRepo.save(usuario);
+    return this.perfil(usuario.email);
   }
 
 }
