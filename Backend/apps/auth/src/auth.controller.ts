@@ -13,7 +13,7 @@ import { LoginDto } from "./dto/login.dto";
 import { AuthService } from "./auth.service";
 import { AuthGuard } from "./guard/auth.guard";
 import { RolesGuard } from "./guard/roles.guard";
-import { Role } from "../../users/src/role.enum";
+import { Role } from "./role.enum";
 import { Auth } from "./decorators/auth.decorator";
 
 interface RequestWithUser extends Request {

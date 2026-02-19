@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { UsersService } from '../services/users.service';
 
 interface Usuario {
@@ -30,7 +31,7 @@ export class PerfilComponent implements OnInit {
   guardando = false;
   erroresCampos: Partial<Record<'nombre' | 'apellido' | 'email' | 'celular' | 'CUIT' | 'direccion', string>> = {};
 
-  constructor(private usersService: UsersService) {}
+  constructor(private usersService: UsersService, private router: Router) {}
 
     async ngOnInit() {
     try {
@@ -116,5 +117,10 @@ export class PerfilComponent implements OnInit {
     } finally {
       this.guardando = false;
     }
+  }
+
+  cerrarSesion() {
+    localStorage.removeItem('token');
+    this.router.navigate(['/login']);
   }
 }
