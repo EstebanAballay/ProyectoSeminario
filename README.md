@@ -73,13 +73,14 @@ El proyecto está dockerizado para facilitar el despliegue en cualquier entorno.
    
 4. **Instalar librerias en el back:**
    Las librerías relacionadas a jwt irán en: grafo-logistica/Backend/apps/auth
-   pdfmake se instalará en: grafo-logistica/Backend/apps/cobro
+   Puppeeter(para hacer pdfs) se instalará en: grafo-logistica/Backend/apps/cobro
    La correspondiente a mercado pago se instalará en: grafo-logistica/Backend/apps/mercadopago
    TypeOrm irá en todos los microservicios que tengan entidades.
    ```bash
     npm install jsonwebtoken
     npm install @nestjs/jwt passport-jwt
-    npm install pdfmake
+    npm install puppeteer
+    npm install -D @types/puppeteer
     npm install @nestjs/typeorm typeorm pg
     npm install mercadopago
     ```
