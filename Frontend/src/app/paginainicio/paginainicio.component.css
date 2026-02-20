@@ -32,7 +32,9 @@ body {
 }
 
 .logo {
-  width: 250px;
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 .user-icon i {

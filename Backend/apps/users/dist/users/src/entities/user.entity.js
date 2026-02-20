@@ -11,7 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const typeorm_1 = require("typeorm");
-const role_enum_1 = require("../../../auth/common/enums/role.enum");
+const role_enum_1 = require("../role.enum");
 let User = class User {
 };
 exports.User = User;
@@ -50,7 +50,7 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)({ name: 'password_hash' }),
     __metadata("design:type", String)
-], User.prototype, "passwordHash", void 0);
+], User.prototype, "password_hash", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'enum', enum: role_enum_1.Role, default: role_enum_1.Role.CLIENT }),
     __metadata("design:type", String)

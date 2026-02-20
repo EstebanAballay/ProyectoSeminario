@@ -24,9 +24,7 @@ exports.AppModule = AppModule = __decorate([
                 autoLoadEntities: true,
                 synchronize: true,
                 logging: true,
-                ssl: {
-                    rejectUnauthorized: false,
-                },
+                ssl: false,
             }),
             viaje_module_1.ViajeModule,
         ],

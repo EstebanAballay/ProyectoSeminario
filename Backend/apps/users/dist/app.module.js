@@ -10,7 +10,7 @@ exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const typeorm_1 = require("@nestjs/typeorm");
-const users_module_1 = require("./src/users.module");
+const users_module_1 = require("./users.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -24,9 +24,7 @@ exports.AppModule = AppModule = __decorate([
                 autoLoadEntities: true,
                 synchronize: true,
                 logging: true,
-                ssl: {
-                    rejectUnauthorized: false,
-                },
+                ssl: false,
             }),
             users_module_1.UsuariosModule,
         ],

@@ -12,9 +12,7 @@ import { CobroModule } from './src/cobro.module';
   autoLoadEntities: true,
   synchronize: true,
   logging: true,
-  ssl: {
-    rejectUnauthorized: false,
-  },
+  ssl: false,
 }),
     CobroModule,
   ],

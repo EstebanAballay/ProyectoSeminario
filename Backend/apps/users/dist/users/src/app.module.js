@@ -11,34 +11,23 @@ const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const typeorm_1 = require("@nestjs/typeorm");
 const users_module_1 = require("./users.module");
-const user_entity_1 = require("./entities/user.entity");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            config_1.ConfigModule.forRoot({
-                isGlobal: true,
-            }),
-            typeorm_1.TypeOrmModule.forRootAsync({
-                imports: [config_1.ConfigModule],
-                inject: [config_1.ConfigService],
-                useFactory: (config) => ({
-                    type: 'postgres',
-                    host: config.get('DB_HOST', 'localhost'),
-                    port: config.get('DB_PORT', 5432),
-                    username: config.get('DB_USER', 'postgres'),
-                    password: config.get('DB_PASS', 'postgres'),
-                    database: config.get('DB_NAME', 'usersdb'),
-                    entities: [user_entity_1.User],
-                    synchronize: true,
-                }),
+            config_1.ConfigModule.forRoot({ isGlobal: true }),
+            typeorm_1.TypeOrmModule.forRoot({
+                type: 'postgres',
+                url: process.env.DATABASE_URL,
+                autoLoadEntities: true,
+                synchronize: true,
+                logging: true,
+                ssl: false,
             }),
             users_module_1.UsuariosModule,
         ],
-        controllers: [],
-        providers: [],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

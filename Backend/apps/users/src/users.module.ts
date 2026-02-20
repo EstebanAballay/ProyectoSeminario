@@ -7,9 +7,9 @@ import { JwtModule } from '@nestjs/jwt';
 @Module({
   imports: [TypeOrmModule.forFeature([User]),
   JwtModule.register({
-  secret: 'TU_SECRETO_SUPER_SEGURO', // reemplazar por un env var
-  signOptions: { expiresIn: '1d' },  // tiempo de expiración
-    }),  
+    secret: 'no utilizar en producción', // Mismo secreto que en auth service
+    signOptions: { expiresIn: '1d' },
+  }),
   ],
   providers: [UsersService],
   controllers: [UsersController],

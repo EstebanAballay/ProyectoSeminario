@@ -1,22 +1,31 @@
-import { Controller, Post, Body, Get, Query, ParseArrayPipe} from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards, Req, Put , Query, ParseArrayPipe} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { LoginDto } from './dto/login.dto';
-
+import { AuthGuard } from './guard/auth.guard';
+import { UpdatePerfilDto } from './dto/update-perfil.dto';
 @Controller('users')
 export class UsersController {
     constructor(private readonly usersService: UsersService) {}
-  @Post('register')
-  async registrar(@Body() dto: CreateUserDto) {
-    return this.usersService.crearUsuario(dto);
-}
+    
+    @Post('register')
+    async register(@Body() createUserDto: CreateUserDto) {
+        return this.usersService.crearUsuario(createUserDto);
+    }
 
+    @Get('perfil')
+    @UseGuards(AuthGuard)
+    async perfil(@Req() req: any) {
+        console.log('perfil de controller de users back iniciado');
+    const email = req.user.email;
+    return this.usersService.perfil(email);
+    }
 
-  @Post('login')
-  async login(@Body() dto: LoginDto) {
-    return this.usersService.login(dto);
-  }
-
+        @Put('perfil')
+        @UseGuards(AuthGuard)
+        async actualizarPerfil(@Req() req: any, @Body() dto: UpdatePerfilDto) {
+            const email = req.user.email;
+            return this.usersService.actualizarPerfil(email, dto);
+        }
   @Get('by-ids')
   async getUsersByIds(
     // Este Pipe hace la magia: convierte "1,2,3" en [1, 2, 3]
