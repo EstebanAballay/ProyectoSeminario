@@ -15,20 +15,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CobroController = void 0;
 const common_1 = require("@nestjs/common");
 const cobro_service_1 = require("./cobro.service");
-const create_cobro_dto_1 = require("./entities/create-cobro-dto");
 let CobroController = class CobroController {
     constructor(cobroService) {
         this.cobroService = cobroService;
     }
-    /* El front el ordena a este servicio crear el cobro,luego le ordena generar el link de pago,
-    y cuando el cliente paga hay un webhook(puerto que conecta nuestro localhost con internet) que esta
-    escuchando la notificacion de mp,es notificacion contiene el id de la transaccion de mp,es en ese momento que llama
-    a verificar y confirmar pago, y si es positiva, ordena cambiar el estado del cobro y el viaje.
-    */
     // 1. CREAR COBRO: POST http://localhost:3001/cobros
-    async crearCobro(createCobroDto) {
-        console.log(createCobroDto);
-        return await this.cobroService.crearCobro(createCobroDto);
+    async crearCobro(cobroData) {
+        return await this.cobroService.crearCobro(cobroData);
     }
     // 2. CONSULTAR: GET http://localhost:3001/cobros/25
     async obtenerEstado(id) {
@@ -41,10 +34,10 @@ let CobroController = class CobroController {
 };
 exports.CobroController = CobroController;
 __decorate([
-    (0, common_1.Post)(''),
+    (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_cobro_dto_1.CreateCobroDto]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], CobroController.prototype, "crearCobro", null);
 __decorate([

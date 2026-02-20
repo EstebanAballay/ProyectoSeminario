@@ -14,15 +14,13 @@ const cobro_controller_1 = require("./cobro.controller");
 const webhook_controller_1 = require("./webhooks/webhook.controller");
 const cobro_service_1 = require("./cobro.service");
 const cobro_entity_1 = require("./entities/cobro.entity");
-const estadoCobro_entity_1 = require("./entities/estadoCobro.entity");
-const abonante_entity_1 = require("./entities/abonante.entity");
 let CobroModule = class CobroModule {
 };
 exports.CobroModule = CobroModule;
 exports.CobroModule = CobroModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            typeorm_1.TypeOrmModule.forFeature([cobro_entity_1.Cobro, estadoCobro_entity_1.EstadoCobro, abonante_entity_1.Abonante]),
+            typeorm_1.TypeOrmModule.forFeature([cobro_entity_1.Cobro]),
             axios_1.HttpModule,
         ],
         controllers: [

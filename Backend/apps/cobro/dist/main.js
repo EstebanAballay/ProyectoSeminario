@@ -22,10 +22,7 @@ async function bootstrap() {
     }
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     // 2. Habilitar CORS (Importante para la comunicación de red)
-    app.enableCors({
-        origin: true,
-        credentials: true,
-    });
+    app.enableCors();
     // 3. Escuchar en el puerto definido
     const port = process.env.PORT_COBRO || 3001;
     await app.listen(port);

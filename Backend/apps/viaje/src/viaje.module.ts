@@ -7,21 +7,37 @@ import { Viaje } from './entities/viaje.entity';
 import { HttpModule } from '@nestjs/axios';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthGuard } from '../viajeAuth/auth.guard';
-import { MailService } from './mail.service'; 
+import { MailerModule } from '@nestjs-modules/mailer'; 
+import { MailService } from './mail.service';
+
 @Module({
   imports: [
     JwtModule.register({
-      secret: 'no utilizar en producción', 
+      secret: 'no utilizar en producción',
       signOptions: { expiresIn: '24h' },
     }),
     TypeOrmModule.forFeature([Viaje, EstadoViaje]),
     HttpModule,
+    MailerModule.forRoot({
+      transport: {
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
+        auth: {
+          user: 'reportes.grafo@gmail.com',
+          pass: 'byzt tpep lwoe hnxg',
+        },
+      },
+      defaults: {
+        from: '"Grafo Logística" <noreply@grafologistica.com>',
+      },
+    }),
   ],
   controllers: [ViajeController],
   providers: [
-    ViajeService, 
-    AuthGuard, 
-    MailService
+    ViajeService,
+    AuthGuard,
+    MailService, // 👈 CLAVE
   ],
 })
 export class ViajeModule {}

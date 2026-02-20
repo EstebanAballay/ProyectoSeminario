@@ -3,7 +3,7 @@ FROM node:20
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm install --legacy-peer-deps
+RUN npm install
 
 COPY . .
 
@@ -14,4 +14,4 @@ RUN npm install -g @nestjs/cli
 
 RUN npm run build
 
-CMD ["node", "dist/apps/viaje/src/main.js"]
+CMD ["node", "dist/main.js"]

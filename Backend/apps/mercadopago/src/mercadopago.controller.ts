@@ -20,7 +20,8 @@ export class MercadopagoController {
     );
   }
 
-  @Get('verificar/:paymentId')
+  // ESTE ES EL MÉTODO QUE TE DABA 404
+    @Get('verificar/:paymentId')
   async verificar(@Param('paymentId') paymentId: string) {
     return this.service.getPaymentDetails(paymentId);
   }

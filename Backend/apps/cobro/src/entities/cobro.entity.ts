@@ -1,12 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { EstadoCobro } from './estadoCobro.entity';
-import { Abonante } from './abonante.entity'
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-export enum tipoCobro {
-    SENIA = 'senia',
-    RESTO = 'resto'
+export enum TipoCobro {
+    SENA = 'sena',
+    RESTO = 'resto',
+    TOTAL = 'total'
 }
-    
+
 @Entity({ name: 'cobro', schema: 'microservice_cobro' })
 export class Cobro {
     @PrimaryGeneratedColumn()
@@ -18,21 +17,19 @@ export class Cobro {
     @Column({ type: 'numeric' })
     monto: number;
 
-    @ManyToOne(() => EstadoCobro, { eager: true })
-    @JoinColumn({ name: 'estadoId' })
-    estado: EstadoCobro
+    @Column({
+        type: 'varchar',
+        enum: TipoCobro,
+        default: TipoCobro.SENA 
+    })
+    tipo: string;
+
+    @Column({ type: 'varchar', default: 'pendiente' })
+    estado: string;
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     fechaCreacion: Date;
 
     @Column({ type: 'varchar', nullable: true })
     transactionId?: string;
-
-    @Column({type: 'enum', enum: tipoCobro, default: tipoCobro.SENIA})
-    tipo: tipoCobro; //enum sencillo para los tipos de cobro
-
-    @ManyToOne(()=>Abonante, {nullable: true})
-    @JoinColumn({name: 'abonanteId'})
-    abonante: Abonante
 }
-

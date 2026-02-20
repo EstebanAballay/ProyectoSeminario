@@ -1,0 +1,48 @@
+[33mf17be1eb[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32madmin[m[33m, [m[1;31morigin/admin[m[33m)[m HEAD@{0}: reset: moving to origin/admin
+[33mf17be1eb[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32madmin[m[33m, [m[1;31morigin/admin[m[33m)[m HEAD@{1}: reset: moving to f17be1eb
+[33m0708f0ef[m HEAD@{2}: reset: moving to 0708f0ef
+[33mf17be1eb[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32madmin[m[33m, [m[1;31morigin/admin[m[33m)[m HEAD@{3}: reset: moving to f17be1eb
+[33m9da281bb[m HEAD@{4}: commit (merge): Resuelvo conflictos y elimino dist del repo
+[33m0708f0ef[m HEAD@{5}: commit: mail cancelar viaje
+[33m2e67cf46[m HEAD@{6}: checkout: moving from reservaUsuario to admin
+[33m4c29b0fe[m[33m ([m[1;32mreservaUsuario[m[33m)[m HEAD@{7}: commit: Cambio de estado de viaje con el cobro
+[33m3947bc06[m HEAD@{8}: commit: Integración MercadoPago con Cobro
+[33m8b4f0723[m HEAD@{9}: checkout: moving from reservaUsuario to reservaUsuario
+[33m8b4f0723[m HEAD@{10}: checkout: moving from reservaUsuario to reservaUsuario
+[33m8b4f0723[m HEAD@{11}: checkout: moving from mercadopago to reservaUsuario
+[33m591c737a[m[33m ([m[1;31morigin/mercadopago[m[33m, [m[1;32mmercadopago[m[33m)[m HEAD@{12}: checkout: moving from reservaUsuario to mercadopago
+[33m8b4f0723[m HEAD@{13}: commit: MERGE con MP
+[33m58474f78[m HEAD@{14}: commit (merge): MERGE
+[33m7a96afca[m HEAD@{15}: pull origin reservaUsuario: Fast-forward
+[33mb8108bf1[m HEAD@{16}: checkout: moving from mercadopago to reservaUsuario
+[33m591c737a[m[33m ([m[1;31morigin/mercadopago[m[33m, [m[1;32mmercadopago[m[33m)[m HEAD@{17}: reset: moving to HEAD
+[33m591c737a[m[33m ([m[1;31morigin/mercadopago[m[33m, [m[1;32mmercadopago[m[33m)[m HEAD@{18}: checkout: moving from reservaUsuario to mercadopago
+[33mb8108bf1[m HEAD@{19}: checkout: moving from mercadopago to reservaUsuario
+[33m591c737a[m[33m ([m[1;31morigin/mercadopago[m[33m, [m[1;32mmercadopago[m[33m)[m HEAD@{20}: commit: Integración Mercado Pago - checkout API
+[33m8aac58b9[m[33m ([m[1;32mpaginainicio[m[33m)[m HEAD@{21}: checkout: moving from paginainicio to mercadopago
+[33m8aac58b9[m[33m ([m[1;32mpaginainicio[m[33m)[m HEAD@{22}: commit (merge): Merge con rama usuarios
+[33m7daa61ce[m HEAD@{23}: commit: Actualización
+[33m304af999[m HEAD@{24}: checkout: moving from paginainicio to paginainicio
+[33m304af999[m HEAD@{25}: pull: Fast-forward
+[33m4bc30cbf[m HEAD@{26}: commit: Solución selección mapa origen y destino
+[33m3de50e3f[m HEAD@{27}: commit: Mejoras de crear viaje
+[33m9961a56d[m HEAD@{28}: pull: Fast-forward
+[33m22b9205f[m HEAD@{29}: pull: Fast-forward
+[33me4b6db59[m HEAD@{30}: commit: Selección de camiones
+[33mb14eb450[m HEAD@{31}: commit: Login con condiciones
+[33m0deb3974[m HEAD@{32}: commit: Corrección Mapa
+[33mea3b70ee[m HEAD@{33}: commit: Incorporación Mapa
+[33mf2b7583d[m HEAD@{34}: pull: Fast-forward
+[33m00702db7[m HEAD@{35}: commit: Se logró el marge
+[33m5b486c9b[m HEAD@{36}: pull --tags origin paginainicio: Merge made by the 'ort' strategy.
+[33m6f2d064d[m HEAD@{37}: commit (merge): Merge branch 'paginainicio' of https://github.com/EstebanAballay/ProyectoSeminario into paginainicio
+[33m7eaae998[m HEAD@{38}: commit: Register y parte del nuevo viaje
+[33me2226a7e[m HEAD@{39}: commit: Login terminado
+[33ma980281f[m HEAD@{40}: commit: Pagina inicio Terminada
+[33m098a94ed[m HEAD@{41}: pull: Fast-forward
+[33meba89f09[m HEAD@{42}: commit: Pagina de inicio con vídeo
+[33mc608dd0a[m HEAD@{43}: checkout: moving from estructuraMicroServicios to paginainicio
+[33m348bd788[m[33m ([m[1;32mestructuraMicroServicios[m[33m)[m HEAD@{44}: pull: Fast-forward
+[33mfff96d0d[m HEAD@{45}: checkout: moving from fff96d0da8f001f4e5dbc1d778e268622b02a5cf to estructuraMicroServicios
+[33mfff96d0d[m HEAD@{46}: checkout: moving from main to remotes/origin/estructuraMicroServicios
+[33mb9078408[m[33m ([m[1;32mmain[m[33m)[m HEAD@{47}: clone: from https://github.com/EstebanAballay/ProyectoSeminario

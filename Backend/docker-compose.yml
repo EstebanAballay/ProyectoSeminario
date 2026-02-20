@@ -76,7 +76,7 @@ services:
     environment:
       - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
     # Usamos la sintaxis de cadena simple y movemos el dominio al final
-    command: http cobro-service:3001 --pooling-enabled --domain=unmullioned-bethany-studiously.ngrok-free.dev
+    command: http cobro-service:3001
     ports:
       - "4040:4040"
     networks:

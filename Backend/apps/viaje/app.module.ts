@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CobroModule } from './src/cobro.module';
+import { ViajeModule } from './src/viaje.module';
 
 @Module({
   imports: [
@@ -12,9 +12,11 @@ import { CobroModule } from './src/cobro.module';
   autoLoadEntities: true,
   synchronize: true,
   logging: true,
-  ssl: false,
+  ssl: {
+    rejectUnauthorized: false,
+  },
 }),
-    CobroModule,
+    ViajeModule,
   ],
 })
 export class AppModule {}

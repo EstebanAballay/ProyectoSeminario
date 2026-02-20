@@ -1,85 +1,97 @@
-import { Injectable, BadRequestException, UnauthorizedException} from '@nestjs/common';
+import { Injectable, BadRequestException, UnauthorizedException, InternalServerErrorException } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { In, Repository } from 'typeorm';
 import { Role } from './role.enum';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
-import * as bcrypt from 'bcrypt';
+import * as bcryptjs from 'bcryptjs'; 
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UsersService {
   constructor(
-  @InjectRepository(User)
-  private readonly userRepo: Repository<User>,
-  private readonly jwtService: JwtService,
+    @InjectRepository(User)
+    private readonly userRepo: Repository<User>,
+    private readonly jwtService: JwtService,
   ) {}
-  async crearUsuario(dto: CreateUserDto) {
 
-    // 1️⃣ Verificar si ya existe un usuario con ese email
-    const existente = await this.userRepo.findOne({
-      where: { email: dto.email },
-    });
+  async crearUsuario(dto: CreateUserDto) {
+    const existente = await this.userRepo.findOne({ where: { email: dto.email } });
     if (existente) {
       throw new BadRequestException('El email ya está registrado');
     }
 
-    // 2️⃣ Hashear la contraseña
-const salt = await bcrypt.genSalt(10);
-  const passwordHash = await bcrypt.hash(dto.password, salt);
+    const salt = await bcryptjs.genSalt(10);
+    const passwordHash = await bcryptjs.hash(dto.password, salt);
 
-  const nuevoUsuario = this.userRepo.create({
-    nombre: dto.nombre,
-    apellido: dto.apellido,
-    dni: dto.dni,
-    email: dto.email,
-    celular: dto.celular,
-    CUIT: dto.CUIT,
-    direccion: dto.direccion,
-    password_hash: passwordHash,
-    role: Role.CLIENT,
-  });
+    const nuevoUsuario = this.userRepo.create({
+      ...dto,
+      password_hash: passwordHash,
+      role: Role.CLIENT,
+    });
 
-  const guardado = await this.userRepo.save(nuevoUsuario);
-  delete guardado.password_hash;
-  return guardado;
+    const guardado = await this.userRepo.save(nuevoUsuario);
+    delete (guardado as any).password_hash;
+    return guardado;
   }
 
   async login(dto: LoginDto) {
-    console.log('intentando login');
-    // 1️⃣ Buscar el usuario por email
-    const usuario = await this.userRepo.findOne({ where: { email: dto.email } });
-    if (!usuario) {
-      console.log('no encuentra el usuario');
-      throw new UnauthorizedException('Email o contraseña incorrecta'); //Manda el error que despues muestra el login.component.ts con el mensaje 
+    // 1️⃣ LOG CRUCIAL: Si no ves esto en Docker al intentar loguearte, el problema es el Controller o Angular
+    console.log('--- INTENTO DE LOGIN RECIBIDO EN SERVICIO ---');
+    console.log('DTO recibido:', JSON.stringify(dto));
+
+    if (!dto.password) {
+      console.error('❌ ERROR: El campo password llegó indefinido');
+      throw new BadRequestException('Illegal arguments: password is required');
     }
 
-    // 2️⃣ Verificar contraseña
-    const isMatch = await bcrypt.compare(dto.password, usuario.password_hash);
-    console.log('verificando contraseña');
-    if (!isMatch) {
-      console.log('no coinciden');
+    const usuario = await this.findOneByEmailWithPassword(dto.email);
+    
+    if (!usuario) {
+      console.log('Usuario no encontrado en DB');
       throw new UnauthorizedException('Email o contraseña incorrecta');
     }
-    const token = this.jwtService.sign({ id: usuario.id, email: usuario.email, role: usuario.role });
-    // 3️⃣ Retornar datos del usuario sin la contraseña
-    const { password_hash, ...rest } = usuario;
-    return { ...rest, token };
+
+    try {
+      // 2️⃣ Comparación usando la versión JS para evitar errores de binarios en Docker
+      const isMatch = await bcryptjs.compare(dto.password, usuario.password_hash);
+      
+      if (!isMatch) {
+        console.log('Contraseña no coincide');
+        throw new UnauthorizedException('Email o contraseña incorrecta');
+      }
+
+      console.log('✅ Login exitoso para:', usuario.email);
+
+      // 3️⃣ Generación de Token
+      const token = this.jwtService.sign({ 
+          id: usuario.id, 
+          email: usuario.email, 
+          role: usuario.role 
+      });
+
+      const { password_hash, ...rest } = usuario;
+      return { ...rest, token };
+
+    } catch (error) {
+      console.error('Error durante el proceso de login:', error.message);
+      throw new InternalServerErrorException('Error interno en la autenticación');
+    }
   }
+
   async findOneByEmail(email: string) {
     return await this.userRepo.findOneBy({ email });
   }
 
-  findOneByEmailWithPassword(email: string) {
-    return this.userRepo.findOne({
+  async findOneByEmailWithPassword(email: string) {
+    return await this.userRepo.findOne({
       where: { email },
-      select: ['id', 'nombre', 'email', 'password_hash', 'role'],
-      });
-    }
+      select: ['id', 'nombre', 'email', 'password_hash', 'role'], 
+    });
+  }
   
   async findByIds(ids: number[]): Promise<User[]> {
     return this.userRepo.findBy({ id: In(ids) });
   }
-
 }

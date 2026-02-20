@@ -1,45 +1,37 @@
 import { Injectable } from '@nestjs/common';
-import * as nodemailer from 'nodemailer';
+import { MailerService } from '@nestjs-modules/mailer';
+import { Viaje } from './entities/viaje.entity';
 
 @Injectable()
 export class MailService {
-    private transporter: nodemailer.Transporter;
+    constructor(private readonly mailerService: MailerService) {}
 
-    constructor() {
-
-        console.log("MAIL_HOST:", process.env.MAIL_HOST);
-        console.log("MAIL_PORT:", process.env.MAIL_PORT);
-        console.log("MAIL_USER:", process.env.MAIL_USER);
-        console.log("MAIL_PASS:", process.env.MAIL_PASS);
-
-        this.transporter = nodemailer.createTransport({
-            host: process.env.MAIL_HOST,
-            port: Number(process.env.MAIL_PORT),
-            secure: false,
-            auth: {
-                user: process.env.MAIL_USER,
-                pass: process.env.MAIL_PASS,
-            },
+    async enviarMailReserva(email: string, viaje: Viaje) {
+        await this.mailerService.sendMail({
+        to: email,
+        subject: `🚛 Reserva confirmada - Viaje #${viaje.ViajeId}`,
+        html: `
+            <h2>Reserva confirmada</h2>
+            <p>Origen: ${viaje.destinoInicio}</p>
+            <p>Destino: ${viaje.destinoFin}</p>
+            <p>Fecha: ${viaje.fechaInicio}</p>
+        `,
         });
+
+        console.log('📧 Mail de reserva enviado');
     }
 
-    async enviarMailReserva(emailDestino: string, viajeId: number, destino: string) {
-        const mailOptions = {
-            from: `"Sistema Logística" <${process.env.MAIL_USER}>`,
-            to: emailDestino,
-            subject: `✅ Reserva Confirmada - Viaje #${viajeId}`,
-            html: `<h2>¡Reserva Exitosa!</h2><p>Tu viaje a <b>${destino}</b> ha sido registrado.</p>`,
-        };
-        return this.transporter.sendMail(mailOptions);
-    }
+    async enviarMailCancelacion(email: string, viaje: Viaje) {
+        await this.mailerService.sendMail({
+        to: email,
+        subject: '🚫 Viaje cancelado - Grafo Logística',
+        html: `
+            <h2>Tu viaje fue cancelado</h2>
+            <p>ID: ${viaje.ViajeId}</p>
+            <p>Fecha inicio: ${viaje.fechaInicio}</p>
+        `,
+        });
 
-    async enviarMailCancelacion(emailDestino: string, viajeId: number, destino: string) {
-        const mailOptions = {
-            from: `"Sistema Logística" <${process.env.MAIL_USER}>`,
-            to: emailDestino,
-            subject: `⚠️ Cancelación de Viaje #${viajeId}`,
-            html: `<h2>Viaje Cancelado</h2><p>El viaje a <b>${destino}</b> ha sido cancelado.</p>`,
-        };
-        return this.transporter.sendMail(mailOptions);
+        console.log('📧 Mail de cancelación enviado');
     }
 }

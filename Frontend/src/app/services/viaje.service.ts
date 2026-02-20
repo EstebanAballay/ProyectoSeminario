@@ -7,22 +7,30 @@ export class ViajeService {
 
     private apiUrl = `${config.services.viajes}/viaje`;
 
-    // ================================
-    // OBTENER UNIDADES DISPONIBLES
-    // ================================
+    // ===============================
+    //  UNIDADES DISPONIBLES
+    // ===============================
     async getUnidadesDisponibles(
         fechaInicio: Date,
-        fechaFin: Date,
-        camiones: any
+        camiones: any,
+        origenCoords: any,
+        destinoCoords: any
     ): Promise<any> {
 
         const inicio = fechaInicio.toISOString();
-        const fin = fechaFin.toISOString();
 
-        const url = `${this.apiUrl}/viajesRango?fechaInicio=${inicio}&fechaFin=${fin}`;
+        const url = `${this.apiUrl}/viajesRango?fechaInicio=${inicio}`;
+
+        const body = {
+        camiones: camiones,
+        dto: {
+            origenCoords: origenCoords,
+            destinoCoords: destinoCoords
+        }
+        };
 
         try {
-        const response = await axios.post(url, camiones);
+        const response = await axios.post(url, body);
         return response.data;
         } catch (error) {
         console.error('Error al obtener unidades disponibles:', error);
@@ -30,24 +38,9 @@ export class ViajeService {
         }
     }
 
-    // ================================
-    // CANCELAR VIAJE
-    // ================================
-    async cancelarViaje(id: number): Promise<any> {
-        const url = `${this.apiUrl}/cancelar/${id}`;
-
-        try {
-        const response = await axios.patch(url);
-        return response.data;
-        } catch (error) {
-        console.error('Error al cancelar el viaje:', error);
-        throw error;
-        }
-    }
-
-    // ================================
+    // ===============================
     // CREAR VIAJE
-    // ================================
+    // ===============================
     async crearViaje(data: any): Promise<any> {
         const url = `${this.apiUrl}/nuevoViaje`;
 
@@ -55,14 +48,14 @@ export class ViajeService {
         const response = await axios.post(url, data);
         return response.data;
         } catch (error) {
-        console.error('Error al crear el viaje:', error);
+        console.error('Error al crear viaje:', error);
         throw error;
         }
     }
 
-    // ================================
+    // ===============================
     // MIS VIAJES
-    // ================================
+    // ===============================
     async getMisViajes(): Promise<any> {
         const url = `${this.apiUrl}/misViajes`;
 
@@ -75,9 +68,9 @@ export class ViajeService {
         }
     }
 
-    // ================================
+    // ===============================
     // VIAJES PENDIENTES (ADMIN)
-    // ================================
+    // ===============================
     async getViajesPendientes(): Promise<any> {
         const url = `${this.apiUrl}/viajesPendientes`;
 
@@ -90,9 +83,9 @@ export class ViajeService {
         }
     }
 
-    // ================================
+    // ===============================
     // CHOFERES DISPONIBLES
-    // ================================
+    // ===============================
     async getChoferesDisponibles(
         fechaInicio: Date,
         fechaFin: Date
@@ -104,20 +97,21 @@ export class ViajeService {
         const response = await axios.get(url, {
             params: {
             desde: fechaInicio.toISOString(),
-            hasta: fechaFin.toISOString(),
-            },
+            hasta: fechaFin.toISOString()
+            }
         });
 
         return response.data;
+
         } catch (error) {
         console.error('Error al obtener choferes disponibles:', error);
         throw error;
         }
     }
 
-    // ================================
+    // ===============================
     // ASIGNAR CHOFERES
-    // ================================
+    // ===============================
     async asignarChoferes(
         viajeId: number,
         asignaciones: any[]
@@ -128,35 +122,38 @@ export class ViajeService {
         try {
         const response = await axios.post(url, {
             viajeId,
-            asignaciones,
+            asignaciones
         });
 
         return response.data;
+
         } catch (error) {
         console.error('Error al asignar choferes:', error);
         throw error;
         }
     }
 
-    // ================================
+    // ===============================
     // RECHAZAR VIAJE
-    // ================================
+    // ===============================
     async rechazarViaje(viajeId: number): Promise<any> {
+
         const url = `${this.apiUrl}/rechazarViaje/${viajeId}`;
 
         try {
         const response = await axios.patch(url);
         return response.data;
         } catch (error) {
-        console.error('Error al rechazar el viaje:', error);
+        console.error('Error al rechazar viaje:', error);
         throw error;
         }
     }
 
-    // ================================
+    // ===============================
     // VIAJES PENDIENTES DE PAGO
-    // ================================
+    // ===============================
     async getViajesPendientesPago(): Promise<any> {
+
         const url = `${this.apiUrl}/viajesPorPagar`;
 
         try {
@@ -167,4 +164,18 @@ export class ViajeService {
         throw error;
         }
     }
-}
+// ===============================
+// CANCELAR VIAJE
+// ===============================
+async cancelarViaje(viajeId: number): Promise<any> {
+
+    const url = `${this.apiUrl}/${viajeId}/cancelar`;
+
+    try {
+        const response = await axios.patch(url);
+        return response.data;
+    } catch (error) {
+        console.error('Error al cancelar viaje:', error);
+        throw error;
+    }
+}}
