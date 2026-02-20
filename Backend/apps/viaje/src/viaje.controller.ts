@@ -55,4 +55,5 @@ export class ViajeController {
   ) {
     return this.viajeService.cancelarViaje(id, req.user);
   }
+ 
 }

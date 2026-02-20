@@ -13,7 +13,7 @@ import { CobroModule } from './cobro.module';
         schema: 'microservice_cobro',
         ssl: { rejectUnauthorized: false },
         autoLoadEntities: true,
-        synchronize: true,
+        synchronize: false,
       }),
     }),
     CobroModule,

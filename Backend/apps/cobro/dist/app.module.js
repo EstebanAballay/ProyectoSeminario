@@ -25,7 +25,7 @@ exports.AppModule = AppModule = __decorate([
                     schema: 'microservice_cobro',
                     ssl: { rejectUnauthorized: false },
                     autoLoadEntities: true,
-                    synchronize: true,
+                    synchronize: false,
                 }),
             }),
             cobro_module_1.CobroModule,

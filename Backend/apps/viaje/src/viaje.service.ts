@@ -77,28 +77,38 @@ export class ViajeService {
     const savedViaje = await this.viajeRepository.save(viaje);
 
     // --- Agregar unidades ---
-    if (data.unidades && data.unidades.length > 0) {
-      for (const unidad of data.unidades) {
-        const nuevaUnidad = await this.agregarUnidad(unidad, savedViaje.ViajeId);
+    let totalAcumulado = 0;
 
-        const subtotalCalculado =
-          Math.trunc((nuevaUnidad.subtotal * data.distancia) * 100) / 100;
+// --- Agregar unidades ---
+if (data.unidades && data.unidades.length > 0) {
+  for (const unidad of data.unidades) {
+    const nuevaUnidad = await this.agregarUnidad(unidad, savedViaje.ViajeId);
 
-        if (nuevaUnidad.id) {
-          savedViaje.unidades.push(nuevaUnidad.id);
-          savedViaje.total += subtotalCalculado;
-        }
-      }
+    const subtotalUnidad = Number(nuevaUnidad.subtotal);
+    const distancia = Number(data.distancia);
+
+    const subtotalCalculado =
+      Math.trunc((subtotalUnidad * distancia) * 100) / 100;
+
+    if (nuevaUnidad.id) {
+      savedViaje.unidades.push(nuevaUnidad.id);
+      totalAcumulado += subtotalCalculado;
     }
+  }
+}
 
-    // --- Calcular señas ---
-    savedViaje.sena =
-      Math.trunc((savedViaje.total * 0.1) * 100) / 100;
+// 🔹 Asignamos total ya calculado
+savedViaje.total =
+  Math.trunc(totalAcumulado * 100) / 100;
 
-    savedViaje.resto =
-      Math.trunc((savedViaje.total - savedViaje.sena) * 100) / 100;
+const totalNum = Number(savedViaje.total);
 
-    await this.viajeRepository.save(savedViaje);
+// --- Calcular señas ---
+savedViaje.sena =
+  Math.trunc((totalNum * 0.1) * 100) / 100;
+
+savedViaje.resto =
+  Math.trunc((totalNum - savedViaje.sena) * 100) / 100;
 
     // ✅ ENVÍO DE MAIL (NO BLOQUEANTE)
     this.mailService.enviarMailReserva(user.email, savedViaje)
