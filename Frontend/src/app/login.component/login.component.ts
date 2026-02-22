@@ -57,6 +57,8 @@ export class LoginComponent implements OnInit, OnDestroy {
         this.router.navigate(['/admin']); // cambiar despues por el componente de administrador, fue solo de prueba
       } else if (payload.role === 'client') {
         this.router.navigate(['/menu']);
+      } else if (payload.role === 'chofer') {
+        this.router.navigate(['/menucamionero']);
       } else {
         this.router.navigate(['/paginainicio']);
       }

@@ -26,6 +26,18 @@ export class UnidadController {
     return this.unidadService.consultarTiposCamiones();
   }
 
+  @Get('por-chofer')
+  async getViajesPorChoferQuery(@Query('choferId') choferId: number) {
+    console.log('Recibida petición interna de unidades para chofer:', choferId);
+    return this.unidadService.findViajesPorChofer(+choferId);
+  }
+
+   @Get('viajesPorChofer/:choferId')
+  async findViajesPorChofer(@Param('choferId') choferId: number) {
+    return this.unidadService.findViajesPorChofer(choferId);
+
+  }
+
   @Post('unidadesDisponibles')
   async consultarUnidadesDisponibles(@Body() dto?: ConsultarUnidadesDto) {
     const disponiblesPorFecha = await this.unidadService.findDisponibles(dto.unidadesOcupadas);
@@ -46,10 +58,10 @@ export class UnidadController {
   async asignarChoferes(@Body() dto: {asignaciones: {unidadId: number, choferId: number}[]}) {
     console.log('Asignaciones recibidas:', dto.asignaciones);
     return await this.unidadService.asignarChoferes(dto.asignaciones);}
-
-  @Patch('iniciarEstadoViaje/:id')
-  async iniciarEstadoViaje(@Param('id') id: number) {
-    return this.unidadService.iniciarEstadoViaje(id);
+  
+    @Patch('iniciarEstadoViaje/:id')
+    iniciarEstadoViaje(@Param('id') id: string) {
+    return this.unidadService.iniciarEstadoViaje(+id);
   }
   
   @Patch('finalizarEstadoViaje/:id')
@@ -62,15 +74,6 @@ export class UnidadController {
     return await this.unidadService.createVehicle(createUnidadDto);
   }
 
-    @Get(':id/')
-  async findAll(@Param('id') id: String): Promise<any> {
-    return this.unidadService.findUnityByDriver(Number(id));}
-    
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.unidadService.findOne(+id);
-  }
-  
   @Get() 
   async buscarUnidades(@Query('idViaje') idViaje?: number) {
     if (idViaje) {
@@ -81,9 +84,12 @@ export class UnidadController {
     return this.unidadService.findAll();
   }
 
-  @Get('viajesPorChofer/:choferId')
-  async findViajesPorChofer(@Param('choferId') choferId: number) {
-    return this.unidadService.findViajesPorChofer(choferId);
-
+    @Get(':id/')
+  async findAll(@Param('id') id: String): Promise<any> {
+    return this.unidadService.findUnityByDriver(Number(id));}
+    
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.unidadService.findOne(+id);
   }
 }

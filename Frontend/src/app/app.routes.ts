@@ -26,14 +26,14 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./register.component/register.component').then(m => m.RegisterComponent)
   },
-  { path: 'paginainicio', component: PaginainicioComponent, canActivate: [RoleGuard], data: { role: 'client' }  },
+  { path: 'paginainicio', component: PaginainicioComponent },
   { path: 'menu', component: MenuComponent, canActivate: [RoleGuard], data: { role: 'client' } },
   { path: 'misviajes', component: MisViajesComponent, canActivate: [RoleGuard], data: { role: 'client' } }, 
   { path: 'nuevoviaje', component: NuevoViajeComponent, canActivate: [RoleGuard], data: { role: 'client' }  },
   { path: 'admin', component: AdminPanel, canActivate: [RoleGuard], data: { role: 'admin' }}, 
   { path: 'admin/consultar-viajes', component: ConsultarViajes, canActivate: [RoleGuard], data: { role: 'admin' }},
   { path: 'admin/unidades',component:AbmUnidadesComponent},
-  { path: 'menucamionero', component: MenuCamioneroComponent },
+  { path: 'menucamionero', component: MenuCamioneroComponent, canActivate: [RoleGuard], data: { role: 'chofer' } },
 
       //{ path: 'agregar-empleados', component: RegistroEmpleadosComponent },
       //{ path: 'gestion-clientes', component: GestionClientesComponent },

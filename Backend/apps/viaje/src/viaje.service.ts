@@ -406,13 +406,13 @@ async getViajesPendientes() {
     return viaje;
   }
 
-async getViajesDelChofer(user:any) {
+async getViajesDelChofer(choferId:number) {
   try {
-    // PASO 1: Consultar al Microservicio de UNIDAD
-    // Le pedimos: "Dame todas las unidades (y sus viajes asociados) donde el chofer sea X"
+    console.log('Consultando unidades para el chofer con ID:', choferId);
+
     const response = await firstValueFrom(
       this.httpService.get('http://unidad-service:3002/unidad/por-chofer', {
-        params: { choferId: user } // Asegúrate que tu authService inyecta el ID del chofer en el token y que el guard lo extrae correctamente
+        params: { choferId: choferId } // Asegúrate que tu authService inyecta el ID del chofer en el token y que el guard lo extrae correctamente
       })
     );
 

@@ -463,10 +463,15 @@ async finalizarEstadoViaje(viajeId: number): Promise<void> {
 
 // En UnidadService (Microservicio Unidad)
 async findViajesPorChofer(choferId: number) {
-  return this.UnidadRepository.find({
-    where: { transportista: { idUsuario: choferId } },
-    relations: ['camion', 'semirremolque', 'acoplado'] // Traer detalles visuales para el front
-  });
-}
+  console.log(`Buscando unidades para chofer ID: ${choferId}`);
 
+
+  const unidades = await this.UnidadRepository.find({
+    where: { transportista: { idUsuario: choferId } },
+    relations: ['camion', 'semiremolque', 'acoplado'] // Traer detalles visuales para el front
+  });
+  console.log(`Encontradas ${unidades.length} unidades para este chofer.`);
+  return unidades;
+}
+     
 }

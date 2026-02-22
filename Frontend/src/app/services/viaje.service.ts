@@ -104,7 +104,7 @@ export class ViajeService {
 
   // Métodos para cambiar estado
   async iniciarViaje(viajeId: number): Promise<any> {
-    const response = await axios.patch(`${this.apiUrl}/en-viaje/${viajeId}`, {});
+    const response = await axios.patch(`${this.apiUrl}/iniciar/${viajeId}`, {},);
     return response.data;
   }
 
@@ -114,7 +114,7 @@ export class ViajeService {
   }
 
   async cancelarViaje(viajeId: number): Promise<any> {
-    const response = await axios.patch(`${this.apiUrl}/cancelar/${viajeId}`, {});
+    const response = await axios.patch(`${this.apiUrl}/cancelar/${viajeId}`,);
     return response.data;
   }
 }

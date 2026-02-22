@@ -1,98 +1,155 @@
 import { Component, OnInit } from '@angular/core';
 import { ViajeService } from '../services/viaje.service';
-import * as L from 'leaflet'; // Importamos el mapa
-import { DatePipe } from '@angular/common';
-import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import * as L from 'leaflet';
+import { DatePipe, CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import * as jwt_decode from 'jwt-decode'; // Asegúrate de tener esto instalado
 
 @Component({
   selector: 'app-menucamionero',
-  imports: [DatePipe, CommonModule],
+  standalone: true,
+  imports: [CommonModule, DatePipe, FormsModule],
   templateUrl: './menucamionero.component.html',
-  styleUrls: ['./menucamionero.component.css'],
-  standalone: true
+  styleUrls: ['./menucamionero.component.css']
 })
 export class MenuCamioneroComponent implements OnInit {
 
+  // Variables alineadas con tu HTML
   viajes: any[] = [];
-  viajeSeleccionado: any = null;
-  map: L.Map | undefined;
+  usuario: any = {}; 
+  loading: boolean = true;
+  viajeParaCancelar: any = null;
+  
+  // Diccionario para guardar referencias a múltiples mapas
+  private maps: { [key: number]: L.Map } = {};
 
-  constructor(private viajeService: ViajeService) { }
+  constructor(private viajeService: ViajeService, private router: Router) { }
 
   ngOnInit(): void {
+    this.fixLeafletIcons();
     this.cargarViajes();
   }
 
+
   async cargarViajes() {
-    const data = await this.viajeService.getViajesChofer();
-    // Filtramos solo los que sean 'Confirmado' (Pago) o 'En viaje'
-    // Ajusta los nombres según tu base de datos
-    this.viajes = data.filter(v => v.estadoViaje.nombre === 'Confirmado' || v.estadoViaje.nombre === 'En viaje');
-  }
+    this.loading = true;
+    try {
+      // 1. Pedimos los datos UNA sola vez
+      const data = await this.viajeService.getViajesChofer();
+      console.log('--- DATA RECIBIDA ---', data);
 
-  seleccionarViaje(viaje: any) {
-    this.viajeSeleccionado = viaje;
-    
-    // Damos un pequeño tiempo para que el DIV del mapa se renderice en el HTML
-    setTimeout(() => {
-      this.iniciarMapa(viaje);
-    }, 100);
-  }
+      this.viajes = data.filter((v: any) => 
+        v.estadoViaje?.nombre === 'Pago confirmado' || 
+        v.estadoViaje?.nombre === 'En viaje'
+      );
+      
+      // 3. Inicializamos los mapas (con retardo para que el HTML exista)
+      setTimeout(() => {
+        this.inicializarMapas(this.viajes);
+      }, 200);
 
-  // --- LÓGICA DE BOTONES ---
-  
-  async iniciarRecorrido() {
-    if(!this.viajeSeleccionado) return;
-    
-    await this.viajeService.iniciarViaje(this.viajeSeleccionado.ViajeId);
-    // Actualizamos el estado localmente para que cambien los botones
-    this.viajeSeleccionado.estadoViaje.nombre = 'En viaje';
-    alert('¡Buen viaje! Estado actualizado.');
-  }
-
-  finalizarRecorrido() {
-    this.procesarFinDeViaje('finalizarViaje');
-  }
-
-  cancelarRecorrido() {
-    if(confirm('¿Seguro que deseas cancelar este viaje?')) {
-      this.procesarFinDeViaje('cancelarViaje');
+    } catch (error) {
+      console.error('Error cargando viajes:', error);
+    } finally {
+      this.loading = false;
     }
   }
 
-  // Método auxiliar para no repetir código
-  async procesarFinDeViaje(metodo: 'finalizarViaje' | 'cancelarViaje') {
-    if(!this.viajeSeleccionado) return;
-
-    await this.viajeService[metodo](this.viajeSeleccionado.ViajeId);
-    alert('Operación exitosa.');
-    // REQUISITO: Eliminar de la lista visual
-    this.viajes = this.viajes.filter(v => v.ViajeId !== this.viajeSeleccionado.ViajeId);
-    this.viajeSeleccionado = null; // Limpiar selección
+  async iniciarViaje(viaje: any) {
+    if (!confirm('¿Estás listo para iniciar el viaje?')) return;
+    
+    try {
+      await this.viajeService.iniciarViaje(viaje.ViajeId);
+      
+      // Actualizamos localmente el estado para que cambien los botones
+      viaje.estadoViaje.nombre = 'En viaje';
+      alert('¡Buen viaje! Estado actualizado a "En viaje".');
+    } catch (error) {
+      console.error('Error al iniciar:', error);
+      alert('No se pudo iniciar el viaje.');
+    }
   }
 
-  // --- MAPA ---
-  iniciarMapa(viaje: any) {
-    // Si ya existe mapa, lo borramos para crear uno nuevo
-    if (this.map) {
-      this.map.remove();
+  async finalizarViaje(viajeId: number) {
+    if (!confirm('¿Confirmas que has llegado a destino y finalizado el viaje?')) return;
+
+    try {
+      await this.viajeService.finalizarViaje(viajeId);
+      
+      // Eliminar de la lista visualmente
+      this.viajes = this.viajes.filter(v => v.ViajeId !== viajeId);
+      alert('Viaje finalizado correctamente.');
+    } catch (error) {
+      console.error('Error al finalizar:', error);
+      alert('Error al finalizar el viaje.');
     }
+  }
 
-    // Coordenadas (Asegurate que tu backend devuelve lat/lng correctamente)
-    const origen = [viaje.CoordXOrigen, viaje.CoordYOrigen] as L.LatLngExpression;
-    const destino = [viaje.CoordXDestino, viaje.CoordYDestino] as L.LatLngExpression;
+  async cancelarViaje(viajeId: number) {
+    if (!confirm('¿Seguro que deseas CANCELAR este viaje? Desaparecerá de tu lista.')) return;
 
-    this.map = L.map('map').setView(origen, 10);
+    try {
+      // Llamamos al servicio directo
+      await this.viajeService.cancelarViaje(viajeId);
+      
+      // Eliminar de la lista visualmente
+      this.viajes = this.viajes.filter(v => v.ViajeId !== viajeId);
+      alert('Viaje cancelado.');
+      
+    } catch (error) {
+      console.error('Error al cancelar:', error);
+      alert('Error al cancelar el viaje.');
+    }
+  }
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
-    }).addTo(this.map);
+  // Lógica para MÚLTIPLES mapas (coincide con id="map-{{v.ViajeId}}")
+  inicializarMapas(viajes: any[]) {
+    viajes.forEach(v => {
+      const mapId = `map-${v.ViajeId}`; // El ID dinámico del HTML
+      const container = document.getElementById(mapId);
 
-    // Marcadores
-    L.marker(origen).addTo(this.map!).bindPopup('Origen').openPopup();
-    L.marker(destino).addTo(this.map!).bindPopup('Destino');
+      // Solo creamos el mapa si el div existe y no ha sido creado antes
+      if (container && !this.maps[v.ViajeId]) {
+        
+        // Coordenadas seguras (con valores por defecto si fallan)
+        const latOr = parseFloat(v.CoordYOrigen) || -34.6;
+        const lngOr = parseFloat(v.CoordXOrigen) || -58.3;
+        const latDes = parseFloat(v.CoordYDestino) || -34.7;
+        const lngDes = parseFloat(v.CoordXDestino) || -58.4;
 
-    // Línea simple entre puntos (Si tienes la polyline de OSRM úsala, sino esto dibuja una linea recta visual)
-    L.polyline([origen, destino], { color: 'blue' }).addTo(this.map!);
+        const map = L.map(mapId, {
+          center: [latOr, lngOr],
+          zoom: 9,
+          scrollWheelZoom: false
+        });
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+        // Marcadores
+        const m1 = L.marker([latOr, lngOr]).addTo(map).bindPopup('Origen');
+        const m2 = L.marker([latDes, lngDes]).addTo(map).bindPopup('Destino');
+
+        // Ajustar zoom para ver ambos puntos
+        const group = L.featureGroup([m1, m2]);
+        map.fitBounds(group.getBounds(), { padding: [50, 50] });
+
+        // Arreglo del mapa gris
+        setTimeout(() => { map.invalidateSize(); }, 300);
+
+        this.maps[v.ViajeId] = map;
+      }
+    });
+  }
+
+  private fixLeafletIcons() {
+    const iconRetinaUrl = 'assets/marker-icon-2x.png';
+    const iconUrl = 'assets/marker-icon.png';
+    const shadowUrl = 'assets/marker-shadow.png';
+    const iconDefault = L.icon({
+      iconRetinaUrl, iconUrl, shadowUrl,
+      iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
+    });
+    L.Marker.prototype.options.icon = iconDefault;
   }
 }

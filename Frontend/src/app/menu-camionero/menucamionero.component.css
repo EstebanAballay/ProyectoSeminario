@@ -1,15 +1,84 @@
+/* Fondo general */
+.viajes-container {
+    background-color: #f4f7f6;
+    min-height: 100vh;
+    padding-bottom: 60px; /* Espacio para el botón flotante */
+}
+
+/* Barra de título */
+.header-bar {
+    border-left: 5px solid #0d6efd;
+}
+
+/* Estilos de la Tarjeta Principal */
+.viaje-card {
+    border-radius: 12px;
+    overflow: hidden; /* Para que el header redondeado no se salga */
+    transition: all 0.3s ease;
+    background-color: #ffffff;
+}
+
+.viaje-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+}
+
+/* Header de la tarjeta */
+.card-header-custom {
+    background: linear-gradient(45deg, #0b5ed7, #0a58ca);
+    color: white;
+    padding: 15px 20px;
+    border-bottom: none;
+}
+
+/* Secciones internas */
+.dato-label {
+    font-size: 0.85rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.dato-valor {
+    font-size: 1.1rem;
+    color: #212529;
+    font-weight: 500;
+}
+
+/* Caja de Ruta (Origen/Destino) */
+.ruta-box {
+    background-color: #f8f9fa;
+    border-left: 4px solid #6c757d;
+}
+
+/* Sección de Unidades */
+.unidades-container {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.unidad-item {
+    border-left: 4px solid #0d6efd !important;
+    background-color: #fdfdfe;
+}
+
+/* Estilos del Mapa */
+.map-wrapper {
+    height: 350px;
+    position: relative;
+    background-color: #e9ecef; /* Color de fondo mientras carga */
+}
+
 .map-container {
-  height: 350px; /* Altura del mapa */
-  width: 100%;
-  border: 2px solid #ddd;
-  border-radius: 8px;
+    height: 100%;
+    width: 100%;
+    z-index: 1; /* Asegura que se vea */
 }
 
-.list-group-item.active {
-  background-color: #343a40; /* Color oscuro al seleccionar */
-  border-color: #343a40;
-}
-
-.badge {
-  font-size: 0.9em;
+/* Utilidades de Bootstrap personalizadas */
+.border-end-lg {
+    @media (min-width: 992px) {
+        border-right: 1px solid #dee2e6;
+    }
 }

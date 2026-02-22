@@ -35,6 +35,18 @@ export class ViajeController {
   findAll(@GetUser() user: any) {
     return this.viajeService.buscarTodos(user);
   }
+
+  @Get('chofer')
+  @UseGuards(AuthGuard)
+  getViajesDelChofer(@GetUser() user:any) {
+    const idChofer = user.id || user.sub;
+    console.log('Usuario solicitando', user); 
+    console.log('ID',idChofer);
+
+  // 2. Pasamos SOLO el número al servicio
+  // El '+' convierte el valor a número por si viene como string "1"
+  return this.viajeService.getViajesDelChofer(+idChofer);
+  }
   
   @Get('viajesCliente')
   async getMisViajes(@Request() req) {
@@ -105,16 +117,4 @@ async confirmarPago(@Param('id') id: string) {
   async consultarViaje(@Param('id', ParseIntPipe) id: number) {
     return this.viajeService.consultarViaje(id);
   }
-
-@Get('chofer')
-@UseGuards(AuthGuard)
-  getViajesDelChofer(@GetUser() user:any) {
-    console.log(user);
-    const choferId = user.id || user.sub; 
-
-  // 2. Pasamos SOLO el número al servicio
-  // El '+' convierte el valor a número por si viene como string "1"
-  return this.viajeService.getViajesDelChofer(+choferId);
-  }
-
 }
