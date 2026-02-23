@@ -17,11 +17,16 @@
     "@angular/google-maps": "^20.2.3",
     "@angular/platform-browser": "^20.0.0",
     "@angular/router": "^20.0.0",
+<<<<<<< HEAD
     "@fortawesome/fontawesome-free": "^7.1.0",
     "@mercadopago/sdk-js": "^0.0.3",
     "@types/leaflet-routing-machine": "^3.2.9",
     "axios": "^1.13.2",
     "bootstrap": "^5.3.8",
+=======
+    "@mercadopago/sdk-js": "^0.0.3",
+    "@types/leaflet-routing-machine": "^3.2.9",
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
     "jwt-decode": "^4.0.0",
     "leaflet": "^1.9.4",
     "leaflet-routing-machine": "^3.2.12",
@@ -31,7 +36,11 @@
   },
   "devDependencies": {
     "@angular/build": "^20.0.2",
+<<<<<<< HEAD
     "@angular/cli": "^21.1.0",
+=======
+    "@angular/cli": "^20.0.2",
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
     "@angular/compiler-cli": "^20.0.0",
     "@types/google.maps": "^3.58.1",
     "@types/jasmine": "~5.1.0",

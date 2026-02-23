@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 services:
   cobro:
@@ -13,13 +14,43 @@ services:
       - MP_SERVICE_URL=${MP_SERVICE_URL}
     env_file:
       - .env
+=======
+services:
+  users:
+    build: ./apps/users             # ruta al Dockerfile del microservicio
+    command: npm run start:dev
+    container_name: users-service   # nombre del contenedor
+    env_file: .env                  # variables de entorno
+    ports:
+      - "3003:3003"                # host:contenedor
+    networks:
+      - backend-network
+    volumes:
+      - ./apps/users:/app
+      - /app/node_modules
+    restart: always                 # reinicia si falla
+
+  cobro:
+    build: ./apps/cobro
+    container_name: cobro-service
+    command: npm run start:dev
+    env_file: .env
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
     ports:
       - "3001:3001"
     networks:
       - backend-network
     volumes:
+<<<<<<< HEAD
     - .:/app                 # 1. "Espeja" tu carpeta actual a la carpeta /app del contenedor
     - /app/node_modules      # 2. IMPORTANTE: Protege las librerías internas del contenedor
+=======
+      - ./apps/cobro:/app
+      - /app/node_modules
+    restart: always
+    depends_on:                      # espera que 'users' se inicie primero
+      - users
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
 
   unidad:
     build: ./apps/unidad
@@ -39,7 +70,12 @@ services:
     build: ./apps/viaje
     container_name: viaje-service
     command: npm run start:dev
+<<<<<<< HEAD
     env_file: .env
+=======
+    env_file: 
+      - .env
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
     ports:
       - "3004:3004"
     networks:
@@ -52,6 +88,7 @@ services:
       - users
       - unidad
 
+<<<<<<< HEAD
 
   mercadopago:
     container_name: mercadopago-service
@@ -101,6 +138,8 @@ services:
       - /app/node_modules
     restart: always                 # reinicia si falla
 
+=======
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
 networks:
   backend-network:
     driver: bridge

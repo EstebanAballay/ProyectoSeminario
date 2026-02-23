@@ -40,7 +40,11 @@ async register(registerDto: RegisterDto) {
     message: "User created successfully",
   };
 }
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
   async login({ email, password }: LoginDto) {
     const user = await this.usersService.findOneByEmailWithPassword(email);
 
@@ -54,7 +58,11 @@ async register(registerDto: RegisterDto) {
       throw new UnauthorizedException("Invalid password");
     }
 
+<<<<<<< HEAD
     const payload = { id: user.id, email: user.email, role: user.role }; // info que contiene el token
+=======
+    const payload = { email: user.email, role: user.role }; // info que contiene el token
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
 
     const token = await this.jwtService.signAsync(payload);
 

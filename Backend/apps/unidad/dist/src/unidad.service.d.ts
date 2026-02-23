@@ -1,0 +1,51 @@
+import { CreateUnidadDto } from './dto/create-unidad.dto';
+import { UpdateUnidadDto } from './dto/update-unidad.dto';
+import { HttpService } from '@nestjs/axios';
+import { Semirremolque } from './entities/semirremolque.entity';
+import { Acoplado } from './entities/acoplado.entity';
+import { Repository } from 'typeorm';
+import { Tipo } from './entities/tipo.entity';
+import { TipoCamion } from './entities/tipoCamion.entity';
+import { Camion } from './entities/camion.entity';
+import { Unidad } from './entities/unidad.entity';
+import { EstadoCamion } from './entities/estadoCamion.entity';
+import { EstadoSemirremolque } from './entities/estadoSemirremolque.entity';
+import { EstadoAcoplado } from './entities/estadoAcoplado.entity';
+import { estadoTransportista } from './entities/estadoTransportista.entity';
+import { Transportista } from './entities/transportista.entity';
+export declare class UnidadService {
+    private readonly httpService;
+    private estadoSemirremolqueRepository;
+    private estadoAcopladoRepository;
+    private tipoRepository;
+    private tipoCamionRepository;
+    private CamionRepository;
+    private UnidadRepository;
+    private estadoCamionRepository;
+    private EstadoSemirremolqueRepository;
+    private EstadoAcopladoRepository;
+    private estadoTransportistaRepository;
+    private transportistaRepository;
+    constructor(httpService: HttpService, estadoSemirremolqueRepository: Repository<Semirremolque>, estadoAcopladoRepository: Repository<Acoplado>, tipoRepository: Repository<Tipo>, tipoCamionRepository: Repository<TipoCamion>, CamionRepository: Repository<Camion>, UnidadRepository: Repository<Unidad>, estadoCamionRepository: Repository<EstadoCamion>, EstadoSemirremolqueRepository: Repository<EstadoSemirremolque>, EstadoAcopladoRepository: Repository<EstadoAcoplado>, estadoTransportistaRepository: Repository<estadoTransportista>, transportistaRepository: Repository<Transportista>);
+    testConnection(): Promise<void>;
+    private getRandomItem;
+    createUnidad(dto: CreateUnidadDto): Promise<Unidad>;
+    consultarTiposAcoplados(): Promise<Tipo[]>;
+    consultarTiposCamiones(): Promise<TipoCamion[]>;
+    findDisponibles(unidadesOcupadas: number[]): Promise<{
+        camiones: Camion[];
+        acoplados: any;
+        semirremolques: any;
+    }>;
+    findUnidadesDisponiblesByTipoRandom(camionesPedidos: any[], unidadesDisponibles: any): {
+        unidadesFormadas: any[];
+        errores: string[];
+    };
+    findAll(): string;
+    findOne(id: number): string;
+    update(id: number, updateUnidadDto: UpdateUnidadDto): string;
+    remove(id: number): string;
+    findUnityByDriver(idusuario: number): Promise<any[]>;
+    iniciarEstadoViaje(viajeId: number): Promise<void>;
+    finalizarEstadoViaje(viajeId: number): Promise<void>;
+}

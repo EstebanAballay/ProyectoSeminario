@@ -1,6 +1,10 @@
 import { Injectable, BadRequestException, UnauthorizedException} from '@nestjs/common';
 import { User } from './entities/user.entity';
+<<<<<<< HEAD
 import { In, Repository } from 'typeorm';
+=======
+import { Repository } from 'typeorm';
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
 import { Role } from './role.enum';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -75,6 +79,7 @@ const salt = await bcrypt.genSalt(10);
     return this.userRepo.findOne({
       where: { email },
       select: ['id', 'nombre', 'email', 'password_hash', 'role'],
+<<<<<<< HEAD
       });
     }
   
@@ -82,4 +87,8 @@ const salt = await bcrypt.genSalt(10);
     return this.userRepo.findBy({ id: In(ids) });
   }
 
+=======
+  });
+}
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
 }

@@ -1,9 +1,16 @@
+<<<<<<< HEAD
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, BadRequestException,Request, ParseIntPipe } from '@nestjs/common';
 import { ViajeService } from './viaje.service';
 import { CreateViajeDto } from './dto/create-viaje.dto';
 import { ConsultarUnidadesDto } from './dto/camiones.dto';
 import { GetUser } from '../decorators/get-user.decorator';
 import { AuthGuard } from '../viajeAuth/auth.guard';
+=======
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { ViajeService } from './viaje.service';
+import { CreateViajeDto } from './dto/create-viaje.dto';
+import { ConsultarUnidadesDto } from './dto/camiones.dto';
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
 
 @Controller('viaje')
 export class ViajeController {
@@ -11,9 +18,14 @@ export class ViajeController {
   //  viaje/nuevoViaje
   //crear
   @Post('nuevoViaje')
+<<<<<<< HEAD
   @UseGuards(AuthGuard)
   create(@Body() createViajeDto: CreateViajeDto, @GetUser() user: any):Promise<any> {
             return this.viajeService.createViaje(createViajeDto,user);
+=======
+  create(@Body() createViajeDto: CreateViajeDto):Promise<any> {
+    return this.viajeService.createViaje(createViajeDto);
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
   }
 
   //consulta
@@ -29,6 +41,7 @@ export class ViajeController {
   }
 
 
+<<<<<<< HEAD
   //consulta de los viajes del cliente
   @Get('misViajes')
   @UseGuards(AuthGuard)
@@ -81,13 +94,31 @@ export class ViajeController {
   async rechazarViaje(@Param('id') id: number) {
     return this.viajeService.rechazarViaje(id);
   }
+=======
+  //consulta
+  @Get()
+  findAll() {
+    return this.viajeService.findAll();
+  }
+
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
 
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.viajeService.findOne(+id);
   }
 
+<<<<<<< HEAD
 
+=======
+  //actualiza
+  /*
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateViajeDto: UpdateViajeDto) {
+    return this.viajeService.update(+id, updateViajeDto);
+  }
+*/
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.viajeService.remove(+id);
@@ -95,6 +126,7 @@ export class ViajeController {
 
   @Patch('finalizar/:id')
   finalizar(@Param('id') id: number) {
+<<<<<<< HEAD
     return this.viajeService.finalizarViaje(id);
   }
 
@@ -117,4 +149,8 @@ async confirmarPago(@Param('id') id: string) {
   async consultarViaje(@Param('id', ParseIntPipe) id: number) {
     return this.viajeService.consultarViaje(id);
   }
+=======
+    return this.viajeService.enViaje(id);
+  }
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
 }

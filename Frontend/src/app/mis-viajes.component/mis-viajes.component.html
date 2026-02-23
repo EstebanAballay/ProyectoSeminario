@@ -5,6 +5,7 @@
     </div>
     <div class="profile-icon">👤</div>
 </div>
+<<<<<<< HEAD
 
 <div class="titulo">    
     <h2 class="titulo">Mis viajes</h2>
@@ -40,12 +41,25 @@
             <h3>{{ viaje.destinoInicio.slice(0, viaje.destinoInicio.indexOf(',')) }}</h3>
             <p>{{ viaje.fechaInicio }}</p>
             <h3 class="destino">{{ viaje.destinoFin.slice(0, viaje.destinoFin.indexOf(',')) }}</h3>
+=======
+<div class="titulo">    <h2 class="titulo">Mis viajes</h2>
+</div>
+
+
+    <div *ngFor="let viaje of viajes" class="card">
+        <div class="card-content">
+        <div class="info">
+            <h3>{{ viaje.origen }}</h3>
+            <p>{{ viaje.fecha }}</p>
+            <h3 class="destino">{{ viaje.destino }}</h3>
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
         </div>
         <button (click)="toggleDetalles(viaje)" class="btn-toggle">▼</button>
         </div>
 
         <!-- Detalles -->
         <div *ngIf="viaje.mostrarDetalles" class="detalles">
+<<<<<<< HEAD
             <div class="info-texto">
                 <p>Estado: {{ viaje.estadoViaje.nombre }}</p>
                 <p>Número de viaje: {{ viaje.ViajeId }}</p>
@@ -53,6 +67,10 @@
                 <p>Precio: {{ viaje.total }} Ars</p>
             </div>
             <button class="btn-descargar">📥 Descargar</button>
+=======
+        <p *ngIf="viaje.estado === 'En viaje'">Número de viaje: {{ viaje.numero }}</p>
+        <button *ngIf="viaje.estado === 'En viaje'" class="btn-descargar">Descargar</button>
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
         </div>
     </div>
 

@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { EstadoViaje } from './entities/estadoViaje.entity';
 import { Viaje } from './entities/viaje.entity';
 import { HttpModule } from '@nestjs/axios';
+<<<<<<< HEAD
 import { JwtModule } from '@nestjs/jwt';
 import { AuthGuard } from '../viajeAuth/auth.guard';
 
@@ -17,5 +18,12 @@ import { AuthGuard } from '../viajeAuth/auth.guard';
     TypeOrmModule.forFeature([Viaje,EstadoViaje]),HttpModule],
   controllers: [ViajeController],
   providers: [ViajeService,AuthGuard],
+=======
+
+@Module({
+  imports: [TypeOrmModule.forFeature([Viaje,EstadoViaje]),HttpModule],
+  controllers: [ViajeController],
+  providers: [ViajeService],
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
 })
 export class ViajeModule {}

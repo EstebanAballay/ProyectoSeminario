@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { Controller, Post, Body, Get, Query, ParseArrayPipe} from '@nestjs/common';
+=======
+import { Controller, Post, Body} from '@nestjs/common';
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
@@ -14,6 +18,7 @@ export class UsersController {
 
   @Post('login')
   async login(@Body() dto: LoginDto) {
+<<<<<<< HEAD
     console.log("DTO recibido en el controlador:", dto);
     return this.usersService.login(dto);
   }
@@ -26,4 +31,8 @@ export class UsersController {
   ) {
     return this.usersService.findByIds(ids);
   }
+=======
+    return this.usersService.login(dto);
+  }
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
 }

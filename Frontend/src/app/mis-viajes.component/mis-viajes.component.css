@@ -76,6 +76,7 @@
 }
 
 .detalles {
+<<<<<<< HEAD
 /* Detalles y Línea Discontinua */
     border-top: 2px dashed #dcdcdc;
     margin: 0 20px;
@@ -86,6 +87,13 @@
 
 .btn-descargar {
     padding: 8px 16px;
+=======
+    margin-top: 10px;
+}
+
+.btn-descargar {
+    padding: 8px 12px;
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
     border: none;
     border-radius: 5px;
     background: #0b2f4e;
@@ -97,6 +105,7 @@
 .btn-descargar:hover {
     background: #163d5f;
 }
+<<<<<<< HEAD
 
 .info-texto p {
     margin: 4px 0; /* Espaciado fino entre líneas de texto */
@@ -149,3 +158,5 @@
     flex-direction: column;
   }
 }
+=======
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d

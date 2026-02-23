@@ -43,12 +43,18 @@
             <!-- Mostrar los camiones agregados -->
             <div>
                 <label>Camiones agregados:</label>
+<<<<<<< HEAD
                 <ul class="lista-camiones">
                     <li *ngFor="let camion of camionesSeleccionados; let i = index" class="camion-item">
                         <span>{{ camion.tipo }} - {{ camion.semirremolque }} - {{ camion.acoplado }}</span>
                         <button type="button" class="btn-eliminar" (click)="eliminarCamion(i)" title="Eliminar unidad">
                             &times;
                         </button>
+=======
+                <ul>
+                    <li *ngFor="let camion of camionesSeleccionados">
+                        {{ camion.tipo }} - {{ camion.semirremolque }} - {{ camion.acoplado }}
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
                     </li>
                 </ul>
             </div>
@@ -63,12 +69,16 @@
     </div>
 
     <!-- Contenedor del mapa -->
+<<<<<<< HEAD
     <div class="contenedor-mapa">
         <div id="map" style="height: 400px;"></div>
         <div *ngIf="distancia" class="distancia-badge">
             <strong>Distancia estimada:</strong> {{ distancia | number:'1.0-2' }} km
         </div>
     </div>
+=======
+    <div id="map" style="height: 400px;"></div>
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
 </div>
 
 <!-- Modal de selección de vehículo -->
@@ -88,8 +98,12 @@
 
         <div>
             <label for="remolque">Tipo de semirremolque:</label>
+<<<<<<< HEAD
             <select id="remolque" [(ngModel)]="semirremolqueSeleccionado" name="semirremolqueSeleccionado" (change)="toggleAcoplado()"
                 [disabled]="tipoCamionSeleccionado !== 'tractoCamion'">
+=======
+            <select id="remolque" [(ngModel)]="semirremolqueSeleccionado" name="semirremolqueSeleccionado" (change)="toggleAcoplado()">
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
             <option value="" disabled selected>Seleccione un remolque</option>
                 <option *ngFor="let tipo of tiposSemirremolque" [value]="tipo">
                     {{ tipo }}
@@ -97,9 +111,15 @@
             </select>
         </div>
 
+<<<<<<< HEAD
         <label for="acoplado">Tipo de Acoplado:  </label>
         <select id="acoplado" [(ngModel)]="acopladoSeleccionado" name="acopladoSeleccionado" (change)="toggleSemirremolque()"
             [disabled]="tipoCamionSeleccionado !== 'tractoCamion' ">
+=======
+        <!-- Campo de tipo de semirremolque-->
+        <label for="acoplado">Tipo de Acoplado:  </label>
+        <select id="acoplado" [(ngModel)]="acopladoSeleccionado" name="acopladoSeleccionado" (change)="toggleSemirremolque()">
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
         <option value="" disabled selected>Seleccione un Acoplado</option>
             <option *ngFor="let tipo of tiposAcoplado" [value]="tipo">
                 {{ tipo }}
@@ -119,6 +139,7 @@
   <div class="modal-resumen">
     <h2>Resumen del viaje</h2>
 
+<<<<<<< HEAD
         <div class="datos-viaje-vulnerables" style="background-color: #ffffff; padding: 10px; border: 1px solid rgb(138, 136, 136); margin-bottom: 10px;">
         <h3>Datos del Trayecto:</h3>
         <p>
@@ -135,13 +156,22 @@
       <h3>Unidades seleccionados:</h3>
       <ul>
             <div *ngFor="let unidad of unidadesSeleccionadas" style="background: #f9f9f9; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+=======
+    <div class="detalle">
+      <h3>Camiones seleccionados:</h3>
+      <ul>
+            <div *ngFor="let unidad of unidadesSeleccionadas" class="card p-3 my-2 shadow rounded">
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
                 <p><strong>Camión:</strong> {{ unidad.camion?.patente }} ({{ unidad.camion?.tipo }})</p>
                 <p><strong>Semirremolque:</strong> {{ unidad.semirremolque?.patente }} ({{ unidad.semirremolque?.tipo }})</p>
                 <p><strong>Acoplado:</strong> {{ unidad.acoplado?.patente }} ({{ unidad.acoplado?.tipo }})</p>
                 <p><strong>Carga total:</strong> {{ unidad.cargaTotal }} kg</p>
                 <p><strong>Subtotal:</strong> ${{ unidad.subtotal }}</p>
             </div>
+<<<<<<< HEAD
             Total general: ${{ totalGeneral }}
+=======
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
         <hr>
       </ul>
     </div>

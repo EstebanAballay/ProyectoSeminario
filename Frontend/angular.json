@@ -20,6 +20,7 @@
             "tsConfig": "tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
+<<<<<<< HEAD
               "src/assets",
               {
                 "glob": "**/*",
@@ -36,6 +37,16 @@
             "scripts": [
               "node_modules/leaflet/dist/leaflet.js",
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
+=======
+              "src/assets"
+            ],
+            "styles": [
+              "src/styles.css",
+              "node_modules/leaflet/dist/leaflet.css"
+            ],
+            "scripts": [
+              "node_modules/leaflet/dist/leaflet.js"
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
             ]
           },
           "configurations": {

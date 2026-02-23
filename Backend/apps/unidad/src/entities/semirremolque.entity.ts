@@ -19,6 +19,10 @@ export class Semirremolque {
     @Column("float")
     precio: number;
 
+<<<<<<< HEAD
+=======
+    
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
     @ManyToOne(() => EstadoSemirremolque, { eager: true })
     estado: EstadoSemirremolque;
 

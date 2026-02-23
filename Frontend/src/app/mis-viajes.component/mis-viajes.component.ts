@@ -1,13 +1,17 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+<<<<<<< HEAD
 import { ViajeService } from '../services/viaje.service';
 import { FormsModule } from '@angular/forms';
+=======
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
 
 @Component({
   selector: 'app-mis-viajes',
   standalone: true, // Así podés importarlo directamente en las rutas
   templateUrl: './mis-viajes.component.html',
   styleUrls: ['./mis-viajes.component.css'],
+<<<<<<< HEAD
   providers: [ViajeService],
   imports: [CommonModule,FormsModule]
 })
@@ -30,10 +34,20 @@ export class MisViajesComponent {
     this.viajesFiltrados = this.viajes;
     console.log(this.viajes);
   }
+=======
+  imports: [CommonModule]
+})
+export class MisViajesComponent {
+  viajes = [
+    { origen: 'Córdoba', destino: 'Rosario', fecha: '2025-10-01', numero: 123, estado: 'En viaje', mostrarDetalles: false },
+    { origen: 'Mendoza', destino: 'San Luis', fecha: '2025-10-05', numero: 456, estado: 'Pendiente', mostrarDetalles: false }
+  ];
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
 
   toggleDetalles(viaje: any) {
     viaje.mostrarDetalles = !viaje.mostrarDetalles;
   }
+<<<<<<< HEAD
 
   aplicarFiltros() {
     this.viajesFiltrados = this.viajes.filter(viaje => {
@@ -47,4 +61,6 @@ export class MisViajesComponent {
       return coincideDestino && coincideFecha && coincideEstado;
       });
   } 
+=======
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
 }

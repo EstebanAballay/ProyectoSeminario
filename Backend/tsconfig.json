@@ -2,7 +2,10 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "es2017",
+<<<<<<< HEAD
 
+=======
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
     "lib": ["es2017","dom"],
     "declaration": false,
     "sourceMap": true,
@@ -14,8 +17,12 @@
     "emitDecoratorMetadata": true,
     "incremental": true,
     "skipLibCheck": true,
+<<<<<<< HEAD
     "baseUrl": "./",
     "paths": {}
   },
   "exclude": ["node_modules", "dist"]
+=======
+  }
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
 }

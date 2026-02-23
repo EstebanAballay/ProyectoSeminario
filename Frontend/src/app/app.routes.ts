@@ -8,11 +8,14 @@ import { NuevoViajeComponent } from './nuevo-viaje.component/nuevo-viaje.compone
 import { MisViajesComponent } from './mis-viajes.component/mis-viajes.component';
 import { PagoSeniaComponent } from './pago-senia.component/pago-senia.component';
 import { Path } from 'leaflet';
+<<<<<<< HEAD
 import { AdminPanel } from './admin-panel/admin-panel.component'; 
 import { RoleGuard } from './guards/role.guard';
 import { ConsultarViajes } from './consultar-viajes-admin/consultar-viajes.component';
 import { MenuCamioneroComponent } from './menu-camionero/menucamionero.component';
 import {AbmUnidadesComponent} from './abm-unidades.component/abm-unidades.component'
+=======
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
 
 export const routes: Routes = [
   { path: '', redirectTo: 'paginainicio', pathMatch: 'full' },
@@ -27,6 +30,7 @@ export const routes: Routes = [
       import('./register.component/register.component').then(m => m.RegisterComponent)
   },
   { path: 'paginainicio', component: PaginainicioComponent },
+<<<<<<< HEAD
   { path: 'menu', component: MenuComponent, canActivate: [RoleGuard], data: { role: 'client' } },
   { path: 'misviajes', component: MisViajesComponent, canActivate: [RoleGuard], data: { role: 'client' } }, 
   { path: 'nuevoviaje', component: NuevoViajeComponent, canActivate: [RoleGuard], data: { role: 'client' }  },
@@ -38,4 +42,11 @@ export const routes: Routes = [
       //{ path: 'agregar-empleados', component: RegistroEmpleadosComponent },
       //{ path: 'gestion-clientes', component: GestionClientesComponent },
       // ... el resto de tus sub-componentes
+=======
+  { path: 'menu', component: MenuComponent },
+  { path: 'nuevoviaje', component: NuevoViajeComponent },
+  { path: 'misviajes', component: MisViajesComponent },
+  { path: 'pagosenia', component: PagoSeniaComponent },
+  { path: '**', redirectTo: '/pago-senia', pathMatch: 'full' }
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
 ];

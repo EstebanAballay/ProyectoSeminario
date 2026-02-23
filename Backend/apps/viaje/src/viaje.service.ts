@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateViajeDto } from './dto/create-viaje.dto';
 import { InjectRepository } from '@nestjs/typeorm';
+<<<<<<< HEAD
 import { LessThanOrEqual, MoreThanOrEqual, Repository, Not, In} from 'typeorm';
 import { EstadoViaje } from './entities/estadoViaje.entity';
 import { Viaje } from './entities/viaje.entity';
@@ -10,10 +11,19 @@ import { BASE_COORDS, TIEMPO_MUERTO } from '../constantesTiempoViaje';
 import { UpdateViajeDto } from './dto/update-viaje.dto';
 import { Observable } from 'rxjs';
 
+=======
+import { LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
+import { EstadoViaje } from './entities/estadoViaje.entity';
+import { Viaje } from './entities/viaje.entity';
+import { HttpService } from '@nestjs/axios';
+import { UpdateViajeDto } from './dto/update-viaje.dto';
+import { firstValueFrom } from 'rxjs';
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
 
 @Injectable()
 export class ViajeService {
 
+<<<<<<< HEAD
   constructor(
     @InjectRepository(EstadoViaje) private estadoViajeRepository: Repository<EstadoViaje>,
     @InjectRepository(Viaje) private viajeRepository: Repository<Viaje>,
@@ -48,10 +58,40 @@ export class ViajeService {
       horaSalida: data.horaSalida.length === 5 ? `${data.horaSalida}:00` : data.horaSalida,
       fechaFin: fecha,
       horaLlegada: hora,
+=======
+  constructor(@InjectRepository(EstadoViaje) private estadoViajeRepository: Repository<EstadoViaje>,
+              @InjectRepository(Viaje) private viajeRepository: Repository<Viaje>,
+              private readonly httpService: HttpService) {}
+
+  async testConnection() {
+          try {
+            const count = await this.viajeRepository.count();
+            console.log('DB connection works, Viaje count:', count);
+          } catch (error) {
+            console.error('DB connection failed:', error);
+          }
+        }
+
+  async createViaje(data: CreateViajeDto) {
+    //busco el estado PreCargado, que es el estado default
+    console.log('Creando viaje con datos:', data);
+    const estadoDefault = await this.estadoViajeRepository.findOne({ where: { nombre: 'PreCargado' } });
+    const viaje = this.viajeRepository.create({
+      //asignar fecha reserva
+      //calcular fecha hora hora llegada
+      //calcular total
+      fechaReserva: new Date(),
+      fechaInicio: new Date(data.fechaInicio), 
+      destinoInicio: data.destinoInicio,
+      horaSalida: data.horaSalida.length === 5 ? `${data.horaSalida}:00` : data.horaSalida, //si la long es 5 le agrego :00 para segundos
+      fechaFin: new Date(data.fechaFin), //Cambiar esto cuando se integre con el front.Aqui debe ir la fecha de regreso calculada en funcion de la duracion del viaje.
+      horaLlegada: '17:00:00',
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
       destinoFin: data.destinoFin,
       sena: 0,
       resto: 0,
       total: 0,
+<<<<<<< HEAD
       estadoViaje: estadoDefault,
       distancia: data.distancia,
       usuarioId: user.id,
@@ -101,11 +141,49 @@ export class ViajeService {
 
   // 2. MÉTODO PARA EL CONTROLLER (Arregla el segundo error de compilación)
   async buscarUnidadesDisponibles(fechaInicio: Date, fechaFin: Date, camiones: any) {
+=======
+      estadoViaje: estadoDefault // lo creo en estado precargado
+    });
+ 
+    //Guarda el nuevo viaje
+    const savedViaje = await this.viajeRepository.save(viaje);
+    //Json dto para unidades
+    const unidades = data.unidades
+    console.log('Unidades a agregar al viaje:', unidades);
+    for (const unidad of unidades) {
+      //creo la unidad y me quedo con su id
+      const nuevaUnidadId = await this.agregarUnidad(unidad,savedViaje.ViajeId);
+      //asigno el id de la unidad al viaje
+      savedViaje.unidades.push(nuevaUnidadId);
+    }
+    await this.viajeRepository.save(savedViaje);
+    return savedViaje;
+  }
+
+  async agregarUnidad(unidad: any,viajeId:number) {
+    const unidadCompleta = {...unidad, viajeId} //asignar el id del viaje creado
+    console.log('🚀 Enviando unidad a unidad-service:', unidadCompleta);
+    try {
+    const response = await firstValueFrom(
+      this.httpService.post('http://unidad-service:3002/unidad', unidadCompleta)
+    );
+    console.log('Unidad creada:', response.data);
+    return response.data.UnidadId;
+  } catch (error) {
+    console.error('Error al crear la unidad:', error.message);
+  }
+  }
+
+  async buscarUnidadesDisponibles(fechaInicio: Date, fechaFin: Date, camiones:any) {
+    //Buscar unidades ocupadas en este rango
+
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
     const viajesEnRango = await this.viajeRepository.find({
       where: [
         { fechaInicio: LessThanOrEqual(fechaFin), fechaFin: MoreThanOrEqual(fechaInicio) },
       ]
     });
+<<<<<<< HEAD
     
     const unidadesOcupadas = viajesEnRango.flatMap(v => v.unidades || []);
     
@@ -238,10 +316,26 @@ async getViajesPendientes() {
     }  
     catch (error) {
       console.error('Error al buscar los choferes:', error.message);
+=======
+    console.log('Viajes en el rango:', viajesEnRango);
+    const unidadesOcupadas = viajesEnRango.flatMap(v => v.unidades);
+    console.log('Unidades ocupadas en el rango:', unidadesOcupadas);
+    //Pedir unidades disponibles al microservicio de unidad
+    try {
+      const dto = { unidadesOcupadas: unidadesOcupadas, camiones: camiones };
+      const response = await firstValueFrom(
+        this.httpService.post('http://unidad-service:3002/unidad/unidadesDisponibles', dto) //uso post porque le mando un body
+      );
+      console.log('UnidadesDisponibles:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error al buscar la unidad:', error.message);
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
     }
 
   }
 
+<<<<<<< HEAD
   async asignarChoferes(viajeId:number, asignaciones: {unidadId: number, choferId: number}[]) {
     // Lllamar al servicio de unidad para actualizar los choferes asignados
     try {
@@ -261,6 +355,8 @@ async getViajesPendientes() {
 
   async rechazarViaje(viajeId: number) {
     await this.viajeRepository.update(viajeId, { estadoViaje: { id: 3 } }); }
+=======
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
 
   async findAll(): Promise<Viaje[]> {
     return await this.viajeRepository.find({
@@ -269,6 +365,7 @@ async getViajesPendientes() {
   }
   
   findOne(id: number) {
+<<<<<<< HEAD
     return this.viajeRepository.findOne({ where: { ViajeId: id }, relations: ['estadoViaje'] });
   }
 
@@ -276,13 +373,33 @@ async getViajesPendientes() {
     return this.viajeRepository.delete(id);
   }
 
+=======
+    return `This action returns a #${id} viaje`;
+  }
+
+  /*
+  update(id: number, updateViajeDto: UpdateViajeDto) {
+    return `This action updates a #${id} viaje`;
+  }*/
+
+  remove(id: number) {
+    return `This action removes a #${id} viaje`;
+  }
+
+//xddd
+
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
   async enViaje(viajeId: number) {
     // El parámetro 'unidadId' parece ser el 'viajeId' según la lógica 
     // de los otros métodos ('finalizarViaje'); 
 
     // 1. Encontrar el estado "En Viaje"
     const estadoEnViaje = await this.estadoViajeRepository.findOne({
+<<<<<<< HEAD
       where: { nombre: 'En viaje' }, // Asegúrate que este sea el nombre correcto en tu BD
+=======
+      where: { nombre: 'En Viaje' }, // Asegúrate que este sea el nombre correcto en tu BD
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
     });
 
     if (!estadoEnViaje) {
@@ -298,6 +415,7 @@ async getViajesPendientes() {
     await this.viajeRepository.save(viaje);
 
     //peticion a unidad-service para actualizar el estado del viaje en las unidades asociadas
+<<<<<<< HEAD
     try {
       const response = await firstValueFrom(
         this.httpService.patch(`http://unidad-service:3002/unidad/iniciarEstadoViaje/${viaje.ViajeId}`)
@@ -307,6 +425,19 @@ async getViajesPendientes() {
     catch (error) {
       console.error('Error al actualizar el estado del viaje en unidad-service:', error.message);
     }
+=======
+try {
+  const response = await firstValueFrom(
+    this.httpService.post('http://unidad-service:3002/unidad/iniciarEstadoViaje', {
+      viajeId: viaje.ViajeId,
+    })
+  );
+  console.log('Respuesta de unidad-service:', response.data);
+}
+catch (error) {
+  console.error('Error al actualizar el estado del viaje en unidad-service:', error.message);
+}
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
 
     return {
       mensaje: `El viaje ${viaje.ViajeId} ha comenzado.`,
@@ -315,6 +446,7 @@ async getViajesPendientes() {
   }
 
   async finalizarViaje(viajeId: number) {
+<<<<<<< HEAD
     //busca el estado Finalizado
     const estadoFinalizado = await this.estadoViajeRepository.findOne({
       where: { nombre: 'Finalizado' },
@@ -355,6 +487,49 @@ async getViajesPendientes() {
   }
 
   async cancelarViaje(viajeId: number) {
+=======
+  const estadoFinalizado = await this.estadoViajeRepository.findOne({
+    where: { nombre: 'Finalizado' },
+  });
+
+  if (!estadoFinalizado) {
+    throw new NotFoundException(`No existe el estado 'Finalizado' en la tabla EstadoViaje`);
+  }
+
+  // Buscar el viaje por el id obtenido de la unidad
+  const viaje = await this.viajeRepository.findOne({
+    where: { ViajeId: viajeId },
+  });
+
+  if (!viaje) {
+    throw new NotFoundException(`No se encontró el viaje con id ${viajeId}`);
+  }
+
+  // Asignar el nuevo estado y guardar el viaje
+  viaje.estadoViaje = estadoFinalizado;
+  await this.viajeRepository.save(viaje);
+
+ //peticion a unidad-service para actualizar el estado del viaje en las unidades asociadas
+try {
+  const response = await firstValueFrom(
+    this.httpService.post('http://unidad-service:3002/unidad/finalizarEstadoViaje', {
+      viajeId: viaje.ViajeId,
+    })
+  );
+  console.log('Respuesta de unidad-service:', response.data);
+}
+catch (error) {
+  console.error('Error al actualizar el estado del viaje en unidad-service:', error.message);
+}
+
+  return {
+    mensaje: `El viaje ${viaje.ViajeId} fue finalizado correctamente`,
+    viaje,
+  };
+}
+
+  async cancelarViaje(viajeId: number, choferId: number, motivo?: string) {
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
     const viaje = await this.viajeRepository.findOne({
       where: { ViajeId: viajeId },
       relations: ['estadoViaje'],
@@ -374,6 +549,7 @@ async getViajesPendientes() {
 
     // Asignar estado y fecha de fin
     viaje.estadoViaje = estadoCancelado;
+<<<<<<< HEAD
 
     const viajeGuardado = await this.viajeRepository.save(viaje);
     //cambiar el estado de las unidades asociadas al viaje,usamos la misma funcion que en finalizar viaje
@@ -386,11 +562,21 @@ async getViajesPendientes() {
     catch (error) {
       console.error('Error al actualizar el estado del viaje en unidad-service:', error.message);
     }
+=======
+    viaje.fechaFin = new Date();
+
+    
+    (viaje as any).motivoCancelacion = motivo ?? null;
+
+    const viajeGuardado = await this.viajeRepository.save(viaje);
+
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
     return {
       mensaje: `El viaje ${viajeGuardado.ViajeId} fue cancelado correctamente.`,
       viaje: viajeGuardado,
     };
   }
+<<<<<<< HEAD
 
 //Funcion para consultar el viaje por su id, para mostrarlo en el front
   async consultarViaje(viajeId: number) {
@@ -455,4 +641,6 @@ async getViajesDelChofer(choferId:number) {
     return []; // Retornar vacío para no romper el front en caso de error de conexión
   }
 }
+=======
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
 }

@@ -2,6 +2,7 @@ import { Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UnidadService } from '../services/unidad.service';
+<<<<<<< HEAD
 import { LoadingService } from '../services/loading.service';
 import * as L from 'leaflet';
 import 'leaflet-routing-machine';
@@ -24,6 +25,12 @@ const iconDefault = L.icon({
   shadowSize: [41, 41]
 });
 L.Marker.prototype.options.icon = iconDefault;
+=======
+import {tiposAcoplado} from '../interfaces/tiposAcoplados';
+import * as L from 'leaflet';
+import 'leaflet-routing-machine';
+import  {ViajeService} from '../services/viaje.service';
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
 
 @Component({
   selector: 'app-nuevo-viaje',
@@ -38,6 +45,7 @@ export class NuevoViajeComponent implements AfterViewInit {
   private map!: L.Map;
   private routingControl: any;
   constructor(private unidadService: UnidadService,
+<<<<<<< HEAD
               private viajeService: ViajeService,
               private loadingService: LoadingService,
               private CobroService: CobroService,
@@ -46,6 +54,10 @@ export class NuevoViajeComponent implements AfterViewInit {
   //atributo para el total del pedido
   public totalGeneral: number = 0;
 
+=======
+              private viajeService: ViajeService) {}
+  
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
   //variables para que el usuario pueda seleccionar
   public tiposCamion: string[] = [];
   public tiposAcoplado : string[] = [];
@@ -64,6 +76,7 @@ export class NuevoViajeComponent implements AfterViewInit {
 
   //variable para hora de salida
   public horaSalida: string = '';
+<<<<<<< HEAD
   
   //variable para la distancia
   public distancia: number = 0;
@@ -72,6 +85,8 @@ export class NuevoViajeComponent implements AfterViewInit {
   public origenCoords: { lat: number; lon: number } | null = null;
   public destinoCoords: { lat: number; lon: number } | null = null;
 
+=======
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
 
   //datos primordiales del viaje
   public data: any = {
@@ -81,9 +96,12 @@ export class NuevoViajeComponent implements AfterViewInit {
     fechaFin: '',
     horaInicio:'',
     horaFin:'',
+<<<<<<< HEAD
     distancia: 0,
     origenCoords: { lat: 0, lng: 0 },
     destinoCoords: { lat: 0, lng: 0 },
+=======
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
     unidades: []
   };
 
@@ -100,13 +118,21 @@ export class NuevoViajeComponent implements AfterViewInit {
     this.tiposAcoplado = [...this.tiposSemirremolque];
     //los tipos de semi son iguales,pero los de acoplado tienen "sin acoplado"
     this.tiposAcoplado.push('Sin acoplado');
+<<<<<<< HEAD
     this.tiposSemirremolque.push('Sin semirremolque');
+=======
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
   }
 
   @ViewChild('origenInput') origenInput!: ElementRef<HTMLInputElement>;
   @ViewChild('destinoInput') destinoInput!: ElementRef<HTMLInputElement>;
   @ViewChild('fechaSalidaInput') fechaSalidaInput!: ElementRef<HTMLInputElement>;
 
+<<<<<<< HEAD
+=======
+  origenCoords: { lat: number; lon: number } | null = null;
+  destinoCoords: { lat: number; lon: number } | null = null;
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
   origenMarker: L.Marker | null = null;
   destinoMarker: L.Marker | null = null;
 
@@ -120,7 +146,10 @@ export class NuevoViajeComponent implements AfterViewInit {
   tipoSemirremolqueSeleccionado: string = '';
   quiereSemirremolque: boolean = false;
   quiereAcoplado: boolean = false;
+<<<<<<< HEAD
   //camionesSeleccionados son los tipos de camion,semi y acoplado que componen a cada una de las unidades
+=======
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
   camionesSeleccionados: { tipo: string, semirremolque: string, acoplado: string }[] = [];
 
 
@@ -205,9 +234,12 @@ export class NuevoViajeComponent implements AfterViewInit {
         L.latLng(this.destinoCoords.lat, this.destinoCoords.lon)
       ],
       routeWhileDragging: true,
+<<<<<<< HEAD
       show: false, //evita mostrar el panel con las direccciones
       addWaypoints: false,  // Evita que el usuario añada puntos extra haciendo clic
       containerClassName: 'hidden-router-container',
+=======
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
       lineOptions: {
         styles: [{ color: 'blue', weight: 4, opacity: 0.7 }],
         extendToWaypoints: true,
@@ -219,6 +251,7 @@ export class NuevoViajeComponent implements AfterViewInit {
       [this.origenCoords.lat, this.origenCoords.lon],
       [this.destinoCoords.lat, this.destinoCoords.lon]
     ]);
+<<<<<<< HEAD
     //Calcular la distancia cuando detecta que se seleccionaron los 2 puntos
     this.routingControl.on('routesfound', (event: any) => {
       const route = event.routes[0]; // primera ruta encontrada
@@ -230,6 +263,9 @@ export class NuevoViajeComponent implements AfterViewInit {
   }
   
   
+=======
+  }
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
 
   async buscarViaje(event: Event): Promise<void> {
     event.preventDefault();
@@ -247,7 +283,10 @@ export class NuevoViajeComponent implements AfterViewInit {
       destino, 
       fecha, 
       camiones: this.camionesSeleccionados, 
+<<<<<<< HEAD
       distancia: this.distancia
+=======
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
     });
     //creo la hora de llegada mockeada
     const horaMockeada = new Date();
@@ -260,9 +299,12 @@ export class NuevoViajeComponent implements AfterViewInit {
     this.data.fechaFin = fechaFin;
     this.data.horaSalida = this.horaSalida;
     this.data.horaLlegada = horaMockeada;
+<<<<<<< HEAD
     this.data.distancia = this.distancia;
     this.data.origenCoords = { lat: this.origenCoords!.lat, lng: this.origenCoords!.lon };
     this.data.destinoCoords = { lat: this.destinoCoords!.lat, lng: this.destinoCoords!.lon };
+=======
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
 
     if (!this.origenCoords || !this.destinoCoords) {
       alert("❌ Debés seleccionar origen y destino en el mapa o con el formulario.");
@@ -274,9 +316,12 @@ export class NuevoViajeComponent implements AfterViewInit {
       return;
     }
 
+<<<<<<< HEAD
     //Muestro la pantalla de carga 
     this.loadingService.show();
 
+=======
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
     //aca busco el viaje
     try {
       const disponibles = await this.viajeService.getUnidadesDisponibles(fechaInicio, fechaFin, this.camionesSeleccionados);
@@ -287,22 +332,30 @@ export class NuevoViajeComponent implements AfterViewInit {
       console.error("❌ Error al buscar unidades disponibles:", error);
       alert("❌ Ocurrió un error al buscar unidades disponibles. Revisá la consola para más detalles.");
     }
+<<<<<<< HEAD
     finally {
       //oculto la pantalla de carga
       this.loadingService.hide();
     }
+=======
+
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
   }
   
   abrirSelectorVehiculo() { this.mostrarSelector = true; }
   cerrarSelector() { this.mostrarSelector = false; }
 
   agregarCamion(): void {
+<<<<<<< HEAD
     //comprueba si se seleccionaron todos los campos
+=======
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
     if (this.tipoCamionSeleccionado === 'tractoCamion' && this.semirremolqueSeleccionado === '' || this.tipoCamionSeleccionado === '') {
         alert("❌ Debes seleccionar las unidades correctamente.");
         return;
       }
     else  {
+<<<<<<< HEAD
         //comprueba que si selecciono un tipo de camion simple,se seleccione el tipo sin semi y sin acoplado
         if (this.tipoCamionSeleccionado !== 'tractoCamion'){
           this.camionesSeleccionados.push({
@@ -318,12 +371,22 @@ export class NuevoViajeComponent implements AfterViewInit {
           acoplado: this.quiereAcoplado ? this.acopladoSeleccionado : 'Sin acoplado'})
         };
 
+=======
+        this.camionesSeleccionados.push({
+          tipo: this.tipoCamionSeleccionado,
+          semirremolque: this.semirremolqueSeleccionado,
+          acoplado: this.quiereAcoplado ? this.acopladoSeleccionado : 'Sin Acoplado'
+        });
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
         //reiniciar las variables de seleccion
         this.tipoCamionSeleccionado = '';
         this.semirremolqueSeleccionado = '';
         this.tipoSemirremolqueSeleccionado = '';
         this.quiereSemirremolque = false;
+<<<<<<< HEAD
         this.quiereAcoplado = false;
+=======
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
         this.cerrarSelector();
       } 
   }
@@ -361,11 +424,18 @@ export class NuevoViajeComponent implements AfterViewInit {
 
   //esta funcion simplemente habilita que se muestre la pantalla 
   abrirResumen(disponibles: any) {
+<<<<<<< HEAD
     this.mostrarResumen = true;
     this.unidadesSeleccionadas = disponibles.unidadesFormadas || [];
     console.log('las unidades disponibles son:',this.unidadesSeleccionadas);
     this.actualizarTotalGeneral();
     console.log('el total es:',this.totalGeneral)
+=======
+  this.mostrarResumen = true;
+  this.unidadesSeleccionadas = disponibles.unidadesFormadas || [];
+  console.log('las unidades disponibles son:',this.unidadesSeleccionadas);
+
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
   }
 
   cerrarResumen() {
@@ -375,7 +445,10 @@ export class NuevoViajeComponent implements AfterViewInit {
   confirmarViaje() {
     // Aquí iría tu lógica para enviar la creación al backend
     console.log("Viaje confirmado:");
+<<<<<<< HEAD
     console.log(this.data.distancia);
+=======
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
     this.mostrarResumen = false;
     this.data.unidades = this.unidadesSeleccionadas.map((u: any) => {
     return {
@@ -384,13 +457,18 @@ export class NuevoViajeComponent implements AfterViewInit {
       acopladoId: u.acoplado?.id || null,
       tieneSemirremolque: !!u.semirremolque, // true si existe semirremolque
       tieneAcoplado: !!u.acoplado,           // true si existe acoplado
+<<<<<<< HEAD
       subtotal: u.subtotal * this.data.distancia
+=======
+      subtotal: u.subtotal
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
     };
   });
   this.guardarViaje()
   }
 
   async guardarViaje() {
+<<<<<<< HEAD
     const response = await this.viajeService.crearViaje(this.data);
     console.log(response);
     //reinicio las variables
@@ -426,6 +504,16 @@ export class NuevoViajeComponent implements AfterViewInit {
       console.error('Error al generar link', err);
     }
 }
+=======
+    console.log("pablito", this.data);
+    const response = await this.viajeService.crearViaje(this.data);
+    //reinicio las variables
+    this.data.unidades = [];
+  }
+
+
+
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
 
 }
 

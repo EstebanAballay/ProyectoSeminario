@@ -1,7 +1,13 @@
 {
+<<<<<<< HEAD
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist"
+=======
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../dist/apps/cobro"
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "test", "**/*spec.ts"]

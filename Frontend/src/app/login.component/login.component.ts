@@ -3,7 +3,11 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';  
 import { Router, RouterModule } from '@angular/router';
 import { UsersService } from '../services/users.service';
+<<<<<<< HEAD
 import { parseJwt } from '../jwt';
+=======
+
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
 
 @Component({
   selector: 'app-login',
@@ -28,6 +32,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     document.body.classList.remove('login');
   }
+<<<<<<< HEAD
 
   async onLogin(loginForm: any) {
     console.log('onLogin llamado');
@@ -68,3 +73,28 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
   }
 }
+=======
+async onLogin(loginForm: any) {
+  console.log('onLogin llamado');
+  if (!loginForm.valid) {
+    alert('Por favor, complete todos los campos correctamente.');
+    return;
+  }
+
+  try {
+    const result = await this.usersService.login(this.email.trim(), this.password.trim());
+    console.log('result completo:', result);
+    console.log('token recibido:', result.token);
+
+    // Guardar JWT en localStorage
+    localStorage.setItem('token', result.token);
+
+    // Redirigir directamente al menú para cualquier usuario
+    this.router.navigate(['/menu']);
+
+  } catch (error: any) {
+    alert('Email o contraseña incorrecta');
+  }
+}
+}
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d

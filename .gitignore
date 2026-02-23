@@ -1,6 +1,9 @@
+<<<<<<< HEAD
 # Ignorar carpetas generadas
 dist/
 Backend/apps/**/dist/
+=======
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
 node_modules
 dist/
 Backend/apps/**/dist/
@@ -8,4 +11,8 @@ Backend/apps/**/dist/
 *.env
 *.env.*
 .env
+<<<<<<< HEAD
 Backend/**/*.env.*
+=======
+Backend/**/*.env.*
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d

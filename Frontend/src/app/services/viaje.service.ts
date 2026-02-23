@@ -1,13 +1,22 @@
 import { Injectable } from '@angular/core';
+<<<<<<< HEAD
 import { Observable } from 'rxjs';
 import axios from '../../api/axiosClient';
 import { config } from '../config/env';
+=======
+import axios from 'axios';
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
 
 @Injectable({ providedIn: 'root' })
 
 export class ViajeService {
+<<<<<<< HEAD
     private apiUrl = `${config.services.viajes}/viaje`;
     
+=======
+    private apiUrl = 'http://localhost:3004/viaje';
+
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
     async getUnidadesDisponibles(fechaInicio: Date, fechaFin: Date, camiones:any ): Promise<any> {
         console.log(camiones);
         // Convertimos las fechas al formato ISO (o el que espere tu back)
@@ -27,12 +36,19 @@ export class ViajeService {
 
     async crearViaje(data:any): Promise<any> {
         const url = `${this.apiUrl}/nuevoViaje`;
+<<<<<<< HEAD
         console.log("Token en storage:", localStorage.getItem('token'));
         try {
             const response = await axios.post(url, data);
             console.log(response.data);
             return response.data;
             
+=======
+
+        try {
+            const response = await axios.post(url, data);
+            return response.data;
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
         }
         catch (error) {
             console.error('Error al crear la unidad:', error);
@@ -40,6 +56,7 @@ export class ViajeService {
         }
   }
 
+<<<<<<< HEAD
 
     async getMisViajes(): Promise<any> {
         const url = `${this.apiUrl}/misViajes`;
@@ -117,4 +134,6 @@ export class ViajeService {
     const response = await axios.patch(`${this.apiUrl}/cancelar/${viajeId}`,);
     return response.data;
   }
+=======
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
 }

@@ -1,10 +1,17 @@
+<<<<<<< HEAD
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+=======
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
 import { UnidadService } from './unidad.service';
 import { CreateUnidadDto } from './dto/create-unidad.dto';
 import { UpdateUnidadDto } from './dto/update-unidad.dto';
 import { promises } from 'dns';
 import { ConsultarUnidadesDto } from './dto/datosUnidadesFront.dto';
+<<<<<<< HEAD
 import { CreateVehicleDto } from './dto/create-Vehicle.dto';
+=======
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
 
 @Controller('unidad')
 export class UnidadController {
@@ -15,6 +22,18 @@ export class UnidadController {
     return this.unidadService.createUnidad(createUnidadDto);
   }
 
+<<<<<<< HEAD
+=======
+  @Get()
+  finndAll(): any {
+    return this.unidadService.findAll();}
+
+
+  @Get(':id/')
+  async findAll(@Param('id') id: String): Promise<any> {
+    return this.unidadService.findUnityByDriver(Number(id));}
+    
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
   @Get('tiposAcoplados')
   consultarTiposAcoplados() {
     return this.unidadService.consultarTiposAcoplados();
@@ -22,6 +41,7 @@ export class UnidadController {
 
   @Get('tiposCamiones')
   consultarTiposCamiones() {
+<<<<<<< HEAD
     console.log("el erro salta despues")
     return this.unidadService.consultarTiposCamiones();
   }
@@ -38,10 +58,16 @@ export class UnidadController {
 
   }
 
+=======
+    return this.unidadService.consultarTiposCamiones();
+  }
+
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
   @Post('unidadesDisponibles')
   async consultarUnidadesDisponibles(@Body() dto?: ConsultarUnidadesDto) {
     const disponiblesPorFecha = await this.unidadService.findDisponibles(dto.unidadesOcupadas);
     console.log('Unidades disponibles por fecha:', disponiblesPorFecha);
+<<<<<<< HEAD
     const disponiblesPorTipo =  this.unidadService.findUnidadesDisponiblesByTipoRandom(dto.camiones, disponiblesPorFecha);
     console.log('Unidades disponibles por tipo:', disponiblesPorTipo);
     return disponiblesPorTipo
@@ -62,6 +88,14 @@ export class UnidadController {
     @Patch('iniciarEstadoViaje/:id')
     iniciarEstadoViaje(@Param('id') id: string) {
     return this.unidadService.iniciarEstadoViaje(+id);
+=======
+    return this.unidadService.findUnidadesDisponiblesByTipoRandom(dto.camiones, disponiblesPorFecha);
+  } 
+
+@Patch('iniciarEstadoViaje/:id')
+  async iniciarEstadoViaje(@Param('id') id: number) {
+    return this.unidadService.iniciarEstadoViaje(id);
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
   }
   
   @Patch('finalizarEstadoViaje/:id')
@@ -69,6 +103,7 @@ export class UnidadController {
     return this.unidadService.finalizarEstadoViaje(id);
   }
 
+<<<<<<< HEAD
   @Post('nuevaUnidad')
   async crearUnidad(@Body() createUnidadDto: CreateVehicleDto) {
     return await this.unidadService.createVehicle(createUnidadDto);
@@ -88,8 +123,27 @@ export class UnidadController {
   async findAll(@Param('id') id: String): Promise<any> {
     return this.unidadService.findUnityByDriver(Number(id));}
     
+=======
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.unidadService.findOne(+id);
   }
+<<<<<<< HEAD
 }
+=======
+
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateUnidadDto: UpdateUnidadDto) {
+    return this.unidadService.update(+id, updateUnidadDto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.unidadService.remove(+id);
+  }
+
+
+
+}
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d

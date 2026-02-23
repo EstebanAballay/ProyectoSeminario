@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 // Este role guard protege los endpoint en base al rol que tiene el usuario. 
+=======
+>>>>>>> a377986c5a6f551265fb79b36c6382d819ea995d
 import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { ROLES_KEY } from "../decorators/roles.decorator";
