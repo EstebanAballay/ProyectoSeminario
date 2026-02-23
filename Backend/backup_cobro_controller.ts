@@ -4,7 +4,6 @@ import {CreateCobroDto} from './entities/create-cobro-dto';
 import { AuthGuard } from './cobroAuth/auth.guard';
 import { Response } from 'express';
 
-
 @Controller('cobros') // Esta es la base: http://localhost:3001/cobros
 export class CobroController {
     constructor(private readonly cobroService: CobroService) {}
@@ -22,7 +21,7 @@ export class CobroController {
     }
 
     // 1. CREAR COBRO: POST http://localhost:3001/cobros
-    @Post()
+    @Post('')
     async crearCobro(@Body() createCobroDto: CreateCobroDto) {
         console.log(createCobroDto);
         return await this.cobroService.crearCobro(createCobroDto);
@@ -46,4 +45,3 @@ export class CobroController {
     }    
 
 } 
-

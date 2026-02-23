@@ -26,28 +26,19 @@ export class MercadoPagoService {
       return {
         cobroId: result.external_reference, // Este es el ID que guardamos al crear la preferencia
         status: result.status,             // Ej: 'approved'
-        statusDetail: result.status_detail, // Ej: 'accredited'
-        payer: {
-          email: result.payer.email,
-          nombre: result.payer.first_name,
-          apellido: result.payer.last_name,
-          dni: result.payer.identification?.number, // El DNI suele estar aquí
-          tipoDoc: result.payer.identification?.type, // Ej: "DNI"
-          telefono: result.payer.phone?.number // A veces viene, a veces no   
-           }
-      } 
-    }
-    catch (error) {
+        statusDetail: result.status_detail // Ej: 'accredited'
+      };
+    } catch (error) {
       throw new Error(`Error al obtener detalles del pago ${paymentId}: ${error.message}`);
     }
-  } 
- 
-  /** 
+  }
+
+  /**
    * Genera el link de pago incluyendo la URL de notificación de Ngrok.
    */
   async createPreference(cobroId: number, monto: number, notificationUrl: string) {
     const preference = new Preference(this.client);
-    console.log("he logrado entrar a la funcion para crear el link de mercadopago")
+
     const result = await preference.create({
       body: {
         items: [
@@ -66,12 +57,13 @@ export class MercadoPagoService {
         notification_url: notificationUrl,
 
         back_urls: {
-          success: 'https://localhost:4200/menu',
-          failure: 'https://localhost:4200/nuevoviaje'
+          success: 'https://tu-frontend.com/pago-exitoso',
+          failure: 'https://tu-frontend.com/pago-fallido',
         },
-        auto_return: 'approved'
+        auto_return: 'approved',
       },
     });
+
     return result;
-  } 
-} 
+  }
+}

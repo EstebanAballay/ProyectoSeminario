@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, BadRequestException,Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, Request, Req, BadRequestException } from '@nestjs/common';
 import { ViajeService } from './viaje.service';
 import { CreateViajeDto } from './dto/create-viaje.dto';
 import { ConsultarUnidadesDto } from './dto/camiones.dto';
@@ -8,33 +8,27 @@ import { AuthGuard } from '../viajeAuth/auth.guard';
 @Controller('viaje')
 export class ViajeController {
   constructor(private readonly viajeService: ViajeService) {}
-  //  viaje/nuevoViaje
-  //crear
+
   @Post('nuevoViaje')
   @UseGuards(AuthGuard)
-  create(@Body() createViajeDto: CreateViajeDto, @GetUser() user: any):Promise<any> {
-            return this.viajeService.createViaje(createViajeDto,user);
+  create(@Body() createViajeDto: CreateViajeDto, @GetUser() user: any): Promise<any> {
+    return this.viajeService.createViaje(createViajeDto, user);
   }
 
-  //consulta
   @Post('viajesRango')
   findDisponibles(
     @Query('fechaInicio') fechaInicio?: string, 
-    @Body() dtoViaje?: ConsultarUnidadesDto){
-      const inicio = fechaInicio ? new Date(fechaInicio) : undefined;
-      console.log('Fechas recibidas:', inicio);
-      return this.viajeService.buscarUnidadesDisponibles(inicio, dtoViaje);
+    @Query('fechaFin') fechaFin?: string,
+    @Body() dto?: ConsultarUnidadesDto
+  ) {
+    const inicio = fechaInicio ? new Date(fechaInicio) : undefined;
+    const fin = fechaFin ? new Date(fechaFin) : undefined;
+    // Pasamos solo el array de camiones que espera el service
+    return this.viajeService.buscarUnidadesDisponibles(inicio, fin, dto?.camiones || []);
   }
 
-
-  //consulta de los viajes del cliente
   @Get('misViajes')
   @UseGuards(AuthGuard)
-  findAll(@GetUser() user: any) {
-    return this.viajeService.buscarTodos(user);
-  }
-  
-  @Get('viajesCliente')
   async getMisViajes(@Request() req) {
     return await this.viajeService.consultarViajesCliente(req.user); 
   }
@@ -92,8 +86,8 @@ export class ViajeController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.viajeService.findOne(id);
+  findOne(@Param('id') id: string) {
+    return this.viajeService.findOne(+id);
   }
 
   @Get('/viaje-con-unidades/:id')
@@ -106,28 +100,15 @@ export class ViajeController {
     return this.viajeService.remove(+id);
   }
 
-  @Patch('finalizar/:id')
-  finalizar(@Param('id') id: number) {
-    return this.viajeService.finalizarViaje(id);
+  @Patch(':id/confirmar-pago')
+  async confirmarPago(@Param('id') id: string) {
+    return this.viajeService.confirmarPagoViaje(+id);
   }
 
-  @Patch('iniciar/:id')
-  iniciar(@Param('id') id: number) {
-    return this.viajeService.enViaje(id);
+  @Patch(':id/cancelar')
+  @UseGuards(AuthGuard)
+  cancelar(@Param('id') id: number,@Req() req) {
+    return this.viajeService.cancelarViaje(id, req.user);
   }
-
-  @Patch('cancelar/:id')
-  cancelar(@Param('id') id: number) {
-  return this.viajeService.cancelarViaje(id);
-  }
-
-  @Patch(':id/pago-senia')
-  async confirmarPagoSenia(@Param('id') id: string) {
-    return this.viajeService.confirmarPagoViajeSenia(+id);
-  }
-
-  @Patch(':id/pago-resto')
-  async confirmarPagResto(@Param('id') id: string) {
-    return this.viajeService.confirmarPagoViajeResto(+id);
-  }
+  
 }

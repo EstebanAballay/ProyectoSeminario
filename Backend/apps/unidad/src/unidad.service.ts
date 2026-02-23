@@ -138,7 +138,7 @@ export class UnidadService {
       };
     }
   
-    
+
   //Gran funcion para encontrar unidades disponibles segun el tipo pedido
   findUnidadesDisponiblesByTipoRandom(camionesPedidos: any[],unidadesDisponibles: any): {
     unidadesFormadas: any[]; errores: string[];} {
@@ -362,103 +362,96 @@ export class UnidadService {
   }
 
   //funcion para cambiar el estado de todos los vehiculos adentro de la unidad asignada al viaje (sin pasar el estado)
+   //funcion para cambiar el estado de todos los vehiculos adentro de la unidad asignada al viaje
   async iniciarEstadoViaje(viajeId: number): Promise<void> {
     const unidades = await this.UnidadRepository.find({
       where: { idViaje: viajeId },
-      relations: ['camion', 'semiremolque', 'acoplado'],
+      relations: ['camion', 'semiremolque', 'acoplado', 'transportista'], // ✅ agregado transportista
     });
 
-    //buscar estados de los vehiculos en viaje
     const estadoCamion = await this.estadoCamionRepository.findOne({ where: { nombre: 'enViaje' } });
     const estadoSemirremolque = await this.EstadoSemirremolqueRepository.findOne({ where: { nombre: 'enViaje' } });
     const estadoAcoplado = await this.EstadoAcopladoRepository.findOne({ where: { nombre: 'enViaje' } });
     const estadoTransportista = await this.estadoTransportistaRepository.findOne({ where: { nombre: 'enViaje' } });
  
     //obtener cada de vehiculo de cada unidad y cambiar su estado
+
     for (const unidad of unidades) {
-      if (unidad.camion) {
-        const camion = await this.CamionRepository.findOne({ where: { id: unidad.camion.id } });
-        if (camion && estadoCamion) {
-          camion.estadoCamion = estadoCamion;
-          await this.CamionRepository.save(camion);
-        }
+
+      if (unidad.camion && estadoCamion) {
+        unidad.camion.estadoCamion = estadoCamion;
+        await this.CamionRepository.save(unidad.camion);
       }
 
-      if (unidad.semiremolque) {
-        const semirremolque = await this.semirremolqueRepository.findOne({ where: { id: unidad.semiremolque.id } });
-        if (semirremolque && estadoSemirremolque) {
-          semirremolque.estado = estadoSemirremolque;
-          await this.semirremolqueRepository.save(semirremolque);
-        }
+      if (unidad.semiremolque && estadoSemirremolque) {
+        unidad.semiremolque.estado = estadoSemirremolque;
+        await this.semirremolqueRepository.save(unidad.semiremolque);
       }
 
-      if (unidad.acoplado) {
-        const acoplado = await this.acopladoRepository.findOne({ where: { id: unidad.acoplado.id } });
-        if (acoplado && estadoAcoplado) {
-          acoplado.estado = estadoAcoplado;
-          await this.acopladoRepository.save(acoplado);
-        }
+      if (unidad.acoplado && estadoAcoplado) {
+        unidad.acoplado.estado = estadoAcoplado;
+        await this.acopladoRepository.save(unidad.acoplado);
       }
 
-      //cambiar estado del transportista
-      const transportista = await this.transportistaRepository.findOne({ where: { idUsuario: unidad.transportista.idUsuario } });
-      if (transportista && estadoTransportista) {
-        transportista.estado = estadoTransportista;
-        await this.transportistaRepository.save(transportista);
+      // ✅ protección contra undefined
+      if (unidad.transportista && estadoTransportista) {
+        const transportista = await this.transportistaRepository.findOne({
+          where: { idUsuario: unidad.transportista.idUsuario }
+        });
+
+        if (transportista) {
+          transportista.estado = estadoTransportista;
+          await this.transportistaRepository.save(transportista);
+        }
       }
+    }
   }
 
-}
 
-async finalizarEstadoViaje(viajeId: number): Promise<void> {
+  async finalizarEstadoViaje(viajeId: number): Promise<void> {
     const unidades = await this.UnidadRepository.find({
       where: { idViaje: viajeId },
-      relations: ['camion', 'semiremolque', 'acoplado'],
+      relations: ['camion', 'semiremolque', 'acoplado', 'transportista'], // ✅ agregado transportista
     });
 
-    //buscar estados de los vehiculos en viaje
     const estadoCamion = await this.estadoCamionRepository.findOne({ where: { nombre: 'disponible' } });
     const estadoSemirremolque = await this.EstadoSemirremolqueRepository.findOne({ where: { nombre: 'disponible' } });
     const estadoAcoplado = await this.EstadoAcopladoRepository.findOne({ where: { nombre: 'disponible' } });
     const estadoTransportista = await this.estadoTransportistaRepository.findOne({ where: { nombre: 'disponible' } });
 
-    //obtener cada de vehiculo de cada unidad y cambiar su estado
     for (const unidad of unidades) {
-      if (unidad.camion) {
-        const camion = await this.CamionRepository.findOne({ where: { id: unidad.camion.id } });
-        if (camion && estadoCamion) {
-          camion.estadoCamion = estadoCamion;
-          await this.CamionRepository.save(camion);
+
+      if (unidad.camion && estadoCamion) {
+        unidad.camion.estadoCamion = estadoCamion;
+        await this.CamionRepository.save(unidad.camion);
+      }
+
+      if (unidad.semiremolque && estadoSemirremolque) {
+        unidad.semiremolque.estado = estadoSemirremolque;
+        await this.semirremolqueRepository.save(unidad.semiremolque);
+      }
+
+      if (unidad.acoplado && estadoAcoplado) {
+        unidad.acoplado.estado = estadoAcoplado;
+        await this.acopladoRepository.save(unidad.acoplado);
+      }
+
+      // ✅ protección contra undefined
+      if (unidad.transportista && estadoTransportista) {
+        const transportista = await this.transportistaRepository.findOne({
+          where: { idUsuario: unidad.transportista.idUsuario }
+        });
+
+        if (transportista) {
+          transportista.estado = estadoTransportista;
+          await this.transportistaRepository.save(transportista);
         }
       }
-
-      if (unidad.semiremolque) {
-        const semirremolque = await this.semirremolqueRepository.findOne({ where: { id: unidad.semiremolque.id } });
-        if (semirremolque && estadoSemirremolque) {
-          semirremolque.estado = estadoSemirremolque;
-          await this.semirremolqueRepository.save(semirremolque);
-        }
-      }
-
-      if (unidad.acoplado) {
-        const acoplado = await this.acopladoRepository.findOne({ where: { id: unidad.acoplado.id } });
-        if (acoplado && estadoAcoplado) {
-          acoplado.estado = estadoAcoplado;
-          await this.acopladoRepository.save(acoplado);
-        }
-      }
-
-      //cambiar estado del transportista
-      const transportista = await this.transportistaRepository.findOne({ where: { idUsuario: unidad.transportista.idUsuario } });
-      if (transportista && estadoTransportista) {
-        transportista.estado = estadoTransportista;
-        await this.transportistaRepository.save(transportista);
-      }
-  }
-
+    }
   }
 
   async findAll() {
     return await this.UnidadRepository.find();
   }
-}
+
+} 
