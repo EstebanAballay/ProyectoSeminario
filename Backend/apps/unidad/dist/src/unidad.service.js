@@ -240,8 +240,9 @@ let UnidadService = class UnidadService {
         for (const asignacion of asignaciones)
             this.UnidadRepository.update(asignacion.unidadId, { transportista: { idUsuario: asignacion.choferId } });
     }
-    findOne(id) {
-        const unidad = this.UnidadRepository.find({ where: { idViaje: id }, relations: ['camion', 'semiremolque', 'acoplado'] });
+    async findOne(id) {
+        const unidad = await this.UnidadRepository.findOne({ where: { UnidadId: id }, relations: ['camion', 'semiremolque', 'acoplado'] });
+        console.log(unidad);
         return unidad;
     }
     async createVehicle(createUnidadDto) {
@@ -279,9 +280,9 @@ let UnidadService = class UnidadService {
             return this.semirremolqueRepository.save(nuevoSemirremolque);
         }
     }
-    async findUnityByDriver(idusuario) {
+    async findUnityByDriver(idviaje) {
         return this.UnidadRepository.find({
-            where: { transportista: { idUsuario: idusuario } },
+            where: { idViaje: idviaje },
         });
     }
     async iniciarEstadoViaje(viajeId) {

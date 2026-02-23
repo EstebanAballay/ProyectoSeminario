@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import axios from '../../api/axiosClient';
 import { config } from '../config/env';
+import { Pagos } from '../pagos-realizados/pagos-realizados.component';
 
 @Injectable({ providedIn: 'root' })
 
@@ -31,5 +32,24 @@ export class CobroService {
             throw error;
         }
 
+    }
+
+    async buscarCobrosUsuario(): Promise<any> {
+        try {
+            const response = await axios.get(`${this.apiUrl}/consultar-cobros-usuario`);
+            const data = response.data;
+            console.log(data);
+            return data;
+        } 
+        catch (error) {
+            console.error('Error al buscar los cobros', error);
+            throw error;
+        }
+    }
+
+    // En tu componente de "Pago Exitoso" en Angular
+    async descargarFactura(cobroId: number) {
+        const url = `http://localhost:3001/cobros/${cobroId}/factura`;
+        return url;
     }
 }

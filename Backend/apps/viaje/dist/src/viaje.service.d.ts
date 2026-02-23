@@ -58,6 +58,7 @@ export declare class ViajeService {
     rechazarViaje(viajeId: number): Promise<void>;
     findAll(): Promise<Viaje[]>;
     findOne(id: number): Promise<Viaje>;
+    findViajeXUnidad(id: number): Promise<Viaje>;
     remove(id: number): Promise<import("typeorm").DeleteResult>;
     enViaje(viajeId: number): Promise<{
         mensaje: string;
@@ -93,4 +94,5 @@ export declare class ViajeService {
         CoordXDestino: number;
         CoordYDestino: number;
     }[]>;
+    buscarPorMultiplesIds(ids: number[]): Promise<Viaje[]>;
 }

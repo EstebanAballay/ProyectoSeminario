@@ -60,8 +60,10 @@ export declare class ViajeController {
         CoordXDestino: number;
         CoordYDestino: number;
     }[]>;
+    obtenerViajesPorIds(idsString: string): Promise<import("./entities/viaje.entity").Viaje[]>;
     rechazarViaje(id: number): Promise<void>;
     findOne(id: number): Promise<import("./entities/viaje.entity").Viaje>;
+    findViajeXUnidad(id: number): Promise<import("./entities/viaje.entity").Viaje>;
     remove(id: string): Promise<import("typeorm").DeleteResult>;
     finalizar(id: number): Promise<{
         mensaje: string;

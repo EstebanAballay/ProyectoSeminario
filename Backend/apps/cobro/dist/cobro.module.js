@@ -16,12 +16,19 @@ const cobro_service_1 = require("./cobro.service");
 const cobro_entity_1 = require("./entities/cobro.entity");
 const estadoCobro_entity_1 = require("./entities/estadoCobro.entity");
 const abonante_entity_1 = require("./entities/abonante.entity");
+const billing_service_1 = require("./billing.service");
+const auth_guard_1 = require("./cobroAuth/auth.guard");
+const jwt_1 = require("@nestjs/jwt");
 let CobroModule = class CobroModule {
 };
 exports.CobroModule = CobroModule;
 exports.CobroModule = CobroModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            jwt_1.JwtModule.register({
+                secret: 'no utilizar en producción', // DEBE ser la misma que en el microservicio Auth
+                signOptions: { expiresIn: '24h' },
+            }),
             typeorm_1.TypeOrmModule.forFeature([cobro_entity_1.Cobro, estadoCobro_entity_1.EstadoCobro, abonante_entity_1.Abonante]),
             axios_1.HttpModule,
         ],
@@ -29,6 +36,6 @@ exports.CobroModule = CobroModule = __decorate([
             cobro_controller_1.CobroController,
             webhook_controller_1.WebhookController,
         ],
-        providers: [cobro_service_1.CobroService],
+        providers: [cobro_service_1.CobroService, billing_service_1.BillingService, auth_guard_1.AuthGuard],
     })
 ], CobroModule);

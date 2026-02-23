@@ -16,6 +16,7 @@ exports.CobroController = void 0;
 const common_1 = require("@nestjs/common");
 const cobro_service_1 = require("./cobro.service");
 const create_cobro_dto_1 = require("./entities/create-cobro-dto");
+const auth_guard_1 = require("./cobroAuth/auth.guard");
 let CobroController = class CobroController {
     constructor(cobroService) {
         this.cobroService = cobroService;
@@ -25,6 +26,9 @@ let CobroController = class CobroController {
     escuchando la notificacion de mp,es notificacion contiene el id de la transaccion de mp,es en ese momento que llama
     a verificar y confirmar pago, y si es positiva, ordena cambiar el estado del cobro y el viaje.
     */
+    async consultarCobrosUsuario(req) {
+        return await this.cobroService.consultarCobrosUsuario(req.user);
+    }
     // 1. CREAR COBRO: POST http://localhost:3001/cobros
     async crearCobro(createCobroDto) {
         console.log(createCobroDto);
@@ -38,8 +42,19 @@ let CobroController = class CobroController {
     async pagar(id) {
         return await this.cobroService.generarPagoMP(id);
     }
+    async descargarFactura(id, res) {
+        return this.cobroService.descargarFacturaCobro(+id, res);
+    }
 };
 exports.CobroController = CobroController;
+__decorate([
+    (0, common_1.Get)('/consultar-cobros-usuario'),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    __param(0, (0, common_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], CobroController.prototype, "consultarCobrosUsuario", null);
 __decorate([
     (0, common_1.Post)(''),
     __param(0, (0, common_1.Body)()),
@@ -61,6 +76,14 @@ __decorate([
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], CobroController.prototype, "pagar", null);
+__decorate([
+    (0, common_1.Get)(':id/factura'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], CobroController.prototype, "descargarFactura", null);
 exports.CobroController = CobroController = __decorate([
     (0, common_1.Controller)('cobros') // Esta es la base: http://localhost:3001/cobros
     ,

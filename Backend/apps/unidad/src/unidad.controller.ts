@@ -6,6 +6,7 @@ import { promises } from 'dns';
 import { ConsultarUnidadesDto } from './dto/datosUnidadesFront.dto';
 import { CreateVehicleDto } from './dto/create-Vehicle.dto';
 
+
 @Controller('unidad')
 export class UnidadController {
   constructor(private readonly unidadService: UnidadService) {}
@@ -62,16 +63,20 @@ export class UnidadController {
     return await this.unidadService.createVehicle(createUnidadDto);
   }
 
-    @Get(':id/')
-  async findAll(@Param('id') id: String): Promise<any> {
-    return this.unidadService.findUnityByDriver(Number(id));}
-    
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.unidadService.findOne(+id);
+    console.log('entre al controller')
+    const found = this.unidadService.findOne(+id);
+    //console.log(found);
+    return found;
   }
+
+  @Get('unidades-de-viaje/:id')
+  async findAll(@Param('id') id: string): Promise<any> {
+    return this.unidadService.findUnityByDriver(+id);}
+
   
-  @Get() 
+  @Get()  
   async buscarUnidades(@Query('idViaje') idViaje?: number) {
     if (idViaje) {
       // Si llega el parámetro, buscamos por viaje
@@ -80,4 +85,5 @@ export class UnidadController {
     // Si no llega parámetro, devuelve todas (opcional)
     return this.unidadService.findAll();
   }
+
 }

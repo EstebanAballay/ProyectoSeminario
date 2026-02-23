@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateViajeDto } from './dto/create-viaje.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { LessThanOrEqual,LessThan,MoreThan, MoreThanOrEqual, Repository, Not} from 'typeorm';
+import { LessThanOrEqual,LessThan,MoreThan, MoreThanOrEqual, Repository, Not, In} from 'typeorm';
 import { EstadoViaje } from './entities/estadoViaje.entity';
 import { Viaje } from './entities/viaje.entity';
 import { HttpService } from '@nestjs/axios';
@@ -287,6 +287,47 @@ async getViajesPendientes() {
     return this.viajeRepository.findOne({ where: { ViajeId: id }, relations: ['estadoViaje'] });
   }
 
+  async findViajeXUnidad(id: number) {
+  // 1. Buscamos el viaje
+  const viaje = await this.viajeRepository.findOne({
+    where: { ViajeId: id },
+    relations: ['estadoViaje'], 
+  });
+
+  if (!viaje) return null;
+
+  let idsUnidades = viaje.unidades.map((unidad:any) => Number(unidad))
+
+  let unidadesEncontradas: any[] = [];
+
+  // 3. Iteramos buscando los datos reales
+  if (idsUnidades.length > 0) {
+    for (const idUnidad of idsUnidades) {
+      if (!idUnidad) continue; // Filtramos posibles nulls o espacios en blanco
+      try {
+        // SOLUCIÓN: Usamos firstValueFrom para resolver el Observable y pedimos el .data
+        const response = await firstValueFrom(
+          this.httpService.get(`http://unidad-service:3002/unidad/${idUnidad}`)
+        );
+        console.log(response.data);
+        unidadesEncontradas.push(response.data);
+      } catch (error) {
+        console.error(`🚨 Error al traer la unidad ${idUnidad} desde unidad-service:`, error.message);
+      }
+    }
+  } else {
+    // Si salta esta alerta, significa que en la fila 220 de tu base de datos
+    // realmente NO hay ningún ID guardado en la columna 'unidades'.
+    console.warn(`⚠️ El viaje ${id} no tiene IDs de unidades asociados en la BD.`);
+  }
+  console.log('las unidades encontradas son:', unidadesEncontradas);
+  // 4. Asignamos TODAS las unidades encontradas juntas, fuera del bucle
+  (viaje as any).unidades = unidadesEncontradas; 
+  
+  console.log('✅ Viaje procesado con sus unidades completas:', viaje.unidades);
+  return viaje;
+}
+
   remove(id: number) {
     console.log('unidad eliminada')
     return this.viajeRepository.delete(id);
@@ -420,9 +461,7 @@ async getViajesPendientes() {
       try { 
         // Hacemos la petición al servicio de unidades
         const { data: unidades } = await lastValueFrom(
-          this.httpService.get('http://unidad-service:3002/unidad/', {
-            params: { idViaje: viaje.ViajeId } 
-          })
+          this.httpService.get(`http://unidad-service:3002/unidad/unidades-de-viaje/${viaje.ViajeId}`)
         );
 
         // 4. Retornamos el viaje original + el array de unidades real
@@ -441,5 +480,22 @@ async getViajesPendientes() {
     console.log('Viajes completos recuperados:', viajesConUnidades);
     return viajesConUnidades;
   }
+
+  async buscarPorMultiplesIds(ids: number[]) {
+    // Validación de seguridad por si llega un array vacío
+    if (!ids || ids.length === 0) {
+      return [];
+    }
+
+    // Usamos el operador In de TypeORM para buscar todos de golpe
+    const viajes = await this.viajeRepository.find({
+      where: {
+        ViajeId: In(ids),
+      },
+    });
+    console.log(viajes);
+    return viajes;
+  }
+
 }
 

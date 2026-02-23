@@ -46,9 +46,9 @@ export declare class UnidadService {
         unidadId: number;
         choferId: number;
     }[]): void;
-    findOne(id: number): Promise<Unidad[]>;
-    createVehicle(createUnidadDto: CreateVehicleDto): Promise<Camion | Semirremolque | Acoplado>;
-    findUnityByDriver(idusuario: number): Promise<any[]>;
+    findOne(id: number): Promise<Unidad>;
+    createVehicle(createUnidadDto: CreateVehicleDto): Promise<Camion | Acoplado | Semirremolque>;
+    findUnityByDriver(idviaje: number): Promise<any[]>;
     iniciarEstadoViaje(viajeId: number): Promise<void>;
     finalizarEstadoViaje(viajeId: number): Promise<void>;
     findAll(): Promise<Unidad[]>;

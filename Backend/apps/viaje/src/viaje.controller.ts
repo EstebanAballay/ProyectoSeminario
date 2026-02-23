@@ -69,6 +69,22 @@ export class ViajeController {
     return await this.viajeService.getViajesPendientesPago(user);
   }
 
+  @Get('por-ids')
+  async obtenerViajesPorIds(@Query('ids') idsString: string) {
+    // 1. Si no mandan ningún ID, devolvemos un array vacío para no romper nada
+    if (!idsString) {
+      return [];
+    }
+
+    // 2. Transformamos el string "1,2,3" en un array de números [1, 2, 3]
+    const idsArray = idsString
+      .split(',')
+      .map((id) => parseInt(id.trim(), 10))
+      .filter((id) => !isNaN(id)); // Filtramos por si se coló algún valor no numérico
+
+    // 3. Delegamos la búsqueda al servicio
+    return this.viajeService.buscarPorMultiplesIds(idsArray);
+  }
 
   @Patch('rechazarViaje/:id')
   async rechazarViaje(@Param('id') id: number) {
@@ -78,6 +94,11 @@ export class ViajeController {
   @Get(':id')
   findOne(@Param('id') id: number) {
     return this.viajeService.findOne(id);
+  }
+
+  @Get('/viaje-con-unidades/:id')
+  findViajeXUnidad(@Param('id') id: number) {
+    return this.viajeService.findViajeXUnidad(id);
   }
 
   @Delete(':id')

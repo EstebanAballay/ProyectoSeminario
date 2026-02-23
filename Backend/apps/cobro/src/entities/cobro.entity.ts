@@ -35,4 +35,3 @@ export class Cobro {
     @JoinColumn({name: 'abonanteId'})
     abonante: Abonante
 }
-

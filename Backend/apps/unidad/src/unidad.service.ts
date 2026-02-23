@@ -310,10 +310,11 @@ export class UnidadService {
   }
 */
 
-  findOne(id: number) {
-    const unidad = this.UnidadRepository.find({where: {idViaje:id}, relations:['camion','semiremolque','acoplado']});
+  async findOne(id: number) {
+    const unidad = await this.UnidadRepository.findOne({where: {UnidadId:id}, relations:['camion','semiremolque','acoplado']});
+    console.log(unidad);
     return unidad;
-  }
+  }  
 
   async createVehicle(createUnidadDto: CreateVehicleDto) {
     if (createUnidadDto.unidadTipo.toLowerCase() === 'camion') {
@@ -354,9 +355,9 @@ export class UnidadService {
     }
   }
 
-  async findUnityByDriver(idusuario: number): Promise<any[]> {
+  async findUnityByDriver(idviaje: number): Promise<any[]> {
     return this.UnidadRepository.find({
-      where: { transportista: { idUsuario: idusuario } }, 
+      where: { idViaje: idviaje }, 
     });
   }
 
@@ -372,7 +373,7 @@ export class UnidadService {
     const estadoSemirremolque = await this.EstadoSemirremolqueRepository.findOne({ where: { nombre: 'enViaje' } });
     const estadoAcoplado = await this.EstadoAcopladoRepository.findOne({ where: { nombre: 'enViaje' } });
     const estadoTransportista = await this.estadoTransportistaRepository.findOne({ where: { nombre: 'enViaje' } });
-
+ 
     //obtener cada de vehiculo de cada unidad y cambiar su estado
     for (const unidad of unidades) {
       if (unidad.camion) {

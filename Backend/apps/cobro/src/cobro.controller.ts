@@ -1,6 +1,8 @@
-import { Controller, Post, Param, Body, Get, ParseIntPipe } from '@nestjs/common';
+import { Controller, Post, Param, Body, Get, ParseIntPipe,UseGuards,Request,Res } from '@nestjs/common';
 import { CobroService } from './cobro.service';
 import {CreateCobroDto} from './entities/create-cobro-dto';
+import { AuthGuard } from './cobroAuth/auth.guard';
+import { Response } from 'express';
 
 @Controller('cobros') // Esta es la base: http://localhost:3001/cobros
 export class CobroController {
@@ -11,6 +13,12 @@ export class CobroController {
     escuchando la notificacion de mp,es notificacion contiene el id de la transaccion de mp,es en ese momento que llama
     a verificar y confirmar pago, y si es positiva, ordena cambiar el estado del cobro y el viaje.
     */ 
+   
+    @Get('/consultar-cobros-usuario')
+    @UseGuards(AuthGuard)
+    async consultarCobrosUsuario(@Request() req):Promise<any> {
+        return await this.cobroService.consultarCobrosUsuario(req.user);
+    }
 
     // 1. CREAR COBRO: POST http://localhost:3001/cobros
     @Post('')
@@ -31,4 +39,9 @@ export class CobroController {
         return await this.cobroService.generarPagoMP(id);
     }
 
-}
+    @Get(':id/factura')
+    async descargarFactura(@Param('id') id: string, @Res() res: Response) {
+        return this.cobroService.descargarFacturaCobro(+id,res);
+    }    
+
+} 

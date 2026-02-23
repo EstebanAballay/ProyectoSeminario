@@ -231,6 +231,37 @@ let ViajeService = class ViajeService {
     findOne(id) {
         return this.viajeRepository.findOne({ where: { ViajeId: id }, relations: ['estadoViaje'] });
     }
+    async findViajeXUnidad(id) {
+        const viaje = await this.viajeRepository.findOne({
+            where: { ViajeId: id },
+            relations: ['estadoViaje'],
+        });
+        if (!viaje)
+            return null;
+        let idsUnidades = viaje.unidades.map((unidad) => Number(unidad));
+        let unidadesEncontradas = [];
+        if (idsUnidades.length > 0) {
+            for (const idUnidad of idsUnidades) {
+                if (!idUnidad)
+                    continue;
+                try {
+                    const response = await (0, rxjs_1.firstValueFrom)(this.httpService.get(`http://unidad-service:3002/unidad/${idUnidad}`));
+                    console.log(response.data);
+                    unidadesEncontradas.push(response.data);
+                }
+                catch (error) {
+                    console.error(`🚨 Error al traer la unidad ${idUnidad} desde unidad-service:`, error.message);
+                }
+            }
+        }
+        else {
+            console.warn(`⚠️ El viaje ${id} no tiene IDs de unidades asociados en la BD.`);
+        }
+        console.log('las unidades encontradas son:', unidadesEncontradas);
+        viaje.unidades = unidadesEncontradas;
+        console.log('✅ Viaje procesado con sus unidades completas:', viaje.unidades);
+        return viaje;
+    }
     remove(id) {
         console.log('unidad eliminada');
         return this.viajeRepository.delete(id);
@@ -319,9 +350,7 @@ let ViajeService = class ViajeService {
         const viajes = await this.viajeRepository.find({ where: { estadoViaje: estadoPendientePago, usuarioId: user.id } });
         const viajesConUnidades = await Promise.all(viajes.map(async (viaje) => {
             try {
-                const { data: unidades } = await (0, rxjs_1.lastValueFrom)(this.httpService.get('http://unidad-service:3002/unidad/', {
-                    params: { idViaje: viaje.ViajeId }
-                }));
+                const { data: unidades } = await (0, rxjs_1.lastValueFrom)(this.httpService.get(`http://unidad-service:3002/unidad/unidades-de-viaje/${viaje.ViajeId}`));
                 return {
                     ...viaje,
                     unidades: unidades
@@ -334,6 +363,18 @@ let ViajeService = class ViajeService {
         }));
         console.log('Viajes completos recuperados:', viajesConUnidades);
         return viajesConUnidades;
+    }
+    async buscarPorMultiplesIds(ids) {
+        if (!ids || ids.length === 0) {
+            return [];
+        }
+        const viajes = await this.viajeRepository.find({
+            where: {
+                ViajeId: (0, typeorm_2.In)(ids),
+            },
+        });
+        console.log(viajes);
+        return viajes;
     }
 };
 exports.ViajeService = ViajeService;

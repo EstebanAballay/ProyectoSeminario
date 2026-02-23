@@ -1,0 +1,182 @@
+// Paleta de colores
+$bg-dark: #091424;
+$text-primary: #1f3044;
+$bg-light-gray: #f9f9f9;
+$bg-badge: #e6e9ed;
+$text-badge: #5c6b7a;
+$red-deduction: #c82c2c;
+$btn-bg: #234060;
+$btn-hover: #182d44;
+
+.page-wrapper {
+  background-color: $bg-dark;
+  min-height: 100vh;
+  padding: 40px 20px;
+  font-family: 'Segoe UI', Roboto, Helvetica, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.page-title {
+  color: #ffffff;
+  font-size: 28px;
+  font-family: 'Georgia', serif; // O la fuente serif que utilices
+  margin-bottom: 30px;
+}
+
+.card-container {
+  background-color: #ffffff;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 900px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 24px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+
+  .route-info {
+    color: $text-primary;
+    
+    .route-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 0 0 8px 0;
+      font-family: 'Georgia', serif;
+    }
+
+    .route-ids {
+      font-size: 16px;
+      font-weight: 700;
+      margin: 0;
+      font-family: 'Georgia', serif;
+    }
+  }
+
+  .badges-container {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+
+    .badge {
+      background-color: $bg-badge;
+      color: $text-badge;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .distance-badge svg {
+      color: #8c98a4;
+    }
+  }
+}
+
+.card-body {
+  background-color: $bg-light-gray;
+  padding: 30px;
+
+  .section-title {
+    color: $text-primary;
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0 0 20px 0;
+    letter-spacing: 0.5px;
+  }
+
+  .unit-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 15px;
+    color: #333;
+    margin-bottom: 10px;
+
+    .unit-amount {
+      color: #6c757d;
+      font-family: monospace;
+      font-size: 16px;
+    }
+  }
+}
+
+.card-container {
+  // ... tus estilos anteriores ...
+  margin-bottom: 30px; /* Agrega esta línea para separar las tarjetas */
+}
+
+.card-footer {
+  padding: 30px;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  .totals-section {
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 30px;
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 15px;
+      color: #000;
+
+      &.deduction {
+        color: $red-deduction;
+        font-style: italic;
+      }
+
+      &.final-total {
+        margin-top: 15px;
+        align-items: baseline;
+        color: $text-primary;
+
+        .final-label {
+          font-weight: 700;
+          font-size: 18px;
+        }
+
+        .final-value {
+          font-weight: 700;
+          font-size: 22px;
+          font-family: 'Georgia', serif;
+        }
+      }
+    }
+  }
+
+  .action-container {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+
+    .btn-primary {
+      background-color: $btn-bg;
+      color: #ffffff;
+      border: none;
+      border-radius: 4px;
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: $btn-hover;
+      }
+    }
+  }
+}

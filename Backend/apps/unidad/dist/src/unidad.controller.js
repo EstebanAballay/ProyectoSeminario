@@ -57,11 +57,13 @@ let UnidadController = class UnidadController {
     async crearUnidad(createUnidadDto) {
         return await this.unidadService.createVehicle(createUnidadDto);
     }
-    async findAll(id) {
-        return this.unidadService.findUnityByDriver(Number(id));
-    }
     findOne(id) {
-        return this.unidadService.findOne(+id);
+        console.log('entre al controller');
+        const found = this.unidadService.findOne(+id);
+        return found;
+    }
+    async findAll(id) {
+        return this.unidadService.findUnityByDriver(+id);
     }
     async buscarUnidades(idViaje) {
         if (idViaje) {
@@ -133,19 +135,19 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UnidadController.prototype, "crearUnidad", null);
 __decorate([
-    (0, common_1.Get)(':id/'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], UnidadController.prototype, "findAll", null);
-__decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], UnidadController.prototype, "findOne", null);
+__decorate([
+    (0, common_1.Get)('unidades-de-viaje/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UnidadController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(),
     __param(0, (0, common_1.Query)('idViaje')),

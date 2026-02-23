@@ -55,11 +55,24 @@ let ViajeController = class ViajeController {
     async getViajesPorPagar(user) {
         return await this.viajeService.getViajesPendientesPago(user);
     }
+    async obtenerViajesPorIds(idsString) {
+        if (!idsString) {
+            return [];
+        }
+        const idsArray = idsString
+            .split(',')
+            .map((id) => parseInt(id.trim(), 10))
+            .filter((id) => !isNaN(id));
+        return this.viajeService.buscarPorMultiplesIds(idsArray);
+    }
     async rechazarViaje(id) {
         return this.viajeService.rechazarViaje(id);
     }
     findOne(id) {
         return this.viajeService.findOne(id);
+    }
+    findViajeXUnidad(id) {
+        return this.viajeService.findViajeXUnidad(id);
     }
     remove(id) {
         return this.viajeService.remove(+id);
@@ -145,6 +158,13 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ViajeController.prototype, "getViajesPorPagar", null);
 __decorate([
+    (0, common_1.Get)('por-ids'),
+    __param(0, (0, common_1.Query)('ids')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], ViajeController.prototype, "obtenerViajesPorIds", null);
+__decorate([
     (0, common_1.Patch)('rechazarViaje/:id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
@@ -158,6 +178,13 @@ __decorate([
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], ViajeController.prototype, "findOne", null);
+__decorate([
+    (0, common_1.Get)('/viaje-con-unidades/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", void 0)
+], ViajeController.prototype, "findViajeXUnidad", null);
 __decorate([
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('id')),
