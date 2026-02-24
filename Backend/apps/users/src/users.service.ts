@@ -2,6 +2,7 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { In, Repository } from 'typeorm';
 import { Role } from './role.enum';
+import { UserStatus } from './user-status.enum';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePerfilDto } from './dto/update-perfil.dto';
@@ -37,6 +38,7 @@ const salt = await bcrypt.genSalt(10);
     direccion: dto.direccion,
     password_hash: passwordHash,
     role: Role.CLIENT,
+    estado: UserStatus.ACTIVO,
   });
 
   const guardado = await this.userRepo.save(nuevoUsuario);
@@ -102,6 +104,77 @@ const salt = await bcrypt.genSalt(10);
   
   async findByIds(ids: number[]): Promise<User[]> {
     return this.userRepo.findBy({ id: In(ids) });
+  }
+
+  async listarUsuariosNombreDni() {
+    return this.userRepo.find({
+      select: ['id', 'nombre', 'apellido', 'dni', 'role'],
+      order: { nombre: 'ASC' },
+    });
+  }
+
+  async asegurarEstadoActivoUsuariosExistentes() {
+    await this.userRepo
+      .createQueryBuilder()
+      .update(User)
+      .set({ estado: UserStatus.ACTIVO })
+      .where('estado IS NULL')
+      .execute();
+  }
+
+  async listarUsuariosGestionClientes() {
+    await this.asegurarEstadoActivoUsuariosExistentes();
+    return this.userRepo.find({
+      select: ['id', 'nombre', 'apellido', 'dni', 'role', 'estado'],
+      order: { nombre: 'ASC' },
+    });
+  }
+
+  async actualizarRolUsuario(id: number, role: Role) {
+    if (!Object.values(Role).includes(role)) {
+      throw new BadRequestException('Rol inválido');
+    }
+
+    const usuario = await this.userRepo.findOne({ where: { id } });
+
+    if (!usuario) {
+      throw new BadRequestException('Usuario no encontrado');
+    }
+
+    usuario.role = role;
+    await this.userRepo.save(usuario);
+
+    return {
+      id: usuario.id,
+      nombre: usuario.nombre,
+      dni: usuario.dni,
+      role: usuario.role,
+      estado: usuario.estado,
+    };
+  }
+
+  async actualizarEstadoUsuario(id: number, estado: UserStatus) {
+    if (!Object.values(UserStatus).includes(estado)) {
+      throw new BadRequestException('Estado inválido');
+    }
+
+    const usuario = await this.userRepo.findOne({ where: { id } });
+
+    if (!usuario) {
+      throw new BadRequestException('Usuario no encontrado');
+    }
+
+    usuario.estado = estado;
+    await this.userRepo.save(usuario);
+
+    return {
+      id: usuario.id,
+      nombre: usuario.nombre,
+      apellido: usuario.apellido,
+      dni: usuario.dni,
+      role: usuario.role,
+      estado: usuario.estado,
+    };
   }
 
 }

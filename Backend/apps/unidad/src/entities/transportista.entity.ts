@@ -1,6 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne} from 'typeorm';
 import { estadoTransportista } from './estadoTransportista.entity';
-import { Especializacion } from './especializacion.entity';
 
 @Entity({name:"transportista",schema:'microservice_unidad'})
 export class Transportista{
@@ -13,7 +12,4 @@ export class Transportista{
 
     @ManyToOne(()=>estadoTransportista)
     estado: estadoTransportista;
-
-    @ManyToOne(()=>Especializacion)
-    especializacion: Especializacion;
 }

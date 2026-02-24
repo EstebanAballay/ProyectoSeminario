@@ -2,6 +2,7 @@ import { UnidadService } from './unidad.service';
 import { CreateUnidadDto } from './dto/create-unidad.dto';
 import { ConsultarUnidadesDto } from './dto/datosUnidadesFront.dto';
 import { CreateVehicleDto } from './dto/create-Vehicle.dto';
+import { CreateTransportistaFromUserDto } from './dto/create-transportista-from-user.dto';
 export declare class UnidadController {
     private readonly unidadService;
     constructor(unidadService: UnidadService);
@@ -23,7 +24,8 @@ export declare class UnidadController {
     }): Promise<void>;
     iniciarEstadoViaje(id: number): Promise<void>;
     finalizarEstadoViaje(id: number): Promise<void>;
-    crearUnidad(createUnidadDto: CreateVehicleDto): Promise<import("./entities/camion.entity").Camion | import("./entities/semirremolque.entity").Semirremolque | import("./entities/acoplado.entity").Acoplado>;
+    crearUnidad(createUnidadDto: CreateVehicleDto): Promise<import("./entities/camion.entity").Camion | import("./entities/acoplado.entity").Acoplado | import("./entities/semirremolque.entity").Semirremolque>;
+    crearTransportistaDesdeUsuario(dto: CreateTransportistaFromUserDto): Promise<import("./entities/transportista.entity").Transportista>;
     findAll(id: String): Promise<any>;
     findOne(id: string): Promise<import("./entities/unidad.entity").Unidad[]>;
     buscarUnidades(idViaje?: number): Promise<import("./entities/unidad.entity").Unidad[]>;

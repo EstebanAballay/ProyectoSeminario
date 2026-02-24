@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Transportista = void 0;
 const typeorm_1 = require("typeorm");
 const estadoTransportista_entity_1 = require("./estadoTransportista.entity");
-const especializacion_entity_1 = require("./especializacion.entity");
 let Transportista = class Transportista {
 };
 exports.Transportista = Transportista;
@@ -28,10 +27,6 @@ __decorate([
     (0, typeorm_1.ManyToOne)(() => estadoTransportista_entity_1.estadoTransportista),
     __metadata("design:type", estadoTransportista_entity_1.estadoTransportista)
 ], Transportista.prototype, "estado", void 0);
-__decorate([
-    (0, typeorm_1.ManyToOne)(() => especializacion_entity_1.Especializacion),
-    __metadata("design:type", especializacion_entity_1.Especializacion)
-], Transportista.prototype, "especializacion", void 0);
 exports.Transportista = Transportista = __decorate([
     (0, typeorm_1.Entity)({ name: "transportista", schema: 'microservice_unidad' })
 ], Transportista);

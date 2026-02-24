@@ -23,7 +23,7 @@ export class AuthService {
     console.log("login del src llamado")
     const user = await this.userRepository.findOne({
       where: { email },
-      select: ['id', 'nombre', 'email', 'password_hash', 'role'],
+      select: ['id', 'nombre', 'email', 'password_hash', 'role', 'estado'],
     });
 
     if (!user) {
@@ -34,6 +34,10 @@ export class AuthService {
 
     if (!isPasswordValid) {
       throw new UnauthorizedException("Invalid password");
+    }
+
+    if (user.estado === 'eliminado') {
+      throw new UnauthorizedException('Usuario dado de baja');
     }
 
     const payload = { id: user.id, email: user.email, role: user.role };

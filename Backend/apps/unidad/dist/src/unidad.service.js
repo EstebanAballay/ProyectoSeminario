@@ -49,9 +49,32 @@ let UnidadService = class UnidadService {
         try {
             const count = await this.UnidadRepository.count();
             console.log('DB connection works, Unidad count:', count);
+            await this.asegurarEstadoEnEsperaParaTransportistas();
         }
         catch (error) {
             console.error('DB connection failed:', error);
+        }
+    }
+    async obtenerEstadoEnEspera() {
+        let estado = await this.estadoTransportistaRepository
+            .createQueryBuilder('estado')
+            .where('LOWER(estado.nombre) = LOWER(:nombre)', { nombre: 'EnEspera' })
+            .getOne();
+        if (!estado) {
+            estado = this.estadoTransportistaRepository.create({ nombre: 'EnEspera' });
+            estado = await this.estadoTransportistaRepository.save(estado);
+        }
+        return estado;
+    }
+    async asegurarEstadoEnEsperaParaTransportistas() {
+        const estadoEnEspera = await this.obtenerEstadoEnEspera();
+        const transportistas = await this.transportistaRepository.find({ relations: ['estado'] });
+        for (const transportista of transportistas) {
+            const nombreEstado = (transportista.estado?.nombre || '').toLowerCase();
+            if (nombreEstado !== 'enespera') {
+                transportista.estado = estadoEnEspera;
+                await this.transportistaRepository.save(transportista);
+            }
         }
     }
     getRandomItem(items) {
@@ -292,7 +315,7 @@ let UnidadService = class UnidadService {
         const estadoCamion = await this.estadoCamionRepository.findOne({ where: { nombre: 'enViaje' } });
         const estadoSemirremolque = await this.EstadoSemirremolqueRepository.findOne({ where: { nombre: 'enViaje' } });
         const estadoAcoplado = await this.EstadoAcopladoRepository.findOne({ where: { nombre: 'enViaje' } });
-        const estadoTransportista = await this.estadoTransportistaRepository.findOne({ where: { nombre: 'enViaje' } });
+        const estadoTransportista = await this.obtenerEstadoEnEspera();
         for (const unidad of unidades) {
             if (unidad.camion) {
                 const camion = await this.CamionRepository.findOne({ where: { id: unidad.camion.id } });
@@ -330,7 +353,7 @@ let UnidadService = class UnidadService {
         const estadoCamion = await this.estadoCamionRepository.findOne({ where: { nombre: 'disponible' } });
         const estadoSemirremolque = await this.EstadoSemirremolqueRepository.findOne({ where: { nombre: 'disponible' } });
         const estadoAcoplado = await this.EstadoAcopladoRepository.findOne({ where: { nombre: 'disponible' } });
-        const estadoTransportista = await this.estadoTransportistaRepository.findOne({ where: { nombre: 'disponible' } });
+        const estadoTransportista = await this.obtenerEstadoEnEspera();
         for (const unidad of unidades) {
             if (unidad.camion) {
                 const camion = await this.CamionRepository.findOne({ where: { id: unidad.camion.id } });
@@ -362,6 +385,25 @@ let UnidadService = class UnidadService {
     }
     async findAll() {
         return await this.UnidadRepository.find();
+    }
+    async createTransportistaDesdeUsuario(dto) {
+        if (!dto?.idUsuario || !dto?.legajo) {
+            throw new common_1.BadRequestException('Debe enviar idUsuario y legajo');
+        }
+        const existente = await this.transportistaRepository.findOne({
+            where: { idUsuario: dto.idUsuario },
+        });
+        if (existente) {
+            throw new common_1.BadRequestException('Ya existe un transportista para este usuario');
+        }
+        await this.asegurarEstadoEnEsperaParaTransportistas();
+        const estado = await this.obtenerEstadoEnEspera();
+        const nuevoTransportista = this.transportistaRepository.create({
+            idUsuario: dto.idUsuario,
+            legajo: dto.legajo,
+            estado,
+        });
+        return this.transportistaRepository.save(nuevoTransportista);
     }
 };
 exports.UnidadService = UnidadService;

@@ -13,6 +13,8 @@ import { AbmUnidadesComponent } from './abm-unidades.component/abm-unidades.comp
 import { ConsultarPagos } from './consultar-pagos/consultar-pagos';
 
 import { PerfilComponent } from './perfil.component/perfil.component';
+import { AgregarEmpleadosComponent } from './agregar-empleados/agregar-empleados.component';
+import { GestionClientesComponent } from './gestion-clientes/gestion-clientes.component';
 export const routes: Routes = [
   { path: '', redirectTo: 'paginainicio', pathMatch: 'full' },
   {
@@ -31,6 +33,8 @@ export const routes: Routes = [
   { path: 'nuevoviaje', component: NuevoViajeComponent, canActivate: [RoleGuard], data: { role: 'client' }  },
   { path: 'admin', component: AdminPanel, canActivate: [RoleGuard], data: { role: 'admin' }}, 
   { path: 'admin/consultar-viajes', component: ConsultarViajes, canActivate: [RoleGuard], data: { role: 'admin' }},
+  { path: 'admin/agregar-empleados', component: AgregarEmpleadosComponent, canActivate: [RoleGuard], data: { role: 'admin' }},
+  { path: 'admin/gestion-clientes', component: GestionClientesComponent, canActivate: [RoleGuard], data: { role: 'admin' }},
   { path: 'admin/unidades',component:AbmUnidadesComponent},
   { path: 'menucamionero', component: MenucamioneroComponent },
   { path: 'consultar-pagos', component: ConsultarPagos, canActivate: [RoleGuard], data: { role: 'client' } },

@@ -1,0 +1,99 @@
+<div class="empleados-page">
+  <div class="empleados-container">
+    <div class="title-row">
+      <h2 class="page-title">Agregar Empleados</h2>
+      <a routerLink="/admin" class="back-link">Volver al panel</a>
+    </div>
+
+    <div class="content-card">
+      <div class="filtro-container" *ngIf="!cargando && !error">
+        <input
+          type="text"
+          [(ngModel)]="filtro"
+          placeholder="Filtrar por nombre, apellido o DNI"
+          class="filtro-input"
+        />
+      </div>
+
+      <p *ngIf="cargando" class="estado-texto">Cargando usuarios...</p>
+      <p *ngIf="error" class="estado-texto estado-error">{{ error }}</p>
+      <p *ngIf="mensaje" class="estado-texto estado-ok">{{ mensaje }}</p>
+
+      <table *ngIf="!cargando && !error && usuariosFiltrados.length > 0" class="usuarios-table">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>DNI</th>
+            <th>Rol</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let usuario of usuariosFiltrados">
+            <td>{{ usuario.nombre }}</td>
+            <td>{{ usuario.apellido }}</td>
+            <td>{{ usuario.dni }}</td>
+            <td>
+              <select [(ngModel)]="usuario.roleSeleccionado" class="rol-select">
+                <option *ngFor="let rol of rolesDisponibles" [value]="rol">{{ rol }}</option>
+              </select>
+            </td>
+            <td>
+              <button
+                type="button"
+                class="guardar-btn"
+                [disabled]="usuario.guardando || usuario.roleSeleccionado === usuario.role"
+                (click)="guardarRol(usuario)">
+                {{ usuario.guardando ? 'Guardando...' : (usuario.roleSeleccionado === 'chofer' && usuario.role !== 'chofer' ? 'Configurar chofer' : 'Guardar') }}
+              </button>
+
+              <div class="chofer-panel" *ngIf="usuario.mostrarPanelChofer">
+                <h4 class="chofer-title">Datos del transportista</h4>
+
+                <label class="chofer-label">Legajo</label>
+                <input
+                  type="text"
+                  class="chofer-input"
+                  [(ngModel)]="usuario.legajoChofer"
+                  placeholder="Ingresar legajo"
+                />
+
+                <label class="chofer-label">Estado transportista</label>
+                <input
+                  type="text"
+                  class="chofer-input"
+                  [(ngModel)]="usuario.estadoTransportistaChofer"
+                  readonly
+                />
+
+                <div class="chofer-actions">
+                  <button
+                    type="button"
+                    class="guardar-btn"
+                    [disabled]="usuario.guardando"
+                    (click)="confirmarAltaChofer(usuario)">
+                    {{ usuario.guardando ? 'Guardando...' : 'Crear chofer' }}
+                  </button>
+
+                  <button
+                    type="button"
+                    class="cancelar-btn"
+                    [disabled]="usuario.guardando"
+                    (click)="cancelarAltaChofer(usuario)">
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="estado-texto" *ngIf="!cargando && !error && usuarios.length === 0">No hay usuarios para mostrar.</p>
+      <p class="estado-texto" *ngIf="!cargando && !error && usuarios.length > 0 && usuariosFiltrados.length === 0">
+        No hay resultados para el filtro aplicado.
+      </p>
+    </div>
+  </div>
+</div>

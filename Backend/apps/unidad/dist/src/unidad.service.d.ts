@@ -13,6 +13,7 @@ import { EstadoCamion } from './entities/estadoCamion.entity';
 import { EstadoAcoplado } from './entities/estadoAcoplado.entity';
 import { EstadoSemirremolque } from './entities/estadoSemirremolque.entity';
 import { estadoTransportista } from './entities/estadoTransportista.entity';
+import { CreateTransportistaFromUserDto } from './dto/create-transportista-from-user.dto';
 export declare class UnidadService {
     private readonly httpService;
     private semirremolqueRepository;
@@ -28,6 +29,8 @@ export declare class UnidadService {
     private transportistaRepository;
     constructor(httpService: HttpService, semirremolqueRepository: Repository<Semirremolque>, acopladoRepository: Repository<Acoplado>, tipoRepository: Repository<Tipo>, tipoCamionRepository: Repository<TipoCamion>, CamionRepository: Repository<Camion>, UnidadRepository: Repository<Unidad>, estadoCamionRepository: Repository<EstadoCamion>, EstadoSemirremolqueRepository: Repository<EstadoSemirremolque>, EstadoAcopladoRepository: Repository<EstadoAcoplado>, estadoTransportistaRepository: Repository<estadoTransportista>, transportistaRepository: Repository<Transportista>);
     testConnection(): Promise<void>;
+    private obtenerEstadoEnEspera;
+    private asegurarEstadoEnEsperaParaTransportistas;
     private getRandomItem;
     createUnidad(dto: CreateUnidadDto): Promise<Unidad>;
     consultarTiposAcoplados(): Promise<Tipo[]>;
@@ -47,9 +50,10 @@ export declare class UnidadService {
         choferId: number;
     }[]): void;
     findOne(id: number): Promise<Unidad[]>;
-    createVehicle(createUnidadDto: CreateVehicleDto): Promise<Camion | Semirremolque | Acoplado>;
+    createVehicle(createUnidadDto: CreateVehicleDto): Promise<Camion | Acoplado | Semirremolque>;
     findUnityByDriver(idusuario: number): Promise<any[]>;
     iniciarEstadoViaje(viajeId: number): Promise<void>;
     finalizarEstadoViaje(viajeId: number): Promise<void>;
     findAll(): Promise<Unidad[]>;
+    createTransportistaDesdeUsuario(dto: CreateTransportistaFromUserDto): Promise<Transportista>;
 }

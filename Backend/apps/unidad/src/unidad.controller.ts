@@ -5,6 +5,7 @@ import { UpdateUnidadDto } from './dto/update-unidad.dto';
 import { promises } from 'dns';
 import { ConsultarUnidadesDto } from './dto/datosUnidadesFront.dto';
 import { CreateVehicleDto } from './dto/create-Vehicle.dto';
+import { CreateTransportistaFromUserDto } from './dto/create-transportista-from-user.dto';
 
 @Controller('unidad')
 export class UnidadController {
@@ -60,6 +61,11 @@ export class UnidadController {
   @Post('nuevaUnidad')
   async crearUnidad(@Body() createUnidadDto: CreateVehicleDto) {
     return await this.unidadService.createVehicle(createUnidadDto);
+  }
+
+  @Post('transportistas')
+  async crearTransportistaDesdeUsuario(@Body() dto: CreateTransportistaFromUserDto) {
+    return await this.unidadService.createTransportistaDesdeUsuario(dto);
   }
 
     @Get(':id/')

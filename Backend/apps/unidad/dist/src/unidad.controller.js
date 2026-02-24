@@ -18,6 +18,7 @@ const unidad_service_1 = require("./unidad.service");
 const create_unidad_dto_1 = require("./dto/create-unidad.dto");
 const datosUnidadesFront_dto_1 = require("./dto/datosUnidadesFront.dto");
 const create_Vehicle_dto_1 = require("./dto/create-Vehicle.dto");
+const create_transportista_from_user_dto_1 = require("./dto/create-transportista-from-user.dto");
 let UnidadController = class UnidadController {
     constructor(unidadService) {
         this.unidadService = unidadService;
@@ -56,6 +57,9 @@ let UnidadController = class UnidadController {
     }
     async crearUnidad(createUnidadDto) {
         return await this.unidadService.createVehicle(createUnidadDto);
+    }
+    async crearTransportistaDesdeUsuario(dto) {
+        return await this.unidadService.createTransportistaDesdeUsuario(dto);
     }
     async findAll(id) {
         return this.unidadService.findUnityByDriver(Number(id));
@@ -132,6 +136,13 @@ __decorate([
     __metadata("design:paramtypes", [create_Vehicle_dto_1.CreateVehicleDto]),
     __metadata("design:returntype", Promise)
 ], UnidadController.prototype, "crearUnidad", null);
+__decorate([
+    (0, common_1.Post)('transportistas'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_transportista_from_user_dto_1.CreateTransportistaFromUserDto]),
+    __metadata("design:returntype", Promise)
+], UnidadController.prototype, "crearTransportistaDesdeUsuario", null);
 __decorate([
     (0, common_1.Get)(':id/'),
     __param(0, (0, common_1.Param)('id')),

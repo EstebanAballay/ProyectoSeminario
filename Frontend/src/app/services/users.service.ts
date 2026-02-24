@@ -8,6 +8,7 @@ import { config } from '../config/env';
 export class UsersService {
   private authUrl = 'http://localhost:3007/auth';
   private usersUrl = 'http://localhost:3003/users';
+  private unidadUrl = 'http://localhost:3002/unidad';
 
   async register(userData: any) {
     try {
@@ -50,6 +51,55 @@ export class UsersService {
       return response.data;
     } catch (error: any) {
       console.error('Error al actualizar perfil:', error.response?.data || error.message);
+      throw error;
+    }
+  }
+
+  async getListadoBasicoUsuarios() {
+    try {
+      const response = await axiosService.get(`${this.usersUrl}/listado-basico`);
+      return response.data;
+    } catch (error: any) {
+      throw error;
+    }
+  }
+
+  async actualizarRolUsuario(userId: number, role: string) {
+    try {
+      const response = await axiosService.patch(`${this.usersUrl}/${userId}/role`, { role });
+      return response.data;
+    } catch (error: any) {
+      throw error;
+    }
+  }
+
+  async getListadoGestionClientes() {
+    try {
+      const response = await axiosService.get(`${this.usersUrl}/gestion-clientes`);
+      return response.data;
+    } catch (error: any) {
+      throw error;
+    }
+  }
+
+  async actualizarEstadoUsuario(userId: number, estado: 'activo' | 'eliminado') {
+    try {
+      const response = await axiosService.patch(`${this.usersUrl}/${userId}/estado`, { estado });
+      return response.data;
+    } catch (error: any) {
+      throw error;
+    }
+  }
+
+  async crearTransportistaDesdeUsuario(data: {
+    idUsuario: number;
+    legajo: string;
+    estadoTransportista: string;
+  }) {
+    try {
+      const response = await axiosService.post(`${this.unidadUrl}/transportistas`, data);
+      return response.data;
+    } catch (error: any) {
       throw error;
     }
   }

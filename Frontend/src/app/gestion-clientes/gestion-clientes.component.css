@@ -1,0 +1,150 @@
+.gestion-page {
+  min-height: 100vh;
+  background-color: #052c4f;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 2rem 1rem;
+}
+
+.gestion-container {
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.page-title {
+  color: #f4f0e6;
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.back-link {
+  text-decoration: none;
+  color: #052c4f;
+  background-color: #f4f0e6;
+  border-radius: 8px;
+  padding: 0.5rem 0.9rem;
+  font-weight: 600;
+}
+
+.content-card {
+  background-color: #f4f0e6;
+  border-radius: 10px;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
+  padding: 1rem;
+}
+
+.filtro-container {
+  margin-bottom: 1rem;
+}
+
+.filtro-input {
+  width: 100%;
+  max-width: 420px;
+  box-sizing: border-box;
+  padding: 0.7rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #052c4f;
+  background-color: #ffffff;
+}
+
+.usuarios-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.usuarios-table th,
+.usuarios-table td {
+  border-bottom: 1px solid #ddd;
+  padding: 0.8rem;
+  text-align: left;
+  color: #052c4f;
+}
+
+.usuarios-table th {
+  background-color: #e8e3d5;
+  font-weight: 700;
+}
+
+.usuarios-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.estado-texto {
+  color: #052c4f;
+  margin: 0.5rem 0;
+  font-weight: 600;
+}
+
+.estado-error {
+  color: #a81818;
+}
+
+.estado-ok {
+  color: #1d6b3a;
+}
+
+.badge-activo,
+.badge-eliminado {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.badge-activo {
+  background-color: #d8f0de;
+  color: #1d6b3a;
+}
+
+.badge-eliminado {
+  background-color: #f8d7da;
+  color: #a81818;
+}
+
+.acciones-col {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.accion-btn {
+  border: none;
+  border-radius: 6px;
+  padding: 0.45rem 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.baja-btn {
+  background-color: #a81818;
+  color: #f4f0e6;
+}
+
+.alta-btn {
+  background-color: #1d6b3a;
+  color: #f4f0e6;
+}
+
+.accion-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 700px) {
+  .title-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
