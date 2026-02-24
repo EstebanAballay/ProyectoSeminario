@@ -10,31 +10,21 @@ export class ViajeService {
     // ===============================
     //  UNIDADES DISPONIBLES
     // ===============================
-    async getUnidadesDisponibles(
-        fechaInicio: Date,
-        camiones: any,
-        origenCoords: any,
-        destinoCoords: any
-    ): Promise<any> {
+    async getUnidadesDisponibles(fechaInicio: Date, camiones:any, origenCoords:any, destinoCoords:any): Promise<any> {
+        const dto = {camiones:camiones, origenCoords:origenCoords, destinoCoords:destinoCoords}
 
+        console.log(camiones);
+        // Convertimos las fechas al formato ISO (o el que espere tu back)
         const inicio = fechaInicio.toISOString();
 
         const url = `${this.apiUrl}/viajesRango?fechaInicio=${inicio}`;
 
-        const body = {
-        camiones: camiones,
-        dto: {
-            origenCoords: origenCoords,
-            destinoCoords: destinoCoords
-        }
-        };
-
         try {
-        const response = await axios.post(url, body);
-        return response.data;
+            const response = await axios.post(url,{camiones,dto});
+            return response.data;
         } catch (error) {
-        console.error('Error al obtener unidades disponibles:', error);
-        throw error;
+            console.error('Error al obtener unidades disponibles:', error);
+            throw error;
         }
     }
 
@@ -86,26 +76,15 @@ export class ViajeService {
     // ===============================
     // CHOFERES DISPONIBLES
     // ===============================
-    async getChoferesDisponibles(
-        fechaInicio: Date,
-        fechaFin: Date
-    ): Promise<any> {
-
+    async getChoferesDisponibles(fechaInicio: Date,fechaFin: Date): Promise<any> {
         const url = `${this.apiUrl}/choferesDisponibles`;
-
         try {
-        const response = await axios.get(url, {
-            params: {
-            desde: fechaInicio.toISOString(),
-            hasta: fechaFin.toISOString()
-            }
-        });
-
-        return response.data;
-
-        } catch (error) {
-        console.error('Error al obtener choferes disponibles:', error);
-        throw error;
+            const response = await axios.get(url, {params: {desde: fechaInicio.toISOString(), hasta: fechaFin.toISOString()}});
+            console.log('los users en el front son:',typeof(response.data))
+            return response.data; 
+        }catch (error) {
+            console.error('Error al obtener choferes disponibles:', error);
+            throw error;
         }
     }
 

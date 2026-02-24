@@ -10,7 +10,7 @@ import { UnidadModule } from './src/unidad.module';
   type: 'postgres',
   url: process.env.DATABASE_URL,
   autoLoadEntities: true,
-  synchronize: true,
+  synchronize: false,
   logging: true,
   ssl: {
     rejectUnauthorized: false,

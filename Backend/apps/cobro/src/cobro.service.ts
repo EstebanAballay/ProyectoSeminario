@@ -15,7 +15,7 @@ import { Response } from 'express';
 @Injectable()
 export class CobroService {
     private readonly logger = new Logger(CobroService.name);
-
+    
     constructor(
         @InjectRepository(Cobro) private readonly cobroRepo: Repository<Cobro>,
         @InjectRepository(EstadoCobro) private estadoRepo: Repository<EstadoCobro>, 
@@ -23,7 +23,7 @@ export class CobroService {
         private readonly httpService: HttpService,
         private readonly billingService:BillingService
     ) {}
-
+ 
     /**
      * Crea el registro inicial en Supabase.
      */
@@ -240,7 +240,7 @@ export class CobroService {
         if (!fs.existsSync(rutaDestino)) {
             throw new NotFoundException('La factura aún se está generando. Por favor, aguarde unos segundos y vuelva a intentar.');
         }
-
+ 
         // 5. Configuramos las cabeceras para forzar la descarga en el navegador
         res.set({
             'Content-Type': 'application/pdf',

@@ -1,5 +1,5 @@
 import { IsNumber, IsEnum, IsOptional, IsString } from 'class-validator';
-import { TipoCobro } from './cobro.entity'; // ✅ Usando la Mayúscula que pide el error
+import { tipoCobro } from './cobro.entity'; // ✅ Usando la Mayúscula que pide el error
 
 export class CreateCobroDto {
     @IsNumber()
@@ -8,8 +8,8 @@ export class CreateCobroDto {
     @IsNumber()
     monto: number;
 
-    @IsEnum(TipoCobro)
-    tipo: TipoCobro;
+    @IsEnum(tipoCobro)
+    tipo: tipoCobro;
 
     @IsOptional()
     @IsString()

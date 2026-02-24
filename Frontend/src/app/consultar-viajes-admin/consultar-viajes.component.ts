@@ -161,8 +161,8 @@ export class ConsultarViajes {
   async iniciarAsignacion(viaje: Viaje) {
     viaje.seleccionandoChofer = true;
     //cuando el usuario hace click en asignar, traigo los choferes disponibles para ese viaje
-    this.choferesDisponibles = await this.viajeService.getChoferesDisponibles(new Date(viaje.fechaInicio), new Date(viaje.fechaFin));
-    console.log("Choferes disponibles " + this.choferesDisponibles);
+    this.choferesDisponibles = await (this.viajeService.getChoferesDisponibles(new Date(viaje.fechaInicio), new Date(viaje.fechaFin)));
+    console.log("Choferes disponibles " , this.choferesDisponibles);
   }
 
   // Acción: Confirmar viaje con chofer
@@ -217,7 +217,7 @@ export class ConsultarViajes {
   cancelarAsignacion(viaje: Viaje) {
     viaje.seleccionandoChofer = false;
     // Opcional: limpiar las selecciones hechas si cancela
-    viaje.unidades.forEach(u => u.idChoferSeleccionado = undefined);
+    // viaje.unidades.forEach(u => u.idChoferSeleccionado = undefined);
   }
 
   // Lógica visual: Evita seleccionar al mismo chofer en 2 unidades distintas del mismo viaje

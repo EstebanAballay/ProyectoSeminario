@@ -4,6 +4,7 @@
     "outDir": "./dist",
     "module": "commonjs",
     "target": "ES2021",
+    "skipLibCheck": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true
   },

@@ -255,47 +255,48 @@ export class UnidadService {
           }
         })
       );
+      console.log('los choferes son:',data);
       return data;
     }
 
-  // Buscar unidades asociadas a los viajes en el rango
-  const unidadesEnRango = await this.UnidadRepository.find({
-    where: { idViaje: In(idViajesEnRango) },
-    relations: ['transportista'] 
-  });
+    // Buscar unidades asociadas a los viajes en el rango
+    const unidadesEnRango = await this.UnidadRepository.find({
+      where: { idViaje: In(idViajesEnRango) },
+      relations: ['transportista'] 
+    });
 
-  // Busco los IDs de los choferes ocupados
-  // Usamos un Set para evitar duplicados si un chofer tiene varios viajes
-  const idsOcupados = [...new Set(unidadesEnRango.map(u => u.transportista.idUsuario))];
+    // Busco los IDs de los choferes ocupados
+    // Usamos un Set para evitar duplicados si un chofer tiene varios viajes
+    const idsOcupados = [...new Set(unidadesEnRango.map(u => u.transportista.idUsuario))];
 
-  let opcionesBusqueda = {};
+    let opcionesBusqueda = {};
 
-  // Solo aplicamos el filtro Not(In(...)) si realmente hay alguien ocupado
-  if (idsOcupados.length > 0) {
-    opcionesBusqueda = {
-      where: { idUsuario: Not(In(idsOcupados)) },
-    };
-  }
+    // Solo aplicamos el filtro Not(In(...)) si realmente hay alguien ocupado
+    if (idsOcupados.length > 0) {
+      opcionesBusqueda = {
+        where: { idUsuario: Not(In(idsOcupados)) },
+      };
+    }
 
-  // Busco los choferes disponibles (Entities)
-  const choferesDisponibles = await this.transportistaRepository.find(opcionesBusqueda);
+    // Busco los choferes disponibles (Entities)
+    const choferesDisponibles = await this.transportistaRepository.find(opcionesBusqueda);
 
-  console.log('IDs de choferes disponibles:', choferesDisponibles.map(c => c.idUsuario));
+    console.log('IDs de choferes disponibles:', choferesDisponibles.map(c => c.idUsuario));
 
-  if (choferesDisponibles.length === 0) return [];
+    if (choferesDisponibles.length === 0) return [];
 
-  const idsParaSolicitar = choferesDisponibles.map(c => c.idUsuario);
+    const idsParaSolicitar = choferesDisponibles.map(c => c.idUsuario);
 
-  const { data } = await lastValueFrom(
-    this.httpService.get('http://users-service:3003/users/by-ids', {
-      params: {
-        ids: idsParaSolicitar.join(',') 
-      }
-    })
-  );
+    const { data } = await lastValueFrom(
+      this.httpService.get('http://users-service:3003/users/by-ids', {
+        params: {
+          ids: idsParaSolicitar.join(',') 
+        }
+      })
+    );
   
-  return data;
-}
+    return data;
+  }
 
   asignarChoferes(asignaciones:{unidadId: number, choferId: number}[]) {
     for (const asignacion of asignaciones)
@@ -310,8 +311,14 @@ export class UnidadService {
   }
 */
 
+  async find(id: number) {
+    const unidad = await this.UnidadRepository.find({where: {idViaje:id}, relations:['camion','semiremolque','acoplado']});
+    console.log(unidad);
+    return unidad;
+  }  
+
   async findOne(id: number) {
-    const unidad = await this.UnidadRepository.findOne({where: {UnidadId:id}, relations:['camion','semiremolque','acoplado']});
+    const unidad = await this.UnidadRepository.findOne({where: {idViaje:id}, relations:['camion','semiremolque','acoplado']});
     console.log(unidad);
     return unidad;
   }  

@@ -38,30 +38,21 @@ export class ViajeService {
   // ===============================
 
   async createViaje(data: CreateViajeDto, user) {
-
-    let estadoDefault = await this.estadoViajeRepository.findOne({
-      where: { nombre: 'PreCargado' }
-    });
-
+    console.log('Creando viaje con datos:', data);
+    
+    // BLINDAJE: Buscamos el estado, pero si falla usamos ID 1 (PreCargado)
+    let estadoDefault = await this.estadoViajeRepository.findOne({ where: { nombre: 'PreCargado' } });
     if (!estadoDefault) {
-      estadoDefault = { id: 1 } as EstadoViaje;
+        estadoDefault = { id: 1 } as EstadoViaje;
     }
 
-    const { fecha, hora } = await this.calcularFechaRegreso(
-      data.origenCoords,
-      data.destinoCoords,
-      BASE_COORDS,
-      data.fechaInicio,
-      TIEMPO_MUERTO
-    );
-
+    const { fecha, hora } = await this.calcularFechaRegreso(data.origenCoords, data.destinoCoords, BASE_COORDS, data.fechaInicio, TIEMPO_MUERTO);
+    
     const viaje = this.viajeRepository.create({
       fechaReserva: new Date(),
-      fechaInicio: new Date(data.fechaInicio),
+      fechaInicio: new Date(data.fechaInicio), 
       destinoInicio: data.destinoInicio,
-      horaSalida: data.horaSalida.length === 5
-        ? `${data.horaSalida}:00`
-        : data.horaSalida,
+      horaSalida: data.horaSalida.length === 5 ? `${data.horaSalida}:00` : data.horaSalida,
       fechaFin: fecha,
       horaLlegada: hora,
       destinoFin: data.destinoFin,
@@ -71,148 +62,124 @@ export class ViajeService {
       estadoViaje: estadoDefault,
       distancia: data.distancia,
       usuarioId: user.id,
+      CoordXOrigen: data.origenCoords.lat,
+      CoordYOrigen: data.origenCoords.lng,
+      CoordXDestino: data.destinoCoords.lat,
+      CoordYDestino: data.destinoCoords.lng,
       unidades: []
     });
-
+ 
     const savedViaje = await this.viajeRepository.save(viaje);
-
-    // --- Agregar unidades ---
-    let totalAcumulado = 0;
-
-    // --- Agregar unidades ---
+    
+    // Procesamiento de unidades
     if (data.unidades && data.unidades.length > 0) {
       for (const unidad of data.unidades) {
         const nuevaUnidad = await this.agregarUnidad(unidad, savedViaje.ViajeId);
-
-        const subtotalUnidad = Number(nuevaUnidad.subtotal);
-        const distancia = Number(data.distancia);
-
-        const subtotalCalculado =
-          Math.trunc((subtotalUnidad * distancia) * 100) / 100;
-
-        if (nuevaUnidad.id) {
-          savedViaje.unidades.push(nuevaUnidad.id);
-          totalAcumulado += subtotalCalculado;
-        }
+        
+        //multiplico y divido por 100 para quedarme con 2 decimales
+        const subtotalCalculado = Math.trunc((nuevaUnidad.subtotal * data.distancia) * 100) / 100;
+        console.log('subtotal: ',typeof(subtotalCalculado));
+        savedViaje.unidades.push(nuevaUnidad.id);
+        savedViaje.total = Number(savedViaje.total) + Number(subtotalCalculado);
       }
     }
 
-    // 🔹 Asignamos total ya calculado
-    savedViaje.total =
-      Math.trunc(totalAcumulado * 100) / 100;
+    savedViaje.sena = Math.trunc((savedViaje.total * 0.1) * 100) / 100;
+    savedViaje.resto = Math.trunc((savedViaje.total - savedViaje.sena) * 100) / 100;
+    console.log('el viaje guardado quedo asi: ',savedViaje);
+    await this.viajeRepository.save(savedViaje);
 
-    const totalNum = Number(savedViaje.total);
+    // ✅ ENVÍO DE MAIL (NO BLOQUEANTE)
+    this.mailService.enviarMailReserva(user.email, savedViaje)
+      .catch(e => console.error('❌ Error mail reserva:', e));
 
-    // --- Calcular señas ---
-    savedViaje.sena =
-      Math.trunc((totalNum * 0.1) * 100) / 100;
-
-    savedViaje.resto =
-      Math.trunc((totalNum - savedViaje.sena) * 100) / 100;
-
-        // ✅ ENVÍO DE MAIL (NO BLOQUEANTE)
-        this.mailService.enviarMailReserva(user.email, savedViaje)
-          .catch(e => console.error('❌ Error mail reserva:', e));
-
+    // RETORNO CON RELACIÓN: Elimina el null en la respuesta inmediata
     return await this.viajeRepository.findOne({
       where: { ViajeId: savedViaje.ViajeId },
       relations: ['estadoViaje']
     });
   }
 
-  async confirmarPagoViaje(viajeId: number) {
-    return await this.viajeRepository.update(viajeId, {
-      estadoViaje: { id: 2 }
+  async confirmarPagoViajeSenia(viajeId: number) {
+    await this.viajeRepository.update(viajeId, { 
+      estadoViaje: { id: 2 } 
     });
+    
+    console.log(`✅ Viaje ${viajeId} actualizado a estado: Pendiente de confirmacion`);
+    return { success: true };
   }
 
-  async confirmarPagoViajeResto(id: number) {
-    return await this.viajeRepository.update(id, {
-      estadoViaje: { id: 2 }
+  async confirmarPagoViajeResto(viajeId: number) {
+    await this.viajeRepository.update(viajeId, { 
+      estadoViaje: { id: 5 } 
     });
+    
+    console.log(`✅ Viaje ${viajeId} actualizado a estado: Pago Confirmado`);
+    return { success: true };
   }
+
 
   // ===============================
   // UNIDADES
   // ===============================
-
+ 
   async agregarUnidad(unidad: any, viajeId: number) {
     try {
       const response = await firstValueFrom(
-        this.httpService.post(
-          'http://unidad-service:3002/unidad',
-          { ...unidad, viajeId }
-        )
+        this.httpService.post('http://unidad-service:3002/unidad', { ...unidad, viajeId })
       );
-
-      return {
-        id: response.data.UnidadId,
-        subtotal: response.data.subtotal
-      };
-
-    } catch (e) {
+      return { id: response.data.UnidadId, subtotal: response.data.subtotal };
+    } catch (error) {
+      console.error('Error al crear la unidad:', error.message);
       return { id: null, subtotal: 0 };
     }
   }
 
-  async buscarUnidadesDisponibles(fechaInicio: Date, fechaFin: Date, camiones: any) {
-
+  async buscarUnidadesDisponibles(fechaInicio: Date, dtoViaje:any) {
+    console.log(dtoViaje);
+    const {fecha,hora} = await this.calcularFechaRegreso(dtoViaje.dto.origenCoords,dtoViaje.dto.destinoCoords,BASE_COORDS,fechaInicio,TIEMPO_MUERTO);
+    
     const viajesEnRango = await this.viajeRepository.find({
       where: [
-        {
-          fechaInicio: LessThanOrEqual(fechaFin),
-          fechaFin: MoreThanOrEqual(fechaInicio)
-        }
+        { fechaInicio: LessThanOrEqual(new Date(fecha)), fechaFin: MoreThanOrEqual(fechaInicio)},
       ]
     });
-
-    const ocupadas = viajesEnRango.flatMap(v => v.unidades || []);
-
+    
+    const unidadesOcupadas = viajesEnRango.flatMap(v => v.unidades || []);
+    
     try {
+      const dto = { unidadesOcupadas: unidadesOcupadas, camiones: dtoViaje.camiones };
       const response = await firstValueFrom(
-        this.httpService.post(
-          'http://unidad-service:3002/unidad/unidadesDisponibles',
-          { unidadesOcupadas: ocupadas, camiones }
-        )
+        this.httpService.post('http://unidad-service:3002/unidad/unidadesDisponibles', dto)
       );
-
+      console.log(response.data);
       return response.data;
-
-    } catch (e) {
+      
+    } catch (error) {
+      console.error('Error al buscar la unidad:', error.message);
       return [];
     }
   }
 
-  // ===============================
-  // CÁLCULO DE FECHA
-  // ===============================
+  async calcularFechaRegreso(origenCoords, destinoCoords, baseCoords, fechaInicio, tiempoMuerto): Promise<{ fecha: string; hora: string }> {
+    const coords = `${baseCoords.lng},${baseCoords.lat};${origenCoords.lng},${origenCoords.lat};${destinoCoords.lng},${destinoCoords.lat};${baseCoords.lng},${baseCoords.lat}`;
+    const url = `http://router.project-osrm.org/route/v1/driving/${coords}?overview=false`;
 
-  async calcularFechaRegreso(origen, destino, base, inicio, muerto)
-    : Promise<{ fecha: string; hora: string }> {
-
-    const coords =
-      `${base.lng},${base.lat};${origen.lng},${origen.lat};${destino.lng},${destino.lat};${base.lng},${base.lat}`;
-
-    const url =
-      `http://router.project-osrm.org/route/v1/driving/${coords}?overview=false`;
-
-    const resp = await firstValueFrom(this.httpService.get(url));
-
-    const segundos =
-      resp.data.routes[0].duration + (muerto * 3600);
-
-    const fechaComp =
-      new Date(new Date(inicio).getTime() + (segundos * 1000));
-
-    return {
-      fecha: fechaComp.toISOString().split('T')[0],
-      hora: fechaComp.toTimeString().split(' ')[0]
-    };
+    try {
+      const response = await firstValueFrom(this.httpService.get(url));
+      const duracionTransitoSegundos = response.data.routes[0].duration;
+      const tiempoTotalSegundos = duracionTransitoSegundos + (tiempoMuerto * 3600);
+      const fechaCompleta = new Date(new Date(fechaInicio).getTime() + (tiempoTotalSegundos * 1000));
+      
+      return { 
+        fecha: fechaCompleta.toISOString().split('T')[0], 
+        hora: fechaCompleta.toTimeString().split(' ')[0] 
+      };
+    } catch (error) {
+      console.error('Error calculando ruteo:', error);
+      throw new Error('No se pudo calcular la fecha de regreso');
+    }
   }
-
-  // ===============================
-  // CONSULTAS
-  // ===============================
 
   async findAll(user) {
     await this.verificarYCancelarVencidos(user.id);

@@ -17,7 +17,7 @@ export class MailService {
             <p>Fecha: ${viaje.fechaInicio}</p>
         `,
         });
-
+ 
         console.log('📧 Mail de reserva enviado');
     }
 

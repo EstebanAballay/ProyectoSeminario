@@ -15,16 +15,14 @@ export class ViajeController {
     return this.viajeService.createViaje(createViajeDto, user);
   }
 
+  //consulta
   @Post('viajesRango')
   findDisponibles(
     @Query('fechaInicio') fechaInicio?: string, 
-    @Query('fechaFin') fechaFin?: string,
-    @Body() dto?: ConsultarUnidadesDto
-  ) {
-    const inicio = fechaInicio ? new Date(fechaInicio) : undefined;
-    const fin = fechaFin ? new Date(fechaFin) : undefined;
-    // Pasamos solo el array de camiones que espera el service
-    return this.viajeService.buscarUnidadesDisponibles(inicio, fin, dto?.camiones || []);
+    @Body() dtoViaje?: ConsultarUnidadesDto){
+      const inicio = fechaInicio ? new Date(fechaInicio) : undefined;
+      console.log('Fechas recibidas:', inicio);
+      return this.viajeService.buscarUnidadesDisponibles(inicio, dtoViaje);
   }
 
   @Get('misViajes')
@@ -41,11 +39,10 @@ export class ViajeController {
   }
 
   @Get('choferesDisponibles')
-  async getChoferesDisponibles( 
-    @Query('desde') desde: Date,
-    @Query('hasta') hasta: Date) { 
+  async getChoferesDisponibles (@Query('desde') desde: Date, @Query('hasta') hasta: Date) { 
       if (!desde || !hasta) {
-        throw new BadRequestException('Las fechas "desde" y "hasta" son obligatorias')};
+        throw new BadRequestException('Las fechas "desde" y "hasta" son obligatorias')
+      };
         const fechaInicio = new Date(desde);
         const fechaFin = new Date(hasta);
         return this.viajeService.getChoferesDisponibles(fechaInicio, fechaFin);
@@ -100,15 +97,21 @@ export class ViajeController {
     return this.viajeService.remove(+id);
   }
 
-  @Patch(':id/confirmar-pago')
-  async confirmarPago(@Param('id') id: string) {
-    return this.viajeService.confirmarPagoViaje(+id);
-  }
-
   @Patch(':id/cancelar')
   @UseGuards(AuthGuard)
   cancelar(@Param('id') id: number,@Req() req) {
     return this.viajeService.cancelarViaje(id, req.user);
   }
   
+  @Patch(':id/pago-senia')
+  async confirmarPagoSenia(@Param('id') id: string) {
+    return this.viajeService.confirmarPagoViajeSenia(+id);
+  }
+
+  @Patch(':id/pago-resto')
+  async confirmarPagResto(@Param('id') id: string) {
+    return this.viajeService.confirmarPagoViajeResto(+id);
+  }
+
+
 }

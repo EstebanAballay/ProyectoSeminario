@@ -80,10 +80,8 @@ export class UnidadController {
   async buscarUnidades(@Query('idViaje') idViaje?: number) {
     if (idViaje) {
       // Si llega el parámetro, buscamos por viaje
-      return this.unidadService.findOne(idViaje);
+      return this.unidadService.find(idViaje);
     }
-    // Si no llega parámetro, devuelve todas (opcional)
-    return this.unidadService.findAll();
   }
 
 }
