@@ -44,5 +44,5 @@ export const routes: Routes = [
       //{ path: 'agregar-empleados', component: RegistroEmpleadosComponent },
       //{ path: 'gestion-clientes', component: GestionClientesComponent },
       // ... el resto de tus sub-componentes
-  { path: 'perfil', component: PerfilComponent, canActivate: [RoleGuard], data: {role: 'client'}}
+  { path: 'perfil', component: PerfilComponent, canActivate: [RoleGuard], data: { role: ['client', 'admin'] }}
 ];

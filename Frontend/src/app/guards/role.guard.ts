@@ -55,7 +55,11 @@ export class RoleGuard implements CanActivate {
       return true;
     }
 
-    if (userRole === requiredRole) {
+    if (Array.isArray(requiredRole)) {
+      if (requiredRole.includes(userRole)) {
+        return true;
+      }
+    } else if (userRole === requiredRole) {
       return true;
     }
 

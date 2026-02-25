@@ -6,7 +6,7 @@
   "scripts": {
     "build": "nest build",
     "start": "node dist/src/main.js",
-    "start:dev": "nest start --watch"
+    "start:dev": "nest start cobro --watch"
   },
   "keywords": [],
   "author": "",
