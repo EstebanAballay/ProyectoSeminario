@@ -18,6 +18,10 @@ El sistema gestiona reglas de negocio avanzadas para una empresa de transporte n
 * **Integraciones Externas:**
     * **Mercado Pago:** Validación de tarjetas y split de pagos (seña vs. resto) mediante Webhooks.
     * **OSRM (Open Source Routing Machine):** Cálculo automático de distancias y costos de trayecto.
+    * **Leaflet:** Necesario para mostrar mapas
+    * **Puppeeter:** Emisión de facturas con estructura interna en Html
+    * **MailService:** Envío de mails
+    * **Ngrok:** Webhook que expone nuestra app a conexiones externas
 * **Seguridad:** Autenticación vía JWT y control de acceso basado en roles (Cliente, Chofer, Mecánico, Admin).
 
 ---
