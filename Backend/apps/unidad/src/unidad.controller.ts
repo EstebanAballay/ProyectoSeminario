@@ -1,11 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, } from '@nestjs/common';
 import { UnidadService } from './unidad.service';
 import { CreateUnidadDto } from './dto/create-unidad.dto';
 import { UpdateUnidadDto } from './dto/update-unidad.dto';
 import { promises } from 'dns';
 import { ConsultarUnidadesDto } from './dto/datosUnidadesFront.dto';
 import { CreateVehicleDto } from './dto/create-Vehicle.dto';
-
+import { CreateTransportistaFromUserDto } from './dto/create-transportista-from-user.dto';
 
 @Controller('unidad')
 export class UnidadController {
@@ -63,6 +63,10 @@ export class UnidadController {
     return await this.unidadService.createVehicle(createUnidadDto);
   }
 
+    @Get(':id/')
+  async findAll(@Param('id') id: String): Promise<any> {
+    return this.unidadService.findUnityByDriver(Number(id));}
+    
   @Get(':id')
   findOne(@Param('id') id: string) {
     console.log('entre al controller')
@@ -70,11 +74,6 @@ export class UnidadController {
     //console.log(found);
     return found;
   }
-
-  @Get('unidades-de-viaje/:id')
-  async findAll(@Param('id') id: string): Promise<any> {
-    return this.unidadService.findUnityByDriver(+id);}
-
   
   @Get()  
   async buscarUnidades(@Query('idViaje') idViaje?: number) {
@@ -82,6 +81,11 @@ export class UnidadController {
       // Si llega el parámetro, buscamos por viaje
       return this.unidadService.find(idViaje);
     }
+  }
+  
+  @Post('transportistas')
+  async crearTransportistaDesdeUsuario(@Body() dto: CreateTransportistaFromUserDto) {
+    return await this.unidadService.createTransportistaDesdeUsuario(dto);
   }
 
 }

@@ -12,9 +12,7 @@ import { UnidadModule } from './src/unidad.module';
   autoLoadEntities: true,
   synchronize: false,
   logging: true,
-  ssl: {
-    rejectUnauthorized: false,
-  },
+  ssl: false,
 }),
     UnidadModule,
   ],

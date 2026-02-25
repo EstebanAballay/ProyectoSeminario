@@ -1,0 +1,114 @@
+<div class="header">
+  <div class="logo">
+    <img src="assets/logo.png" alt="Logo Grafo">
+  </div>
+  <div class="profile-icon">👤</div>
+</div>
+
+<div class="container">
+  @if (usuario) {
+    <h2>Mi perfil</h2>
+
+    <div class="dato">
+      <span class="label">Nombre:</span>
+      @if (modoEdicion && usuarioEditable) {
+        <div class="campo-editable">
+          <input class="input-dato" [(ngModel)]="usuarioEditable.nombre" (ngModelChange)="limpiarErrorCampo('nombre')" />
+          @if (erroresCampos.nombre) {
+            <small class="error-text">{{ erroresCampos.nombre }}</small>
+          }
+        </div>
+      } @else {
+        <span>{{ usuario.nombre }}</span>
+      }
+    </div>
+
+    <div class="dato">
+      <span class="label">Apellido:</span>
+      @if (modoEdicion && usuarioEditable) {
+        <div class="campo-editable">
+          <input class="input-dato" [(ngModel)]="usuarioEditable.apellido" (ngModelChange)="limpiarErrorCampo('apellido')" />
+          @if (erroresCampos.apellido) {
+            <small class="error-text">{{ erroresCampos.apellido }}</small>
+          }
+        </div>
+      } @else {
+        <span>{{ usuario.apellido }}</span>
+      }
+    </div>
+
+    <div class="dato"><span class="label">DNI:</span><span>{{ usuario.dni }}</span></div>
+
+    <div class="dato">
+      <span class="label">Email:</span>
+      @if (modoEdicion && usuarioEditable) {
+        <div class="campo-editable">
+          <input class="input-dato" [(ngModel)]="usuarioEditable.email" (ngModelChange)="limpiarErrorCampo('email')" />
+          @if (erroresCampos.email) {
+            <small class="error-text">{{ erroresCampos.email }}</small>
+          }
+        </div>
+      } @else {
+        <span>{{ usuario.email }}</span>
+      }
+    </div>
+
+    <div class="dato">
+      <span class="label">Celular:</span>
+      @if (modoEdicion && usuarioEditable) {
+        <div class="campo-editable">
+          <input class="input-dato" [(ngModel)]="usuarioEditable.celular" (ngModelChange)="limpiarErrorCampo('celular')" />
+          @if (erroresCampos.celular) {
+            <small class="error-text">{{ erroresCampos.celular }}</small>
+          }
+        </div>
+      } @else {
+        <span>{{ usuario.celular }}</span>
+      }
+    </div>
+
+    <div class="dato"><span class="label">CUIT:</span><span>{{ usuario.CUIT }}</span></div>
+
+    <div class="dato">
+      <span class="label">Dirección:</span>
+      @if (modoEdicion && usuarioEditable) {
+        <div class="campo-editable">
+          <input class="input-dato" [(ngModel)]="usuarioEditable.direccion" (ngModelChange)="limpiarErrorCampo('direccion')" />
+          @if (erroresCampos.direccion) {
+            <small class="error-text">{{ erroresCampos.direccion }}</small>
+          }
+        </div>
+      } @else {
+        <span>{{ usuario.direccion }}</span>
+      }
+    </div>
+
+    @if (modoEdicion && usuarioEditable) {
+      <div class="dato">
+        <span class="label">CUIT:</span>
+        <div class="campo-editable">
+          <input class="input-dato" [(ngModel)]="usuarioEditable.CUIT" (ngModelChange)="limpiarErrorCampo('CUIT')" />
+          @if (erroresCampos.CUIT) {
+            <small class="error-text">{{ erroresCampos.CUIT }}</small>
+          }
+        </div>
+      </div>
+    }
+
+    @if (modoEdicion) {
+      <button type="button" class="modificar-button" [disabled]="guardando" (click)="guardarCambios()">
+        {{ guardando ? 'guardando...' : 'guardar cambios' }}
+      </button>
+    } @else {
+      <button type="button" class="modificar-button" (click)="activarEdicion()">
+        modificar datos
+      </button>
+    }
+
+    <button type="button" class="modificar-button" (click)="cerrarSesion()">
+      cerrar sesión
+    </button>
+  } @else {
+    <p class="sin-usuario">No hay usuario autenticado</p>
+  }
+</div>

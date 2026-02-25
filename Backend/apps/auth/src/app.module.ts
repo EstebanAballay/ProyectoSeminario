@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsuariosModule } from './users.module';
+import { AuthModule } from './auth.module';
 
 @Module({
   imports: [
@@ -12,9 +12,11 @@ import { UsuariosModule } from './users.module';
       autoLoadEntities: true,
       synchronize: true,
       logging: true,
-      ssl: false,
+      ssl: {
+        rejectUnauthorized: false,
+      },
     }),
-    UsuariosModule,
+    AuthModule,
   ],
 })
 export class AppModule {}

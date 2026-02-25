@@ -3,11 +3,25 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 
+interface TokenPayload {
+  role?: string;
+  rol?: string;
+  exp?: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class RoleGuard implements CanActivate {
   constructor(private router: Router) {}
+
+  private decodeToken(token: string): TokenPayload | null {
+    try {
+      return JSON.parse(atob(token.split('.')[1])) as TokenPayload;
+    } catch {
+      return null;
+    }
+  }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     const token = localStorage.getItem('token');
@@ -18,27 +32,35 @@ export class RoleGuard implements CanActivate {
       return false;
     }
 
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const userRole = payload.role;
-      const requiredRole = route.data['role'];
+    const payload = this.decodeToken(token);
 
-      console.log('RoleGuard → rol del usuario:', userRole, '| rol requerido:', requiredRole);
-
-      if (userRole === requiredRole) {
-        return true;
-      } else {
-        console.warn('Acceso denegado, rol incorrecto');
-        // Redirige según el rol que tenga
-        if (userRole === 'admin') this.router.navigate(['/misviajes']);
-        else if (userRole === 'client') this.router.navigate(['/menu']);
-        else this.router.navigate(['/login']);
-        return false;
-      }
-    } catch (err) {
-      console.error('Error al decodificar token:', err);
+    if (!payload) {
+      console.error('Token inválido, redirigiendo al login');
+      localStorage.removeItem('token');
       this.router.navigate(['/login']);
       return false;
     }
+
+    if (payload.exp && payload.exp * 1000 < Date.now()) {
+      console.warn('Token expirado, redirigiendo al login');
+      localStorage.removeItem('token');
+      this.router.navigate(['/login']);
+      return false;
+    }
+
+    const userRole = payload.role ?? payload.rol;
+    const requiredRole = route.data['role'];
+
+    if (!requiredRole) {
+      return true;
+    }
+
+    if (userRole === requiredRole) {
+      return true;
+    }
+
+    console.warn('Acceso denegado, rol incorrecto');
+    this.router.navigate(['/menu']);
+    return false;
   }
 }

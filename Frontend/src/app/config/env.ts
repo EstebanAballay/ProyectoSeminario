@@ -1,6 +1,6 @@
 export const config = {
   services:{
-    user: 'http://localhost:3003',
+    user: 'http://localhost:3007',
     cobros: 'http://localhost:3001',
     unidad: 'http://localhost:3002',
     viajes: 'http://localhost:3004',
@@ -8,8 +8,8 @@ export const config = {
   },
   endpoints: {
     auth: {
-      login: 'user/login',
-      register: 'user/register',
+      login: 'auth/login',
+      register: 'users/register',
     },
   },
 }

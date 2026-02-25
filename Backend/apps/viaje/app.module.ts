@@ -12,9 +12,7 @@ import { ViajeModule } from './src/viaje.module';
   autoLoadEntities: true,
   synchronize: true,
   logging: true,
-  ssl: {
-    rejectUnauthorized: false,
-  },
+  ssl: false,
 }),
     ViajeModule,
   ],

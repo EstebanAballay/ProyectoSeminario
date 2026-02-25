@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { CreateUnidadDto } from './dto/create-unidad.dto';
 import { UpdateUnidadDto } from './dto/update-unidad.dto';
 import { HttpService } from '@nestjs/axios';
@@ -18,6 +18,7 @@ import { EstadoCamion } from './entities/estadoCamion.entity';
 import { EstadoAcoplado } from './entities/estadoAcoplado.entity';
 import { EstadoSemirremolque } from './entities/estadoSemirremolque.entity';
 import { estadoTransportista } from './entities/estadoTransportista.entity';
+import { CreateTransportistaFromUserDto } from './dto/create-transportista-from-user.dto';
 
 @Injectable()
 export class UnidadService {
@@ -33,18 +34,46 @@ export class UnidadService {
     @InjectRepository(EstadoSemirremolque) private EstadoSemirremolqueRepository: Repository<EstadoSemirremolque>,
     @InjectRepository(EstadoAcoplado) private EstadoAcopladoRepository: Repository<EstadoAcoplado>,
     @InjectRepository(estadoTransportista) private estadoTransportistaRepository: Repository<estadoTransportista>,
-    @InjectRepository(Transportista) private transportistaRepository: Repository<Transportista>
+    @InjectRepository(Transportista) private transportistaRepository: Repository<Transportista>,
   ) {}
 
   async testConnection() 
         {try {
           const count = await this.UnidadRepository.count();
           console.log('DB connection works, Unidad count:', count);
+          await this.asegurarEstadoEnEsperaParaTransportistas();
           } 
          catch (error){
             console.error('DB connection failed:', error);
             }
         }
+
+  private async obtenerEstadoEnEspera() {
+    let estado = await this.estadoTransportistaRepository
+      .createQueryBuilder('estado')
+      .where('LOWER(estado.nombre) = LOWER(:nombre)', { nombre: 'EnEspera' })
+      .getOne();
+
+    if (!estado) {
+      estado = this.estadoTransportistaRepository.create({ nombre: 'EnEspera' });
+      estado = await this.estadoTransportistaRepository.save(estado);
+    }
+
+    return estado;
+  }
+
+  private async asegurarEstadoEnEsperaParaTransportistas() {
+    const estadoEnEspera = await this.obtenerEstadoEnEspera();
+    const transportistas = await this.transportistaRepository.find({ relations: ['estado'] });
+
+    for (const transportista of transportistas) {
+      const nombreEstado = (transportista.estado?.nombre || '').toLowerCase();
+      if (nombreEstado !== 'enespera') {
+        transportista.estado = estadoEnEspera;
+        await this.transportistaRepository.save(transportista);
+      }
+    }
+  }
 
   //Funcion para obtener un item random de un array
   private getRandomItem<T>(items: T[]): T {
@@ -424,7 +453,7 @@ export class UnidadService {
     const estadoCamion = await this.estadoCamionRepository.findOne({ where: { nombre: 'disponible' } });
     const estadoSemirremolque = await this.EstadoSemirremolqueRepository.findOne({ where: { nombre: 'disponible' } });
     const estadoAcoplado = await this.EstadoAcopladoRepository.findOne({ where: { nombre: 'disponible' } });
-    const estadoTransportista = await this.estadoTransportistaRepository.findOne({ where: { nombre: 'disponible' } });
+    const estadoTransportista = await this.obtenerEstadoEnEspera();
 
     for (const unidad of unidades) {
 
@@ -461,4 +490,28 @@ export class UnidadService {
     return await this.UnidadRepository.find();
   }
 
-} 
+  async createTransportistaDesdeUsuario(dto: CreateTransportistaFromUserDto) {
+    if (!dto?.idUsuario || !dto?.legajo) {
+      throw new BadRequestException('Debe enviar idUsuario y legajo');
+    }
+
+    const existente = await this.transportistaRepository.findOne({
+      where: { idUsuario: dto.idUsuario },
+    });
+
+    if (existente) {
+      throw new BadRequestException('Ya existe un transportista para este usuario');
+    }
+
+    await this.asegurarEstadoEnEsperaParaTransportistas();
+    const estado = await this.obtenerEstadoEnEspera();
+
+    const nuevoTransportista = this.transportistaRepository.create({
+      idUsuario: dto.idUsuario,
+      legajo: dto.legajo,
+      estado,
+    });
+
+    return this.transportistaRepository.save(nuevoTransportista);
+  }
+}
