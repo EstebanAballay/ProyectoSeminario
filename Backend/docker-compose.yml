@@ -96,6 +96,24 @@ services:
       - /app/node_modules
     restart: always                 # reinicia si falla
 
+  api-gateway:
+    build:
+      context: ./apps/api-gateway
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    ports:
+      # ESTE ES EL ÚNICO PUERTO QUE SE EXPONE A TU MÁQUINA LOCAL
+      # Angular hará todas sus peticiones a http://localhost:3000
+      - "3000:3000"
+    env_file:
+      - .env
+    # Opcional: Si quieres hot-reload mientras programas el Gateway
+    volumes:
+      - ./apps/api-gateway:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - backend-network 
+
 networks:
   backend-network:
     driver: bridge

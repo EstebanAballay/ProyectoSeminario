@@ -3,6 +3,7 @@ import { CobroService } from './cobro.service';
 import {CreateCobroDto} from './entities/create-cobro-dto';
 import { AuthGuard } from './cobroAuth/auth.guard';
 import { Response } from 'express';
+import { GetUser } from './decorators/get-user.decorator';
 
 
 @Controller('cobros') // Esta es la base: http://localhost:3001/cobros
@@ -17,8 +18,8 @@ export class CobroController {
    
     @Get('/consultar-cobros-usuario')
     @UseGuards(AuthGuard)
-    async consultarCobrosUsuario(@Request() req):Promise<any> {
-        return await this.cobroService.consultarCobrosUsuario(req.user);
+    async consultarCobrosUsuario(@GetUser() user: any):Promise<any> {
+        return await this.cobroService.consultarCobrosUsuario(user);
     }
 
     // 1. CREAR COBRO: POST http://localhost:3001/cobros
