@@ -71,12 +71,12 @@ El proyecto está dockerizado para facilitar el despliegue en cualquier entorno.
     npm install axios
     ```
    
-4. **Instalar librerias en el back:**
-   Las librerías relacionadas a jwt irán en: grafo-logistica/Backend/apps/auth
-   Puppeeter(para hacer pdfs) se instalará en: grafo-logistica/Backend
-   La correspondiente a mercado pago se instalará en: grafo-logistica/Backend/apps/mercadopago
-   TypeOrm irá en todos los microservicios que tengan entidades.
-   El mailer se instalará en grafo-logistica/Backend/apps/viaje
+4. **Instalar librerias en el back:**  
+   Las librerías relacionadas a jwt irán en: grafo-logistica/Backend/apps/auth  
+   Puppeeter(para hacer pdfs) se instalará en: grafo-logistica/Backend  
+   La correspondiente a mercado pago se instalará en: grafo-logistica/Backend/apps/mercadopago  
+   TypeOrm irá en todos los microservicios que tengan entidades y en grafo-logistica/Backend    
+   El mailer se instalará en grafo-logistica/Backend/apps/viaje  
    ```bash
     npm install jsonwebtoken
     npm install @nestjs/jwt passport-jwt
