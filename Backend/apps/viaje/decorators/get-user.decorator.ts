@@ -1,10 +1,21 @@
-//Esta funcion obtiene el usuario de la request que le llega del front
-//sirve para poder registrar el usuario en una transaccion
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { createParamDecorator, ExecutionContext, UnauthorizedException } from '@nestjs/common';
 
 export const GetUser = createParamDecorator(
-  (data: unknown, ctx: ExecutionContext) => {
+  (data: string, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
-    return request.user;
+    
+    // Leemos el header que inyectó el API Gateway
+    const userDataHeader = request.headers['x-user-data'];
+
+    if (!userDataHeader) {
+      // Si no llega el header, significa que la petición no pasó por el Gateway o falló la autenticación
+      throw new UnauthorizedException('Acceso denegado: No se recibió el contexto del usuario');
+    }
+
+    // Parseamos el string JSON de vuelta a un objeto JavaScript
+    const user = JSON.parse(userDataHeader);
+
+    // Si usas @GetUser('id'), devuelve solo el ID. Si usas @GetUser(), devuelve todo el objeto.
+    return data ? user[data] : user; 
   },
 );

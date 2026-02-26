@@ -3,37 +3,33 @@ import { ViajeService } from './viaje.service';
 import { CreateViajeDto } from './dto/create-viaje.dto';
 import { ConsultarUnidadesDto } from './dto/camiones.dto';
 import { GetUser } from '../decorators/get-user.decorator';
-import { AuthGuard } from '../viajeAuth/auth.guard';
 
 @Controller('viaje')
 export class ViajeController {
   constructor(private readonly viajeService: ViajeService) {}
 
   @Post('nuevoViaje')
-  @UseGuards(AuthGuard)
   create(@Body() createViajeDto: CreateViajeDto, @GetUser() user: any): Promise<any> {
     return this.viajeService.createViaje(createViajeDto, user);
   }
 
   //consulta
   @Post('viajesRango')
-  findDisponibles(
-    @Query('fechaInicio') fechaInicio?: string, 
-    @Body() dtoViaje?: ConsultarUnidadesDto){
+  findDisponibles(@Query('fechaInicio') fechaInicio?: string, @Body() dtoViaje?: ConsultarUnidadesDto){
       const inicio = fechaInicio ? new Date(fechaInicio) : undefined;
       console.log('Fechas recibidas:', inicio);
       return this.viajeService.buscarUnidadesDisponibles(inicio, dtoViaje);
   }
 
+
+  
   @Get('misViajes')
-  @UseGuards(AuthGuard)
-  async getMisViajes(@Request() req) {
-    return await this.viajeService.consultarViajesCliente(req.user); 
+  async getMisViajes(@GetUser() user: any) {
+    return await this.viajeService.consultarViajesCliente(user); 
   }
 
   //consulta de los viajes del admin pendientes
   @Get('viajesPendientes')
-  @UseGuards(AuthGuard)
   findAllAdmin() {
     return this.viajeService.getViajesPendientes();
   }
@@ -55,7 +51,6 @@ export class ViajeController {
   }
 
   @Get('viajesPorPagar')
-  @UseGuards(AuthGuard)
   async getViajesPorPagar(@GetUser() user: any) {
     return await this.viajeService.getViajesPendientesPago(user);
   }
@@ -98,9 +93,8 @@ export class ViajeController {
   }
 
   @Patch(':id/cancelar')
-  @UseGuards(AuthGuard)
-  cancelar(@Param('id') id: number,@Req() req) {
-    return this.viajeService.cancelarViaje(id, req.user);
+  cancelar(@Param('id') id: number,@GetUser() user: any) {
+    return this.viajeService.cancelarViaje(id, user);
   }
   
   @Patch(':id/pago-senia')

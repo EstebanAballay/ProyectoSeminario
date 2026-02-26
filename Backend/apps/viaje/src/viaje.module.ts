@@ -6,7 +6,6 @@ import { EstadoViaje } from './entities/estadoViaje.entity';
 import { Viaje } from './entities/viaje.entity';
 import { HttpModule } from '@nestjs/axios';
 import { JwtModule } from '@nestjs/jwt';
-import { AuthGuard } from '../viajeAuth/auth.guard';
 import { MailerModule } from '@nestjs-modules/mailer'; 
 import { MailService } from './mail.service';
 
@@ -36,8 +35,7 @@ import { MailService } from './mail.service';
   controllers: [ViajeController],
   providers: [
     ViajeService,
-    AuthGuard,
-    MailService, // 👈 CLAVE
+    MailService, 
   ],
 })
 export class ViajeModule {}
