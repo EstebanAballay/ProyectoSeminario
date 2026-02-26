@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUnidadDto } from './dto/create-unidad.dto';
 import { UpdateUnidadDto } from './dto/update-unidad.dto';
 import { HttpService } from '@nestjs/axios';
@@ -18,10 +18,12 @@ import { EstadoCamion } from './entities/estadoCamion.entity';
 import { EstadoAcoplado } from './entities/estadoAcoplado.entity';
 import { EstadoSemirremolque } from './entities/estadoSemirremolque.entity';
 import { estadoTransportista } from './entities/estadoTransportista.entity';
+import { CreateTransportistaFromUserDto } from './dto/create-transportista-from-user.dto';
+
+type TipoVehiculo = 'camion' | 'acoplado' | 'semirremolque';
 
 @Injectable()
 export class UnidadService {
-
   constructor(private readonly httpService: HttpService,
     @InjectRepository(Semirremolque) private semirremolqueRepository: Repository<Semirremolque>,
     @InjectRepository(Acoplado) private acopladoRepository: Repository<Acoplado>,
@@ -33,13 +35,14 @@ export class UnidadService {
     @InjectRepository(EstadoSemirremolque) private EstadoSemirremolqueRepository: Repository<EstadoSemirremolque>,
     @InjectRepository(EstadoAcoplado) private EstadoAcopladoRepository: Repository<EstadoAcoplado>,
     @InjectRepository(estadoTransportista) private estadoTransportistaRepository: Repository<estadoTransportista>,
-    @InjectRepository(Transportista) private transportistaRepository: Repository<Transportista>
+    @InjectRepository(Transportista) private transportistaRepository: Repository<Transportista>,
   ) {}
 
   async testConnection() 
         {try {
           const count = await this.UnidadRepository.count();
           console.log('DB connection works, Unidad count:', count);
+          await this.asegurarEstadoEnEsperaParaTransportistas();
           } 
          catch (error){
             console.error('DB connection failed:', error);
@@ -472,5 +475,232 @@ export class UnidadService {
     console.log(`Encontradas ${unidades.length} unidades para este chofer.`);
     return unidades;
   }
+
+
+  //Funciones para la consulta de admin
+  private normalizarTipoVehiculo(tipo: string): TipoVehiculo {
+    const tipoNormalizado = (tipo || '').toLowerCase();
+    if (tipoNormalizado === 'camion' || tipoNormalizado === 'acoplado' || tipoNormalizado === 'semirremolque') {
+      return tipoNormalizado;
+    }
+    throw new BadRequestException('Tipo de vehículo inválido');
+  }
+
+  private async obtenerEstadoPorNombre<T extends { nombre: string }>(repo: Repository<T>, nombre: string): Promise<T> {
+    let estado = await repo
+      .createQueryBuilder('estado')
+      .where('LOWER(estado.nombre) = LOWER(:nombre)', { nombre })
+      .getOne();
+
+    if (!estado) {
+      estado = repo.create({ nombre } as T);
+      estado = await repo.save(estado);
+    }
+
+    return estado;
+  }
+
+  private mapCamionAdmin(camion: Camion) {
+    return {
+      id: camion.id,
+      tipo: 'camion',
+      subtipo: camion.tipoCamion?.nombre,
+      patente: camion.patente,
+      capacidad: camion.peso,
+      precioKm: camion.precio,
+      cantidadEjes: camion.cantidadEjes,
+      estado: camion.estadoCamion?.nombre,
+    };
+  }
+
+  private mapAcopladoAdmin(acoplado: Acoplado) {
+    return {
+      id: acoplado.id,
+      tipo: 'acoplado',
+      subtipo: acoplado.tipo?.nombre,
+      patente: acoplado.patente,
+      capacidad: acoplado.capacidad,
+      precioKm: acoplado.precio,
+      cantidadEjes: acoplado.cantidadDeEjes,
+      estado: acoplado.estado?.nombre,
+    };
+  }
+
+  private mapSemirremolqueAdmin(semirremolque: Semirremolque) {
+    return {
+      id: semirremolque.id,
+      tipo: 'semirremolque',
+      subtipo: semirremolque.tipo?.nombre,
+      patente: semirremolque.patente,
+      capacidad: semirremolque.capacidad,
+      precioKm: semirremolque.precio,
+      cantidadEjes: semirremolque.cantidadDeEjes,
+      estado: semirremolque.estado?.nombre,
+    };
+  }
+
+  async listarVehiculosAdmin() {
+    const [camiones, acoplados, semirremolques] = await Promise.all([
+      this.CamionRepository.find(),
+      this.acopladoRepository.find(),
+      this.semirremolqueRepository.find(),
+    ]);
+
+    return [
+      ...camiones.map((camion) => this.mapCamionAdmin(camion)),
+      ...acoplados.map((acoplado) => this.mapAcopladoAdmin(acoplado)),
+      ...semirremolques.map((semirremolque) => this.mapSemirremolqueAdmin(semirremolque)),
+    ];
+  }
+
+  async cambiarEstadoVehiculo(tipo: string, id: number, estadoNombre: string) {
+    const tipoNormalizado = this.normalizarTipoVehiculo(tipo);
+    const nuevoEstado = (estadoNombre || '').trim();
+
+    if (!nuevoEstado) {
+      throw new BadRequestException('Debe enviar un estado válido');
+    }
+
+    if (tipoNormalizado === 'camion') {
+      const camion = await this.CamionRepository.findOneBy({ id });
+      if (!camion) {
+        throw new NotFoundException('Camión no encontrado');
+      }
+
+      camion.estadoCamion = await this.obtenerEstadoPorNombre(this.estadoCamionRepository, nuevoEstado);
+      const actualizado = await this.CamionRepository.save(camion);
+      return this.mapCamionAdmin(actualizado);
+    }
+
+    if (tipoNormalizado === 'acoplado') {
+      const acoplado = await this.acopladoRepository.findOneBy({ id });
+      if (!acoplado) {
+        throw new NotFoundException('Acoplado no encontrado');
+      }
+
+      acoplado.estado = await this.obtenerEstadoPorNombre(this.EstadoAcopladoRepository, nuevoEstado);
+      const actualizado = await this.acopladoRepository.save(acoplado);
+      return this.mapAcopladoAdmin(actualizado);
+    }
+
+    const semirremolque = await this.semirremolqueRepository.findOneBy({ id });
+    if (!semirremolque) {
+      throw new NotFoundException('Semirremolque no encontrado');
+    }
+
+    semirremolque.estado = await this.obtenerEstadoPorNombre(this.EstadoSemirremolqueRepository, nuevoEstado);
+    const actualizado = await this.semirremolqueRepository.save(semirremolque);
+    return this.mapSemirremolqueAdmin(actualizado);
+  }
+
+  async modificarVehiculo(tipo: string, id: number, data: Partial<CreateVehicleDto>) {
+    const tipoNormalizado = this.normalizarTipoVehiculo(tipo);
+
+    if (tipoNormalizado === 'camion') {
+      const camion = await this.CamionRepository.findOneBy({ id });
+      if (!camion) {
+        throw new NotFoundException('Camión no encontrado');
+      }
+
+      if (data.unidadSubtipo) {
+        camion.tipoCamion = await this.tipoCamionRepository.findOneBy({ nombre: data.unidadSubtipo });
+      }
+      if (data.patente !== undefined) camion.patente = data.patente;
+      if (data.capacidad !== undefined) camion.peso = Number(data.capacidad);
+      if (data.precioKm !== undefined) camion.precio = Number(data.precioKm);
+      if (data.cantidadEjes !== undefined) camion.cantidadEjes = Number(data.cantidadEjes);
+
+      const actualizado = await this.CamionRepository.save(camion);
+      return this.mapCamionAdmin(actualizado);
+    }
+
+    if (tipoNormalizado === 'acoplado') {
+      const acoplado = await this.acopladoRepository.findOneBy({ id });
+      if (!acoplado) {
+        throw new NotFoundException('Acoplado no encontrado');
+      }
+
+      if (data.unidadSubtipo) {
+        acoplado.tipo = await this.tipoRepository.findOneBy({ nombre: data.unidadSubtipo });
+      }
+      if (data.patente !== undefined) acoplado.patente = data.patente;
+      if (data.capacidad !== undefined) acoplado.capacidad = Number(data.capacidad);
+      if (data.precioKm !== undefined) acoplado.precio = Number(data.precioKm);
+      if (data.cantidadEjes !== undefined) acoplado.cantidadDeEjes = Number(data.cantidadEjes);
+
+      const actualizado = await this.acopladoRepository.save(acoplado);
+      return this.mapAcopladoAdmin(actualizado);
+    }
+
+    const semirremolque = await this.semirremolqueRepository.findOneBy({ id });
+    if (!semirremolque) {
+      throw new NotFoundException('Semirremolque no encontrado');
+    }
+
+    if (data.unidadSubtipo) {
+      semirremolque.tipo = await this.tipoRepository.findOneBy({ nombre: data.unidadSubtipo });
+    }
+    if (data.patente !== undefined) semirremolque.patente = data.patente;
+    if (data.capacidad !== undefined) semirremolque.capacidad = Number(data.capacidad);
+    if (data.precioKm !== undefined) semirremolque.precio = Number(data.precioKm);
+    if (data.cantidadEjes !== undefined) semirremolque.cantidadDeEjes = Number(data.cantidadEjes);
+
+    const actualizado = await this.semirremolqueRepository.save(semirremolque);
+    return this.mapSemirremolqueAdmin(actualizado);
+  }
+
+  private async obtenerEstadoEnEspera() {
+    let estado = await this.estadoTransportistaRepository
+      .createQueryBuilder('estado')
+      .where('LOWER(estado.nombre) = LOWER(:nombre)', { nombre: 'EnEspera' })
+      .getOne();
+
+    if (!estado) {
+      estado = this.estadoTransportistaRepository.create({ nombre: 'EnEspera' });
+      estado = await this.estadoTransportistaRepository.save(estado);
+    }
+
+    return estado;
+  }
+
+  private async asegurarEstadoEnEsperaParaTransportistas() {
+    const estadoEnEspera = await this.obtenerEstadoEnEspera();
+    const transportistas = await this.transportistaRepository.find({ relations: ['estado'] });
+
+    for (const transportista of transportistas) {
+      const nombreEstado = (transportista.estado?.nombre || '').toLowerCase();
+      if (nombreEstado !== 'enespera') {
+        transportista.estado = estadoEnEspera;
+        await this.transportistaRepository.save(transportista);
+      }
+    }
+  }
+
+  async createTransportistaDesdeUsuario(dto: CreateTransportistaFromUserDto) {
+    if (!dto?.idUsuario || !dto?.legajo) {
+      throw new BadRequestException('Debe enviar idUsuario y legajo');
+    }
+
+    const existente = await this.transportistaRepository.findOne({
+      where: { idUsuario: dto.idUsuario },
+    });
+
+    if (existente) {
+      throw new BadRequestException('Ya existe un transportista para este usuario');
+    }
+
+    await this.asegurarEstadoEnEsperaParaTransportistas();
+    const estado = await this.obtenerEstadoEnEspera();
+
+    const nuevoTransportista = this.transportistaRepository.create({
+      idUsuario: dto.idUsuario,
+      legajo: dto.legajo,
+      estado,
+    });
+
+    return this.transportistaRepository.save(nuevoTransportista);
+  }
+
+
 
 } 

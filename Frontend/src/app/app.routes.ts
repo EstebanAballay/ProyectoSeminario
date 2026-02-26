@@ -14,6 +14,8 @@ import { MenuCamioneroComponent } from './menu-camionero/menucamionero.component
 import { AbmUnidadesComponent } from './abm-unidades.component/abm-unidades.component'
 import { ConsultarPagos } from './consultar-pagos/consultar-pagos';
 import { PagosRealizadosComponent } from './pagos-realizados/pagos-realizados.component'
+import { GestionClientesComponent } from './gestion-clientes/gestion-clientes.component';
+import { AgregarEmpleadosComponent } from './agregar-empleados/agregar-empleados.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'paginainicio', pathMatch: 'full' },
@@ -37,7 +39,8 @@ export const routes: Routes = [
   { path: 'menucamionero', component: MenuCamioneroComponent,canActivate: [RoleGuard], data: { role: 'chofer' } },
   { path: 'consultar-pagos', component: ConsultarPagos, canActivate: [RoleGuard], data: { role: 'client' } },
   { path: 'pagos-realizados', component: PagosRealizadosComponent, canActivate: [RoleGuard], data: { role: 'client' } },
-  
+  { path: 'admin/agregar-empleados', component: AgregarEmpleadosComponent, canActivate: [RoleGuard], data: { role: 'admin' }},
+  { path: 'admin/gestion-clientes', component: GestionClientesComponent, canActivate: [RoleGuard], data: { role: 'admin' }},
       //{ path: 'agregar-empleados', component: RegistroEmpleadosComponent },
       //{ path: 'gestion-clientes', component: GestionClientesComponent },
       // ... el resto de tus sub-componentes

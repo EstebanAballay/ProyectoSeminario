@@ -43,6 +43,7 @@ async register(registerDto: RegisterDto) {
   
   async login({ email, password }: LoginDto) {
     const user = await this.usersService.findOneByEmailWithPassword(email);
+    console.log('Usuario:', user);
 
     if (!user) {
       throw new UnauthorizedException("Invalid email");
@@ -52,7 +53,11 @@ async register(registerDto: RegisterDto) {
 
     if (!isPasswordValid) {
       throw new UnauthorizedException("Invalid password");
+    } 
+    if (user.estado === 'eliminado') {
+      throw new UnauthorizedException('Usuario dado de baja');
     }
+
 
     const payload = { id: user.id, email: user.email, role: user.role }; // info que contiene el token
 

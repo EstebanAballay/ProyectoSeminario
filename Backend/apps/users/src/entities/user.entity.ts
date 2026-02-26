@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn} from 'typeorm';
 import { Role } from '../role.enum';
+import { UserStatus } from '../user-status.enum';
 
 @Entity({ name: 'user', schema: 'microservice_usuarios' })
 export class User {
@@ -32,5 +33,8 @@ export class User {
 
   @Column({ type: 'enum', enum: Role , default: Role.CLIENT })
   role: Role;
+
+  @Column({ type: 'enum', enum: UserStatus, default: UserStatus.ACTIVO })
+  estado: UserStatus;
 }
 
