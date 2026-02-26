@@ -46,7 +46,27 @@ export class UnidadController {
   @Post('asignarChoferes')
   async asignarChoferes(@Body() dto: {asignaciones: {unidadId: number, choferId: number}[]}) {
     console.log('Asignaciones recibidas:', dto.asignaciones);
-    return await this.unidadService.asignarChoferes(dto.asignaciones);}
+    return await this.unidadService.asignarChoferes(dto.asignaciones);
+  }
+  
+  @Get('por-chofer')
+  async getViajesPorChoferQuery(@Query('choferId') choferId: number) {
+    console.log('Recibida petición interna de unidades para chofer:', choferId);
+    return this.unidadService.findViajesPorChofer(+choferId);
+  }
+  
+  @Post('nuevaUnidad')
+  async crearUnidad(@Body() createUnidadDto: CreateVehicleDto) {
+    return await this.unidadService.createVehicle(createUnidadDto);
+  } 
+
+  @Get()  
+  async buscarUnidades(@Query('idViaje') idViaje?: number) {
+    if (idViaje) {
+      // Si llega el parámetro, buscamos por viaje
+      return this.unidadService.find(idViaje);
+    }
+  }
 
   @Patch('iniciarEstadoViaje/:id')
   async iniciarEstadoViaje(@Param('id') id: number) {
@@ -58,11 +78,7 @@ export class UnidadController {
     return this.unidadService.finalizarEstadoViaje(id);
   }
 
-  @Post('nuevaUnidad')
-  async crearUnidad(@Body() createUnidadDto: CreateVehicleDto) {
-    return await this.unidadService.createVehicle(createUnidadDto);
-  }
-
+  //se usa en 2 casos de uso- CUIDADO!!
   @Get(':id')
   findOne(@Param('id') id: string) {
     console.log('entre al controller')
@@ -73,15 +89,12 @@ export class UnidadController {
 
   @Get('unidades-de-viaje/:id')
   async findAll(@Param('id') id: string): Promise<any> {
-    return this.unidadService.findUnityByDriver(+id);}
+    return this.unidadService.findUnityByDriver(+id);
+  }
 
-  
-  @Get()  
-  async buscarUnidades(@Query('idViaje') idViaje?: number) {
-    if (idViaje) {
-      // Si llega el parámetro, buscamos por viaje
-      return this.unidadService.find(idViaje);
-    }
+  @Get('viajesPorChofer/:choferId')
+  async findViajesPorChofer(@Param('choferId') choferId: number) {
+    return this.unidadService.findViajesPorChofer(choferId);
   }
 
 }

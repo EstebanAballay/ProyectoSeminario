@@ -88,9 +88,6 @@ export class ViajeService {
         }
     }
 
-    // ===============================
-    // ASIGNAR CHOFERES
-    // ===============================
     async asignarChoferes(
         viajeId: number,
         asignaciones: any[]
@@ -112,9 +109,7 @@ export class ViajeService {
         }
     }
 
-    // ===============================
-    // RECHAZAR VIAJE
-    // ===============================
+
     async rechazarViaje(viajeId: number): Promise<any> {
 
         const url = `${this.apiUrl}/rechazarViaje/${viajeId}`;
@@ -128,9 +123,6 @@ export class ViajeService {
         }
     }
 
-    // ===============================
-    // VIAJES PENDIENTES DE PAGO
-    // ===============================
     async getViajesPendientesPago(): Promise<any> {
 
         const url = `${this.apiUrl}/viajesPorPagar`;
@@ -143,18 +135,41 @@ export class ViajeService {
         throw error;
         }
     }
-// ===============================
-// CANCELAR VIAJE
-// ===============================
-async cancelarViaje(viajeId: number): Promise<any> {
 
-    const url = `${this.apiUrl}/${viajeId}/cancelar`;
+    async cancelarViaje(viajeId: number): Promise<any> {
 
-    try {
-        const response = await axios.patch(url);
+        const url = `${this.apiUrl}/${viajeId}/cancelar`;
+
+        try {
+            const response = await axios.patch(url);
+            return response.data;
+        } catch (error) {
+            console.error('Error al cancelar viaje:', error);
+            throw error;
+        }
+
+    }   
+
+    // Métodos para cambiar estado
+    async iniciarViaje(viajeId: number): Promise<any> {
+        const response = await axios.patch(`${this.apiUrl}/iniciar/${viajeId}`, {},);
         return response.data;
-    } catch (error) {
-        console.error('Error al cancelar viaje:', error);
-        throw error;
     }
-}}
+
+    async finalizarViaje(viajeId: number): Promise<any> {
+        const response = await axios.patch(`${this.apiUrl}/finalizar/${viajeId}`, {});
+        return response.data;
+    }
+
+    async cancelarViajeChofer(viajeId: number): Promise<any> {
+        const response = await axios.patch(`${this.apiUrl}/cancelar/${viajeId}`,);
+        return response.data;
+    }
+
+    // Traer viajes asignados al chofer (Backend debe filtrar los que no estén finalizados)
+    async getViajesChofer(): Promise<any[]> {
+        const response = await axios.get<any[]>(`${this.apiUrl}/chofer`);
+        return response.data;
+    }
+
+}

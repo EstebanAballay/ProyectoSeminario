@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, Request, Req, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe, BadRequestException } from '@nestjs/common';
 import { ViajeService } from './viaje.service';
 import { CreateViajeDto } from './dto/create-viaje.dto';
 import { ConsultarUnidadesDto } from './dto/camiones.dto';
@@ -21,8 +21,6 @@ export class ViajeController {
       return this.viajeService.buscarUnidadesDisponibles(inicio, dtoViaje);
   }
 
-
-  
   @Get('misViajes')
   async getMisViajes(@GetUser() user: any) {
     return await this.viajeService.consultarViajesCliente(user); 
@@ -36,13 +34,13 @@ export class ViajeController {
 
   @Get('choferesDisponibles')
   async getChoferesDisponibles (@Query('desde') desde: Date, @Query('hasta') hasta: Date) { 
-      if (!desde || !hasta) {
-        throw new BadRequestException('Las fechas "desde" y "hasta" son obligatorias')
-      };
-        const fechaInicio = new Date(desde);
-        const fechaFin = new Date(hasta);
-        return this.viajeService.getChoferesDisponibles(fechaInicio, fechaFin);
-      }
+    if (!desde || !hasta) {
+      throw new BadRequestException('Las fechas "desde" y "hasta" son obligatorias')
+    };
+    const fechaInicio = new Date(desde);
+    const fechaFin = new Date(hasta);
+    return this.viajeService.getChoferesDisponibles(fechaInicio, fechaFin);
+  }
 
   //Actualizo con un post porque le envio un dto
   @Post('asignarChoferes')
@@ -72,9 +70,25 @@ export class ViajeController {
     return this.viajeService.buscarPorMultiplesIds(idsArray);
   }
 
+  @Get('viajesCliente')
+  async getMisViajesCliente(@GetUser() user:any) {
+    return await this.viajeService.consultarViajesCliente(user); 
+  }
+
   @Patch('rechazarViaje/:id')
   async rechazarViaje(@Param('id') id: number) {
     return this.viajeService.rechazarViaje(id);
+  }
+
+  @Get('chofer')
+  getViajesDelChofer(@GetUser() user:any) {
+    const idChofer = user.id || user.sub;
+    console.log('Usuario solicitando', user); 
+    console.log('ID',idChofer);
+
+    // 2. Pasamos SOLO el número al servicio
+    // El '+' convierte el valor a número por si viene como string "1"
+    return this.viajeService.getViajesDelChofer(+idChofer);
   }
 
   @Get(':id')
@@ -107,5 +121,29 @@ export class ViajeController {
     return this.viajeService.confirmarPagoViajeResto(+id);
   }
 
+  @Patch('finalizar/:id')
+  finalizar(@Param('id') id: number) {
+    return this.viajeService.finalizarViaje(id);
+  }
+
+  @Patch('iniciar/:id')
+  iniciar(@Param('id') id: number) {
+    return this.viajeService.enViaje(id);
+  }
+
+  @Patch('cancelar/:id')
+  cancelarChofer(@Param('id') id: number) {
+  return this.viajeService.cancelarViajeChofer(id);
+  }
+
+  @Patch(':id/confirmar-pago')
+  async confirmarPago(@Param('id') id: string) {
+    return this.viajeService.confirmarPagoViaje(+id);
+  }
+
+  @Get('consultarviaje/:id')
+  async consultarViaje(@Param('id', ParseIntPipe) id: number) {
+    return this.viajeService.consultarViaje(id);
+  }
 
 }

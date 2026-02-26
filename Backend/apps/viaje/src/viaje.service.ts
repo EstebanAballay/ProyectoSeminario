@@ -516,7 +516,119 @@ export class ViajeService {
   }
 
   async rechazarViaje(viajeId: number) {
-    await this.viajeRepository.update(viajeId, { estadoViaje: { id: 3 } }); }
+    await this.viajeRepository.update(viajeId, { estadoViaje: { id: 3 } }); 
+  }
 
+
+
+  async getViajesDelChofer(choferId:number) {
+    try {
+      console.log('Consultando unidades para el chofer con ID:', choferId);
+
+      const response = await firstValueFrom(
+        this.httpService.get('http://unidad-service:3002/unidad/por-chofer', {
+          params: { choferId: choferId } // Asegúrate que tu authService inyecta el ID del chofer en el token y que el guard lo extrae correctamente
+        })
+      );
+
+      const unidadesDelChofer = response.data; // Esto debería ser un array de objetos Unidad
+      console.log('Unidades del chofer:', unidadesDelChofer);
+      // Validación de seguridad: Si el chofer no tiene unidades/viajes asignados
+      if (!unidadesDelChofer || unidadesDelChofer.length === 0) {
+        return [];
+      }
+
+      // PASO 2: Extraer los IDs de los viajes
+      // El microservicio de unidad nos devolvió algo como: [{ idViaje: 5, patente: '...', ... }, { idViaje: 8, ... }]
+      const listaDeIdsDeViajes = unidadesDelChofer.map(u => u.idViaje);
+
+      // PASO 3: Buscar los detalles de esos viajes en NUESTRA base de datos local
+      const viajesEncontrados = await this.viajeRepository.find({
+        where: {
+          ViajeId: In(listaDeIdsDeViajes) // <--- MAGIA: Buscamos todos los viajes cuyo ID esté en la lista
+        },
+        relations: ['estadoViaje'], // Traemos el estado para pintar los botones en el front
+        order: { fechaInicio: 'DESC' }
+      });
+
+      // PASO 4: Combinar (Merge) la información
+      // Queremos devolver el Viaje + Los datos de la Unidad (Patente, modelo, etc) juntos.
+      const viajesCompletos = viajesEncontrados.map(viaje => {
+        // Buscamos la unidad correspondiente a este viaje específico en la respuesta del paso 1
+        const unidadCorrespondiente = unidadesDelChofer.find(u => u.idViaje === viaje.ViajeId);
+
+        return {
+          ...viaje,
+          unidadDetalle: unidadCorrespondiente // Aquí inyectamos los datos del camión/semi para el Front
+        };
+      });
+
+      return viajesCompletos;
+
+    } catch (error) {
+      console.error('Error al obtener viajes del chofer:', error);
+      return []; // Retornar vacío para no romper el front en caso de error de conexión
+    }
+  }
+
+  async cancelarViajeChofer(viajeId: number) {
+    const viaje = await this.viajeRepository.findOne({
+      where: { ViajeId: viajeId },
+      relations: ['estadoViaje'],
+    });
+
+    if (!viaje) {
+      throw new NotFoundException(`No se encontró el viaje ${viajeId}`);
+    }
+
+    const estadoCancelado = await this.estadoViajeRepository.findOne({
+      where: { nombre: 'Cancelado' },
+    });
+
+    if (!estadoCancelado) {
+      throw new NotFoundException(`No existe el estado 'Cancelado' en la tabla EstadoViaje`);
+    }
+
+    // Asignar estado y fecha de fin
+    viaje.estadoViaje = estadoCancelado;
+
+    const viajeGuardado = await this.viajeRepository.save(viaje);
+    //cambiar el estado de las unidades asociadas al viaje,usamos la misma funcion que en finalizar viaje
+    try {
+      const response = await firstValueFrom(
+        this.httpService.patch(`http://unidad-service:3002/unidad/finalizarEstadoViaje/${viaje.ViajeId}`)
+      );
+      console.log('Respuesta de unidad-service:', response.data);
+    }
+    catch (error) {
+      console.error('Error al actualizar el estado del viaje en unidad-service:', error.message);
+    }
+    return {
+      mensaje: `El viaje ${viajeGuardado.ViajeId} fue cancelado correctamente.`,
+      viaje: viajeGuardado,
+    };
+  }
+
+  async confirmarPagoViaje(viajeId: number) {
+    await this.viajeRepository.update(viajeId, { 
+      estadoViaje: { id: 2 } 
+    });
+    
+    console.log(`✅ Viaje ${viajeId} actualizado a estado: Confirmado`);
+    return { success: true };
+  }
+
+  //Funcion para consultar el viaje por su id, para mostrarlo en el front
+  async consultarViaje(viajeId: number) {
+    const viaje = await this.viajeRepository.findOne({
+      where: { ViajeId: viajeId },
+      relations: ['chofer', 'estadoViaje', 'unidad', 'transportista'],
+    });
+
+    if (!viaje) {
+      throw new NotFoundException(`No se encontró el viaje con id ${viajeId}`);
+    }
+
+    return viaje;
+  }
 }
-
