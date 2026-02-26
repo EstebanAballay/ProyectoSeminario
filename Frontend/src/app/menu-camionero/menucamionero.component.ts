@@ -21,6 +21,12 @@ export class MenuCamioneroComponent implements OnInit {
   loading: boolean = true;
   viajeParaCancelar: any = null;
   
+  //Variables para paginación
+  viajesPaginados: any[] = []; 
+  paginaActual: number = 1;
+  itemsPorPagina: number = 10; 
+  totalPaginas: number = 1;
+
   // Diccionario para guardar referencias a múltiples mapas
   private maps: { [key: number]: L.Map } = {};
 
@@ -30,7 +36,6 @@ export class MenuCamioneroComponent implements OnInit {
     this.fixLeafletIcons();
     this.cargarViajes();
   }
-
 
   async cargarViajes() {
     this.loading = true;
@@ -43,6 +48,9 @@ export class MenuCamioneroComponent implements OnInit {
         v.estadoViaje?.nombre === 'Pago confirmado' || 
         v.estadoViaje?.nombre === 'En viaje'
       );
+
+      //actualizar paginación despues de cargar los datos
+      this.actualizarPaginacion();
       
       // 3. Inicializamos los mapas (con retardo para que el HTML exista)
       setTimeout(() => {
@@ -53,6 +61,31 @@ export class MenuCamioneroComponent implements OnInit {
       console.error('Error cargando viajes:', error);
     } finally {
       this.loading = false;
+    }
+  }
+
+  // Lógica Matemática de la Paginación
+  actualizarPaginacion() {
+    // 1. Calculamos cuántas páginas habrá en total
+    this.totalPaginas = Math.ceil(this.viajes.length / this.itemsPorPagina);
+    
+    // 2. Calculamos desde dónde y hasta dónde cortar la lista
+    const indiceInicio = (this.paginaActual - 1) * this.itemsPorPagina;
+    const indiceFin = indiceInicio + this.itemsPorPagina;
+    
+    // 3. Recortamos la lista original y la guardamos en la nueva variable
+    this.viajesPaginados = this.viajes.slice(indiceInicio, indiceFin);
+
+    // 4. Inicializamos los mapas SOLO para los viajes de esta página
+    setTimeout(() => {
+      this.inicializarMapas(this.viajesPaginados);
+    }, 200);
+  }
+
+  cambiarPagina(pagina: number) {
+    if (pagina >= 1 && pagina <= this.totalPaginas) {
+      this.paginaActual = pagina;
+      this.actualizarPaginacion(); // Volvemos a recortar la lista para la nueva página
     }
   }
 
@@ -79,6 +112,7 @@ export class MenuCamioneroComponent implements OnInit {
       
       // Eliminar de la lista visualmente
       this.viajes = this.viajes.filter(v => v.ViajeId !== viajeId);
+      this.verificarPaginaVacia();
       alert('Viaje finalizado correctamente.');
     } catch (error) {
       console.error('Error al finalizar:', error);
@@ -95,12 +129,21 @@ export class MenuCamioneroComponent implements OnInit {
       
       // Eliminar de la lista visualmente
       this.viajes = this.viajes.filter(v => v.ViajeId !== viajeId);
+      this.verificarPaginaVacia();
       alert('Viaje cancelado.');
       
     } catch (error) {
       console.error('Error al cancelar:', error);
       alert('Error al cancelar el viaje.');
     }
+  }
+
+  verificarPaginaVacia() {
+    this.totalPaginas = Math.ceil(this.viajes.length / this.itemsPorPagina);
+    if (this.paginaActual > this.totalPaginas && this.paginaActual > 1) {
+      this.paginaActual--;
+    }
+    this.actualizarPaginacion();
   }
 
   // Lógica para MÚLTIPLES mapas (coincide con id="map-{{v.ViajeId}}")

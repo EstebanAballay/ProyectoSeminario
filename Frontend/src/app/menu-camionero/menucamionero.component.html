@@ -19,7 +19,7 @@
   </div>
   
   <div class="row"  *ngIf="!loading && viajes.length > 0">
-    <div class="col-12 mb-4" *ngFor="let v of viajes">
+    <div class="col-12 mb-4" *ngFor="let v of viajesPaginados">
       <div class="card viaje-card h-100 border-0 shadow-sm">
         
         <div class="card-header card-header-custom d-flex justify-content-between align-items-center">
@@ -129,5 +129,31 @@
       </div>
     </div>
   </div>
+<div class="row mt-4 mb-5" *ngIf="totalPaginas > 1">
+    <div class="col-12 d-flex justify-content-center">
+      <nav aria-label="Navegación de páginas de viajes">
+        <ul class="pagination pagination-lg shadow-sm">
+          
+          <li class="page-item" [class.disabled]="paginaActual === 1">
+            <a class="page-link" href="javascript:void(0)" (click)="cambiarPagina(paginaActual - 1)">
+              &laquo; Anterior
+            </a>
+          </li>
 
+          <li class="page-item disabled">
+            <span class="page-link text-dark fw-bold">
+              Página {{ paginaActual }} de {{ totalPaginas }}
+            </span>
+          </li>
+
+          <li class="page-item" [class.disabled]="paginaActual === totalPaginas">
+            <a class="page-link" href="javascript:void(0)" (click)="cambiarPagina(paginaActual + 1)">
+              Siguiente &raquo;
+            </a>
+          </li>
+
+        </ul>
+      </nav>
+    </div>
+  </div>
 </div>
