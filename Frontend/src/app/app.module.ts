@@ -15,26 +15,26 @@ import { MisViajesComponent } from './mis-viajes.component/mis-viajes.component'
 import { PagoSeniaComponent } from './pago-senia.component/pago-senia.component';
 import { AdminPanel } from './admin-panel/admin-panel.component';
 import { ConsultarViajes } from './consultar-viajes-admin/consultar-viajes.component';
+import { MenuCamioneroComponent } from './menu-camionero/menucamionero.component';
 
 @NgModule({
      
  imports: [
- BrowserModule,
- FormsModule,
- CommonModule,
- HttpClientModule,
-
- LoginComponent, 
- RegisterComponent, 
- PaginainicioComponent,
- MenuComponent,
- NuevoViajeComponent,
- MisViajesComponent,
- PagoSeniaComponent,
- AdminPanel,
- ConsultarViajes,
- 
- RouterModule.forRoot(routes)
+    BrowserModule,
+    FormsModule,
+    CommonModule,
+    HttpClientModule,
+    MenuCamioneroComponent,
+    LoginComponent, 
+    RegisterComponent, 
+    PaginainicioComponent,
+    MenuComponent,
+    NuevoViajeComponent,
+    MisViajesComponent,
+    PagoSeniaComponent,
+    AdminPanel,
+    ConsultarViajes,
+    RouterModule.forRoot(routes)
 ],
 
 providers: [],
