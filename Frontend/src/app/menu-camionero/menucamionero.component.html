@@ -1,39 +1,159 @@
-<!-- Encabezado fuera del contenedor -->
-<header class="app-header">
-  <div class="logo-section">
-    <img src="assets/logo.png" alt="Grafo Logística" class="logo-image">
+<div class="container-fluid viajes-container">
+  <div class="row mb-4 mt-3">
+    <div class="col-12 d-flex justify-content-between align-items-center header-bar rounded shadow-sm p-3 bg-white">
+      <h2 class="mb-0 text-primary fw-bold">
+        🚚 Mis Viajes Asignados
+      </h2>
+    </div>
   </div>
-  <div class="user-profile">
-    <i class="fas fa-user-circle profile-icon"></i>
+
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
   </div>
-</header>
 
-<!-- Contenido principal -->
-<div class="main-container">
-  <div class="card-body">
-    <h1 class="welcome-title">¡Bienvenido Chofer!</h1>
-
-    <div class="menu-options">
-      <button class="menu-button" [routerLink]="['/viajes-realizados']">
-        <div class="icon-background">
-          <i class="fas fa-history icon"></i>
+  <div *ngIf="!loading && viajes.length === 0" class="alert alert-warning text-center shadow-sm" role="alert">
+      <h4>📭 Sin asignaciones actualmente</h4>
+      <p>No tienes viajes confirmados o en curso.</p>
+  </div>
+  
+  <div class="row"  *ngIf="!loading && viajes.length > 0">
+    <div class="col-12 mb-4" *ngFor="let v of viajesPaginados">
+      <div class="card viaje-card h-100 border-0 shadow-sm">
+        
+        <div class="card-header card-header-custom d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">
+            <span class="fw-bold">#{{v.ViajeId}}</span> | Viaje
+          </h5>
+          <span class="badge rounded-pill fs-6" 
+            [ngClass]="{
+              'bg-warning text-dark': v.estadoViaje?.nombre === 'Pendiente' || v.estadoViaje?.nombre === 'Asignado',
+              'bg-success': v.estadoViaje?.nombre === 'Confirmado' || v.estadoViaje?.nombre === 'En viaje',
+              'bg-secondary': v.estadoViaje?.nombre === 'Finalizado'
+            }">
+            {{ v.estadoViaje?.nombre || 'Desconocido' }}
+          </span>
         </div>
-        <span>Viajes realizados</span>
-      </button>
 
-      <button class="menu-button" [routerLink]="['/viajes-pendientes']">
-        <div class="icon-background">
-          <i class="fas fa-truck-moving icon"></i>
-        </div>
-        <span>Viajes pendientes</span>
-      </button>
+        <div class="card-body p-4">
+          <div class="row g-4">
+            <div class="col-lg-4 border-end-lg">
+              <h6 class="text-muted text-uppercase fw-bold mb-3">📍 Itinerario & Fechas</h6>
+              <div class="mb-3 ruta-box p-3 rounded">
+                <div class="mb-2">
+                  <small class="text-muted fw-bold">Origen 🟩</small>
+                  <div class="fs-5">{{ v.destinoInicio }}</div>
+                </div>
+                <hr class="my-2 text-muted">
+                <div>
+                  <small class="text-muted fw-bold">Destino 🟥</small>
+                  <div class="fs-5">{{ v.destinoFin }}</div>
+                </div>
+             </div>
 
-      <button class="menu-button" [routerLink]="['/viaje-en-curso']">
-        <div class="icon-background">
-          <i class="fas fa-map-marked-alt icon"></i>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                  <span>📅 Fecha Inicio:</span>
+                  <strong>{{ v.fechaInicio | date:'shortDate' }}</strong>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                  <span>🏁 Fecha Fin (Est.):</span>
+                  <strong>{{ v.fechaFin | date:'shortDate' }}</strong>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0 bg-light rounded p-2 mt-2">
+                  <span>📏 Distancia:</span>
+                  <span class="badge bg-primary">{{ v.distancia }} km</span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="col-lg-4">
+              <h6 class="text-muted text-uppercase fw-bold mb-3">🚛 Unidades Asignadas</h6>
+
+
+              <div *ngIf="v.unidadDetalle; else noUnits">
+                <div class="card mb-3 shadow-sm border-primary unidad-item">
+                  <div class="card-body p-3">
+                    <h6 class="card-title text-primary fw-bold mb-3">
+                      Detalles del Vehículo
+                    </h6>
+
+
+                    <div class="mb-2">
+                      <span class="fw-bold">🔑 Patente:</span> 
+                      <span class="badge bg-light text-dark border ms-2">{{ v.unidadDetalle.camion.patente || 'Sin Patente' }}</span>
+                    </div>
+
+                    
+                  </div>
+                </div>
+              </div>
+
+
+              <ng-template #noUnits>
+                <div class="alert alert-info py-2">
+                  <small>No hay datos de unidad disponibles.</small>
+                </div>
+              </ng-template>
+            </div>
+
+
+            <div class="col-lg-4">
+              <h6 class="text-muted text-uppercase fw-bold mb-3">🗺️ Ruta Visual</h6>
+              <div class="map-wrapper shadow-sm rounded overflow-hidden border">
+                <div id="map-{{v.ViajeId}}" class="map-container"></div>
+              </div>
+            </div>
+          </div> 
+        </div> 
+        
+        <div class="card-footer bg-white border-top-0 pb-3 pt-0 text-end">
+           
+           <div *ngIf="v.estadoViaje?.nombre === 'Pago confirmado'">
+              <button class="btn btn-primary btn-lg px-4 shadow-sm" (click)="iniciarViaje(v)">
+                  Iniciar Viaje
+              </button>
+           </div>
+
+           <div *ngIf="v.estadoViaje?.nombre === 'En viaje'" class="d-flex justify-content-end gap-2">
+              <button class="btn btn-danger btn-lg px-4 shadow-sm" (click)="cancelarViaje(v.ViajeId)">
+                 🛑 Cancelar
+              </button>
+              <button class="btn btn-success btn-lg px-4 shadow-sm" (click)="finalizarViaje(v.ViajeId)">
+                 ✅ Finalizar
+              </button>
+           </div>
+
         </div>
-        <span>Viaje en curso</span>
-      </button>
+      </div>
+    </div>
+  </div>
+<div class="row mt-4 mb-5" *ngIf="totalPaginas > 1">
+    <div class="col-12 d-flex justify-content-center">
+      <nav aria-label="Navegación de páginas de viajes">
+        <ul class="pagination pagination-lg shadow-sm">
+          
+          <li class="page-item" [class.disabled]="paginaActual === 1">
+            <a class="page-link" href="javascript:void(0)" (click)="cambiarPagina(paginaActual - 1)">
+              &laquo; Anterior
+            </a>
+          </li>
+
+          <li class="page-item disabled">
+            <span class="page-link text-dark fw-bold">
+              Página {{ paginaActual }} de {{ totalPaginas }}
+            </span>
+          </li>
+
+          <li class="page-item" [class.disabled]="paginaActual === totalPaginas">
+            <a class="page-link" href="javascript:void(0)" (click)="cambiarPagina(paginaActual + 1)">
+              Siguiente &raquo;
+            </a>
+          </li>
+
+        </ul>
+      </nav>
     </div>
   </div>
 </div>
