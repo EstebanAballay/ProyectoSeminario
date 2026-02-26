@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import axios from 'axios';
+import axios from '../../api/axiosClient';
 import { config } from '../config/env';
 
 @Injectable({ providedIn: 'root' })

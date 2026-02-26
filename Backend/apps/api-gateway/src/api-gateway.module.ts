@@ -68,7 +68,7 @@ export class AppModule implements NestModule {
 
     // Cobros (Puerto 3001)
     consumer.apply(createProxyMiddleware({
-      target: 'http://cobro-service:3001/cobro',
+      target: 'http://cobro-service:3001/cobros',
       changeOrigin: true,
       logger: console, 
       on: {
@@ -79,7 +79,7 @@ export class AppModule implements NestModule {
           console.error('[PROXY ERROR]', err);
         }
       },
-    })).forRoutes('api/cobro');
+    })).forRoutes('api/cobros');
 
     // Mercado Pago API interna (Puerto 3005)
     consumer.apply(createProxyMiddleware({
