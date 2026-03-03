@@ -14,6 +14,7 @@ import { AbmUnidadesComponent } from './abm-unidades.component/abm-unidades.comp
 import { ConsultarPagos } from './consultar-pagos/consultar-pagos';
 import { PagosRealizadosComponent } from './pagos-realizados/pagos-realizados.component'
 import { AgregarEmpleadosComponent } from './agregar-empleados/agregar-empleados.component';
+import { GestionVehiculosComponent } from './gestion-vehiculos/gestion-vehiculos.component';
 import { PerfilComponent } from './perfil.component/perfil.component';
 
 export const routes: Routes = [
@@ -39,5 +40,6 @@ export const routes: Routes = [
   { path: 'consultar-pagos', component: ConsultarPagos, canActivate: [RoleGuard], data: { role: 'client' } },
   { path: 'pagos-realizados', component: PagosRealizadosComponent, canActivate: [RoleGuard], data: { role: 'client' } },
   { path: 'admin/agregar-empleados', component: AgregarEmpleadosComponent, canActivate: [RoleGuard], data: { role: 'admin' } },
+  { path: 'admin/gestion-vehiculos', component: GestionVehiculosComponent, canActivate: [RoleGuard], data: { role: 'admin' } },
   { path: 'perfil', component: PerfilComponent }
 ];

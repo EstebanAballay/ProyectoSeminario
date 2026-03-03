@@ -38,13 +38,44 @@ export class UnidadService {
         }
     }
 
-    async crearUnidad(data:any): Promise<any> {
+    async crearUnidad(data: any): Promise<any> {
         const url = `${this.apiUrl}/nuevaUnidad`;
         try {
             const response = await axios.post(url, data);
-            return response.data;}    
+            return response.data;
+        }
         catch (error) {
             console.error('Error al crear la unidad:', error);
+            throw error;
+        }
+    }
+
+    async listarVehiculosAdmin(): Promise<any[]> {
+        try {
+            const response = await axios.get<any[]>(`${this.apiUrl}/admin/vehiculos`);
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching vehiculos admin:', error);
+            throw error;
+        }
+    }
+
+    async cambiarEstadoVehiculo(tipo: string, id: number, estado: string): Promise<any> {
+        try {
+            const response = await axios.patch(`${this.apiUrl}/admin/vehiculos/${tipo}/${id}/estado`, { estado });
+            return response.data;
+        } catch (error) {
+            console.error('Error cambiando estado vehiculo:', error);
+            throw error;
+        }
+    }
+
+    async modificarVehiculo(tipo: string, id: number, data: any): Promise<any> {
+        try {
+            const response = await axios.patch(`${this.apiUrl}/admin/vehiculos/${tipo}/${id}`, data);
+            return response.data;
+        } catch (error) {
+            console.error('Error modificando vehiculo:', error);
             throw error;
         }
     }

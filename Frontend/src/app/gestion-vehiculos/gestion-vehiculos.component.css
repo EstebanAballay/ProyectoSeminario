@@ -1,0 +1,194 @@
+.vehiculos-page {
+    min-height: 100vh;
+    background-color: #052c4f;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 2rem 1rem;
+}
+
+.vehiculos-container {
+    width: 100%;
+    max-width: 1150px;
+    margin: 0 auto;
+}
+
+.title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.page-title {
+    color: #f4f0e6;
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.back-link {
+    text-decoration: none;
+    color: #052c4f;
+    background-color: #f4f0e6;
+    border-radius: 8px;
+    padding: 0.5rem 0.9rem;
+    font-weight: 600;
+}
+
+.content-card {
+    background-color: #f4f0e6;
+    border-radius: 10px;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
+    padding: 1rem;
+}
+
+.filtro-container {
+    margin-bottom: 1rem;
+}
+
+.filtro-input {
+    width: 100%;
+    max-width: 420px;
+    padding: 0.7rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #052c4f;
+    background-color: #ffffff;
+    box-sizing: border-box;
+}
+
+.vehiculos-table {
+    width: 100%;
+    border-collapse: collapse;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.vehiculos-table th,
+.vehiculos-table td {
+    border-bottom: 1px solid #ddd;
+    padding: 0.7rem 0.6rem;
+    text-align: left;
+    color: #052c4f;
+    font-size: 0.92rem;
+}
+
+.vehiculos-table th {
+    background-color: #e8e3d5;
+    font-weight: 700;
+}
+
+.vehiculos-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.estado-texto {
+    color: #052c4f;
+    margin: 0.5rem 0;
+    font-weight: 600;
+}
+
+.estado-error {
+    color: #a81818;
+}
+
+.estado-ok {
+    color: #1d6b3a;
+}
+
+/* Badges de estado */
+.badge-disponible,
+.badge-enviaje,
+.badge-baja {
+    display: inline-block;
+    border-radius: 999px;
+    padding: 0.2rem 0.6rem;
+    font-weight: 700;
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+.badge-disponible {
+    background-color: #d8f0de;
+    color: #1d6b3a;
+}
+
+.badge-enviaje {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.badge-baja {
+    background-color: #f8d7da;
+    color: #a81818;
+}
+
+/* Acciones */
+.acciones-col {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.accion-btn {
+    border: none;
+    border-radius: 6px;
+    padding: 0.4rem 0.7rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.baja-btn {
+    background-color: #a81818;
+    color: #f4f0e6;
+}
+
+.alta-btn {
+    background-color: #1d6b3a;
+    color: #f4f0e6;
+}
+
+.editar-btn {
+    background-color: #052c4f;
+    color: #f4f0e6;
+}
+
+.guardar-btn {
+    background-color: #1d6b3a;
+    color: #f4f0e6;
+}
+
+.cancelar-btn {
+    background-color: #6c757d;
+    color: #f4f0e6;
+}
+
+.accion-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Inputs de edición inline */
+.edit-input {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 0.35rem 0.4rem;
+    font-size: 0.9rem;
+    color: #052c4f;
+}
+
+.edit-input-sm {
+    max-width: 90px;
+}
+
+@media (max-width: 700px) {
+    .title-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

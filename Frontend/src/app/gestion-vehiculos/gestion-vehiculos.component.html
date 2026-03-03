@@ -1,0 +1,93 @@
+<div class="vehiculos-page">
+    <div class="vehiculos-container">
+        <div class="title-row">
+            <h2 class="page-title">Gestión de Vehículos</h2>
+            <a routerLink="/admin" class="back-link">Volver al panel</a>
+        </div>
+        <div class="content-card">
+            <div class="filtro-container" *ngIf="!cargando && !error">
+                <input type="text" [(ngModel)]="filtro" placeholder="Filtrar por patente, tipo, subtipo o estado"
+                    class="filtro-input" />
+            </div>
+            <p *ngIf="cargando" class="estado-texto">Cargando vehículos...</p>
+            <p *ngIf="error" class="estado-texto estado-error">{{ error }}</p>
+            <p *ngIf="mensaje" class="estado-texto estado-ok">{{ mensaje }}</p>
+            <table *ngIf="!cargando && !error && vehiculosFiltrados.length > 0" class="vehiculos-table">
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Subtipo</th>
+                        <th>Patente</th>
+                        <th>Capacidad</th>
+                        <th>Precio/km</th>
+                        <th>Ejes</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let vehiculo of vehiculosFiltrados">
+                        <td>{{ tipoLabel(vehiculo.tipo) }}</td>
+                        <td>{{ vehiculo.subtipo }}</td>
+                        <!-- Modo lectura -->
+                        <ng-container *ngIf="!vehiculo.editando">
+                            <td>{{ vehiculo.patente }}</td>
+                            <td>{{ vehiculo.capacidad }}</td>
+                            <td>{{ vehiculo.precioKm }}</td>
+                            <td>{{ vehiculo.cantidadEjes }}</td>
+                        </ng-container>
+                        <!-- Modo edición -->
+                        <ng-container *ngIf="vehiculo.editando">
+                            <td><input type="text" [(ngModel)]="vehiculo.editPatente" class="edit-input" /></td>
+                            <td><input type="number" [(ngModel)]="vehiculo.editCapacidad"
+                                    class="edit-input edit-input-sm" /></td>
+                            <td><input type="number" [(ngModel)]="vehiculo.editPrecioKm"
+                                    class="edit-input edit-input-sm" /></td>
+                            <td><input type="number" [(ngModel)]="vehiculo.editCantidadEjes"
+                                    class="edit-input edit-input-sm" /></td>
+                        </ng-container>
+                        <td>
+                            <span [class]="estadoBadgeClass(vehiculo.estado)">
+                                {{ estadoLabel(vehiculo.estado) }}
+                            </span>
+                        </td>
+                        <td class="acciones-col">
+                            <ng-container *ngIf="!vehiculo.editando">
+                                <button type="button" class="accion-btn editar-btn" [disabled]="vehiculo.actualizando"
+                                    (click)="iniciarEdicion(vehiculo)">
+                                    Editar
+                                </button>
+                                <button type="button" class="accion-btn baja-btn"
+                                    [disabled]="vehiculo.actualizando || !puedeDarDeBaja(vehiculo)"
+                                    (click)="cambiarEstado(vehiculo, 'dadoDeBaja')">
+                                    Dar de baja
+                                </button>
+                                <button type="button" class="accion-btn alta-btn"
+                                    [disabled]="vehiculo.actualizando || !puedeDarDeAlta(vehiculo)"
+                                    (click)="cambiarEstado(vehiculo, 'disponible')">
+                                    Dar de alta
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="vehiculo.editando">
+                                <button type="button" class="accion-btn guardar-btn" [disabled]="vehiculo.actualizando"
+                                    (click)="guardarEdicion(vehiculo)">
+                                    {{ vehiculo.actualizando ? 'Guardando...' : 'Guardar' }}
+                                </button>
+                                <button type="button" class="accion-btn cancelar-btn" [disabled]="vehiculo.actualizando"
+                                    (click)="cancelarEdicion(vehiculo)">
+                                    Cancelar
+                                </button>
+                            </ng-container>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="estado-texto" *ngIf="!cargando && !error && vehiculos.length === 0">No hay vehículos para mostrar.
+            </p>
+            <p class="estado-texto"
+                *ngIf="!cargando && !error && vehiculos.length > 0 && vehiculosFiltrados.length === 0">
+                No hay resultados para el filtro aplicado.
+            </p>
+        </div>
+    </div>
+</div>
