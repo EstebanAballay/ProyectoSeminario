@@ -1,4 +1,4 @@
-.empleados-page {
+empleados-page {
   min-height: 100vh;
   background-color: #052c4f;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -8,6 +8,7 @@
 .empleados-container {
   width: 100%;
   max-width: 900px;
+  max-width: 1050px;
   margin: 0 auto;
 }
 
@@ -170,6 +171,55 @@
 }
 
 .cancelar-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.badge-activo,
+.badge-eliminado {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.badge-activo {
+  background-color: #d8f0de;
+  color: #1d6b3a;
+}
+
+.badge-eliminado {
+  background-color: #f8d7da;
+  color: #a81818;
+}
+
+.acciones-col {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.accion-btn {
+  border: none;
+  border-radius: 6px;
+  padding: 0.45rem 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.baja-btn {
+  background-color: #a81818;
+  color: #f4f0e6;
+}
+
+.alta-btn {
+  background-color: #1d6b3a;
+  color: #f4f0e6;
+}
+
+.accion-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }

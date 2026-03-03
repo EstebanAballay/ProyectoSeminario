@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import axiosService from '../../api/axiosClient';
 import { config } from '../config/env';
 
+const unidadApiUrl = `${config.services.unidad}/unidad`;
+
 @Injectable({
   providedIn: 'root'
 })
@@ -83,7 +85,7 @@ export class UsersService {
 
   async actualizarEstadoUsuario(userId: number, estado: 'activo' | 'eliminado') {
     try {
-      const response = await axiosService.patch(`${this.apiUrl}${userId}/estado`, { estado });
+      const response = await axiosService.patch(`${this.apiUrl}/${userId}/estado`, { estado });
       return response.data;
     } catch (error: any) {
       throw error;
@@ -96,7 +98,7 @@ export class UsersService {
     estadoTransportista: string;
   }) {
     try {
-      const response = await axiosService.post(`$${this.apiUrl}/transportistas`, data);
+      const response = await axiosService.post(`${unidadApiUrl}/transportistas`, data);
       return response.data;
     } catch (error: any) {
       throw error;

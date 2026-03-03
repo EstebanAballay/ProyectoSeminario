@@ -3,12 +3,14 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* O la fuente que uses */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  /* O la fuente que uses */
 }
 
 /* --- Header (Beige) --- */
 .top-bar {
-  background-color: #f4f0e6; /* Beige claro del header */
+  background-color: #f4f0e6;
+  /* Beige claro del header */
   padding: 1rem 1.5rem;
   display: flex;
   justify-content: space-between;
@@ -48,7 +50,8 @@
 
 /* --- Cuerpo (Azul Oscuro) --- */
 .dashboard-content {
-  background-color: #052c4f; /* Azul navy oscuro */
+  background-color: #052c4f;
+  /* Azul navy oscuro */
   flex-grow: 1;
   padding: 2rem 1rem;
   display: flex;
@@ -67,9 +70,11 @@
 .menu-list {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem; /* Espacio entre botones */
+  gap: 1.5rem;
+  /* Espacio entre botones */
   width: 100%;
-  max-width: 400px; /* Ancho máximo para que no se estire demasiado en PC */
+  max-width: 400px;
+  /* Ancho máximo para que no se estire demasiado en PC */
 }
 
 /* --- Estilo de cada Botón --- */
@@ -83,13 +88,16 @@
 }
 
 .menu-item:hover {
-  transform: translateX(5px); /* Pequeña animación al pasar el mouse */
+  transform: translateX(5px);
+  /* Pequeña animación al pasar el mouse */
 }
 
 /* Círculo del Ícono */
 .icon-badge {
-  background-color: #9ca3af; /* Gris del círculo */
-  color: #052c4f; /* Color del ícono */
+  background-color: #9ca3af;
+  /* Gris del círculo */
+  color: #052c4f;
+  /* Color del ícono */
   width: 70px;
   height: 70px;
   border-radius: 50%;
@@ -97,47 +105,65 @@
   align-items: center;
   justify-content: center;
   font-size: 1.8rem;
-  z-index: 2; /* Importante: Para que quede encima de la tarjeta */
-  box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+  z-index: 2;
+  /* Importante: Para que quede encima de la tarjeta */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
 }
 
 /* Tarjeta de Texto */
 .label-card {
-  background-color: #f4f0e6; /* Beige de la tarjeta */
+  background-color: #f4f0e6;
+  /* Beige de la tarjeta */
   color: #052c4f;
   flex-grow: 1;
-  height: 55px; /* Un poco más bajo que el círculo */
+  height: 55px;
+  /* Un poco más bajo que el círculo */
   display: flex;
   align-items: center;
-  padding-left: 45px; /* Espacio para que el texto no choque con el círculo */
+  padding-left: 45px;
+  /* Espacio para que el texto no choque con el círculo */
   padding-right: 15px;
-  border-radius: 0 8px 8px 0; /* Bordes redondeados solo a la derecha */
-  margin-left: -35px; /* TRUCO: Mueve la tarjeta a la izquierda para meterse bajo el círculo */
+  border-radius: 0 8px 8px 0;
+  /* Bordes redondeados solo a la derecha */
+  margin-left: -35px;
+  /* TRUCO: Mueve la tarjeta a la izquierda para meterse bajo el círculo */
   z-index: 1;
   font-weight: 700;
   font-size: 1.1rem;
-  box-shadow: 4px 4px 10px rgba(0,0,0,0.3);
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
 }
+
 .label-card button {
   padding: 8px 16px;
-  background: linear-gradient(135deg, #052c4f, #1c65d1); /* Azul oscuro a azul más claro */
-  color: #f4f0e6; /* Beige claro del header/tarjeta */
+  background: linear-gradient(135deg, #052c4f, #1c65d1);
+  /* Azul oscuro a azul más claro */
+  color: #f4f0e6;
+  /* Beige claro del header/tarjeta */
   font-weight: 700;
   font-size: 0.95rem;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
 }
 
 .label-card button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.25);
-  background: linear-gradient(135deg, #1c65d1, #052c4f); /* Invertimos el gradiente al pasar el mouse */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+  background: linear-gradient(135deg, #1c65d1, #052c4f);
+  /* Invertimos el gradiente al pasar el mouse */
 }
 
 .label-card button:active {
   transform: translateY(0);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.logo-icon {
+  cursor: pointer;
+}
+
+.logo img {
+  height: 60px;
 }

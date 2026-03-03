@@ -3,9 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { UsersService } from '../services/users.service';
-
 type RolUsuario = 'admin' | 'client' | 'chofer' | 'mecanico';
-
+type EstadoUsuario = 'activo' | 'eliminado';
 interface UsuarioBasico {
   id: number;
   nombre: string;
@@ -13,12 +12,14 @@ interface UsuarioBasico {
   dni: string;
   role: RolUsuario;
   roleSeleccionado: RolUsuario;
+  estado: EstadoUsuario;
   guardando?: boolean;
+  actualizando?: boolean;
   mostrarPanelChofer?: boolean;
   legajoChofer?: string;
   estadoTransportistaChofer?: string;
 }
- 
+
 @Component({
   selector: 'app-agregar-empleados',
   standalone: true,
@@ -33,9 +34,7 @@ export class AgregarEmpleadosComponent implements OnInit {
   cargando = false;
   error = '';
   mensaje = '';
-
-  constructor(private usersService: UsersService) {}
-
+  constructor(private usersService: UsersService) { }
   async ngOnInit() {
     this.cargando = true;
     this.error = '';
@@ -44,19 +43,20 @@ export class AgregarEmpleadosComponent implements OnInit {
       const data = await this.usersService.getListadoBasicoUsuarios();
       this.usuarios = Array.isArray(data)
         ? data.map((usuario: any) => {
-            const rol = this.rolesDisponibles.includes(usuario.role) ? usuario.role : 'client';
-            return {
-              id: usuario.id,
-              nombre: usuario.nombre,
-              apellido: usuario.apellido,
-              dni: usuario.dni,
-              role: rol,
-              roleSeleccionado: rol,
-              mostrarPanelChofer: false,
-              legajoChofer: '',
-              estadoTransportistaChofer: 'EnEspera',
-            };
-          })
+          const rol = this.rolesDisponibles.includes(usuario.role) ? usuario.role : 'client';
+          return {
+            id: usuario.id,
+            nombre: usuario.nombre,
+            apellido: usuario.apellido,
+            dni: usuario.dni,
+            role: rol,
+            roleSeleccionado: rol,
+            estado: (usuario.estado === 'eliminado' ? 'eliminado' : 'activo') as EstadoUsuario,
+            mostrarPanelChofer: false,
+            legajoChofer: '',
+            estadoTransportistaChofer: 'EnEspera',
+          };
+        })
         : [];
     } catch (e) {
       this.error = 'No se pudo cargar la lista de usuarios';
@@ -65,14 +65,11 @@ export class AgregarEmpleadosComponent implements OnInit {
       this.cargando = false;
     }
   }
-
   get usuariosFiltrados(): UsuarioBasico[] {
     const termino = this.filtro.trim().toLowerCase();
-
     if (!termino) {
       return this.usuarios;
     }
-
     return this.usuarios.filter((usuario) => {
       const nombre = (usuario.nombre || '').toLowerCase();
       const apellido = (usuario.apellido || '').toLowerCase();
@@ -80,22 +77,18 @@ export class AgregarEmpleadosComponent implements OnInit {
       return nombre.includes(termino) || apellido.includes(termino) || dni.includes(termino);
     });
   }
-
   async guardarRol(usuario: UsuarioBasico) {
     if (usuario.role === usuario.roleSeleccionado || usuario.guardando) {
       return;
     }
-
     if (usuario.roleSeleccionado === 'chofer' && usuario.role !== 'chofer') {
       usuario.mostrarPanelChofer = true;
       usuario.estadoTransportistaChofer = 'EnEspera';
       return;
     }
-
     this.error = '';
     this.mensaje = '';
     usuario.guardando = true;
-
     try {
       const actualizado = await this.usersService.actualizarRolUsuario(usuario.id, usuario.roleSeleccionado);
       usuario.role = actualizado.role;
@@ -108,36 +101,47 @@ export class AgregarEmpleadosComponent implements OnInit {
       usuario.guardando = false;
     }
   }
-
+  async cambiarEstado(usuario: UsuarioBasico, estado: EstadoUsuario) {
+    if (usuario.actualizando || usuario.estado === estado) {
+      return;
+    }
+    this.error = '';
+    this.mensaje = '';
+    usuario.actualizando = true;
+    try {
+      const actualizado = await this.usersService.actualizarEstadoUsuario(usuario.id, estado);
+      usuario.estado = actualizado.estado === 'eliminado' ? 'eliminado' : 'activo';
+      this.mensaje = `Estado actualizado para ${usuario.nombre} ${usuario.apellido}`;
+    } catch {
+      this.error = `No se pudo actualizar el estado de ${usuario.nombre} ${usuario.apellido}`;
+    } finally {
+      usuario.actualizando = false;
+    }
+  }
   cancelarAltaChofer(usuario: UsuarioBasico) {
     usuario.mostrarPanelChofer = false;
     usuario.roleSeleccionado = usuario.role;
     usuario.legajoChofer = '';
     usuario.estadoTransportistaChofer = 'EnEspera';
   }
-
   async confirmarAltaChofer(usuario: UsuarioBasico) {
     if (usuario.guardando) {
       return;
     }
-
     const legajo = (usuario.legajoChofer || '').trim();
     if (!legajo) {
       this.error = 'Para crear un chofer debés ingresar legajo';
       return;
     }
-
     this.error = '';
     this.mensaje = '';
     usuario.guardando = true;
-
     try {
       await this.usersService.crearTransportistaDesdeUsuario({
         idUsuario: usuario.id,
         legajo,
         estadoTransportista: 'EnEspera',
       });
-
       const actualizado = await this.usersService.actualizarRolUsuario(usuario.id, 'chofer');
       usuario.role = actualizado.role;
       usuario.roleSeleccionado = actualizado.role;

@@ -1,14 +1,12 @@
 <div class="admin-container">
   <header class="top-bar">
     <div class="logo-area">
-      <i class="fa-solid fa-share-nodes logo-icon"></i>
-      <div class="brand-text">
-        <h1>GRAFO</h1>
-        <span>LOGÍSTICA</span>
+      <div class="logo">
+        <img src="assets/logo.png" alt="Logo Grafo">
       </div>
     </div>
     <div class="profile-area">
-      <i class="fa-solid fa-circle-user"></i>
+      <i class="fa-solid fa-circle-user" [routerLink]="['/perfil']"></i>
     </div>
   </header>
 
@@ -16,7 +14,7 @@
     <h2 class="page-title">Administrador/a</h2>
 
     <div class="menu-list">
-      
+
       <a routerLink="/admin/consultar-viajes" class="menu-item">
         <div class="icon-badge">
           <i class="fa-solid fa-truck"></i>
@@ -28,10 +26,10 @@
 
       <a routerLink="/admin/agregar-empleados" class="menu-item">
         <div class="icon-badge">
-          <i class="fa-solid fa-user-plus"></i>
+          <i class="fa-solid fa-users-gear"></i>
         </div>
         <div class="label-card">
-          <span>Agregar Empleados</span>
+          <span>Gestión de Usuarios</span>
         </div>
       </a>
 
@@ -49,22 +47,22 @@
           <i class="fa-solid fa-users-gear"></i>
         </div>
         <div class="label-card">
-          <span>Gestion de Clientes</span>
+          <span>Gestión de unidades</span>
         </div>
       </a>
 
 
-<div class="menu-item">
-  <div class="icon-badge">
-    <i class="fa-solid fa-envelope"></i>
-  </div>
-  <div class="label-card">
-    <input type="email" [(ngModel)]="email" placeholder="Ingresa email" />
-    <button (click)="descargar()">Enviar reporte</button>
-  </div>
-</div>
+      <div class="menu-item">
+        <div class="icon-badge">
+          <i class="fa-solid fa-envelope"></i>
+        </div>
+        <div class="label-card">
+          <input type="email" [(ngModel)]="email" placeholder="Ingresa email" />
+          <button (click)="descargar()">Enviar reporte</button>
+        </div>
+      </div>
 
-      
+
     </div>
   </main>
 </div>

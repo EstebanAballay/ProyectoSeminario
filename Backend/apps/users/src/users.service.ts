@@ -1,12 +1,16 @@
-import { Injectable, BadRequestException, UnauthorizedException, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, BadRequestException, UnauthorizedException, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { In, Repository } from 'typeorm';
 import { Role } from './role.enum';
+import { UserStatus } from './user-status.enum';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
-import * as bcryptjs from 'bcryptjs'; 
+import * as bcryptjs from 'bcryptjs';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
+import { UpdateUserRoleDto } from './dto/update-user-role.dto';
+import { UpdateUserStatusDto } from './dto/update-user-status.dto';
+import { UpdatePerfilDto } from './dto/update-perfil.dto';
 
 @Injectable()
 export class UsersService {
@@ -14,7 +18,7 @@ export class UsersService {
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
   async crearUsuario(dto: CreateUserDto) {
     const existente = await this.userRepo.findOne({ where: { email: dto.email } });
@@ -37,7 +41,6 @@ export class UsersService {
   }
 
   async login(dto: LoginDto) {
-    // 1️⃣ LOG CRUCIAL: Si no ves esto en Docker al intentar loguearte, el problema es el Controller o Angular
     console.log('--- INTENTO DE LOGIN RECIBIDO EN SERVICIO ---');
     console.log('DTO recibido:', JSON.stringify(dto));
 
@@ -47,16 +50,15 @@ export class UsersService {
     }
 
     const usuario = await this.findOneByEmailWithPassword(dto.email);
-    
+
     if (!usuario) {
       console.log('Usuario no encontrado en DB');
       throw new UnauthorizedException('Email o contraseña incorrecta');
     }
 
     try {
-      // 2️⃣ Comparación usando la versión JS para evitar errores de binarios en Docker
       const isMatch = await bcryptjs.compare(dto.password, usuario.password_hash);
-      
+
       if (!isMatch) {
         console.log('Contraseña no coincide');
         throw new UnauthorizedException('Email o contraseña incorrecta');
@@ -64,11 +66,10 @@ export class UsersService {
 
       console.log('✅ Login exitoso para:', usuario.email);
 
-      // 3️⃣ Generación de Token
-      const token = this.jwtService.sign({ 
-          id: usuario.id, 
-          email: usuario.email, 
-          role: usuario.role 
+      const token = this.jwtService.sign({
+        id: usuario.id,
+        email: usuario.email,
+        role: usuario.role
       });
 
       const { password_hash, ...rest } = usuario;
@@ -87,11 +88,71 @@ export class UsersService {
   async findOneByEmailWithPassword(email: string) {
     return await this.userRepo.findOne({
       where: { email },
-      select: ['id', 'nombre', 'email', 'password_hash', 'role'], 
+      select: ['id', 'nombre', 'email', 'password_hash', 'role'],
     });
   }
-  
+
   async findByIds(ids: number[]): Promise<User[]> {
     return this.userRepo.findBy({ id: In(ids) });
+  }
+
+  // --- Métodos para agregar-empleados ---
+
+  async findAllBasico(): Promise<Partial<User>[]> {
+    return this.userRepo.find({
+      select: ['id', 'nombre', 'apellido', 'dni', 'role', 'estado'],
+    });
+  }
+
+  async actualizarRol(id: number, dto: UpdateUserRoleDto): Promise<Partial<User>> {
+    const usuario = await this.userRepo.findOneBy({ id });
+    if (!usuario) {
+      throw new NotFoundException(`Usuario con id ${id} no encontrado`);
+    }
+    usuario.role = dto.role;
+    const guardado = await this.userRepo.save(usuario);
+    delete (guardado as any).password_hash;
+    return guardado;
+  }
+
+  // --- Métodos para gestion-clientes ---
+
+  async findAllGestion(): Promise<Partial<User>[]> {
+    return this.userRepo.find({
+      select: ['id', 'nombre', 'apellido', 'dni', 'role', 'estado'],
+    });
+  }
+
+  async actualizarEstado(id: number, dto: UpdateUserStatusDto): Promise<Partial<User>> {
+    const usuario = await this.userRepo.findOneBy({ id });
+    if (!usuario) {
+      throw new NotFoundException(`Usuario con id ${id} no encontrado`);
+    }
+    usuario.estado = dto.estado;
+    const guardado = await this.userRepo.save(usuario);
+    delete (guardado as any).password_hash;
+    return guardado;
+  }
+
+  // --- Métodos para perfil ---
+
+  async getPerfil(userId: number): Promise<Partial<User>> {
+    const usuario = await this.userRepo.findOneBy({ id: userId });
+    if (!usuario) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+    delete (usuario as any).password_hash;
+    return usuario;
+  }
+
+  async actualizarPerfil(userId: number, dto: UpdatePerfilDto): Promise<Partial<User>> {
+    const usuario = await this.userRepo.findOneBy({ id: userId });
+    if (!usuario) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+    Object.assign(usuario, dto);
+    const guardado = await this.userRepo.save(usuario);
+    delete (guardado as any).password_hash;
+    return guardado;
   }
 }

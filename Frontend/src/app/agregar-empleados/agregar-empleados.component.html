@@ -4,21 +4,13 @@
       <h2 class="page-title">Agregar Empleados</h2>
       <a routerLink="/admin" class="back-link">Volver al panel</a>
     </div>
-
     <div class="content-card">
       <div class="filtro-container" *ngIf="!cargando && !error">
-        <input
-          type="text"
-          [(ngModel)]="filtro"
-          placeholder="Filtrar por nombre, apellido o DNI"
-          class="filtro-input"
-        />
+        <input type="text" [(ngModel)]="filtro" placeholder="Filtrar por nombre, apellido o DNI" class="filtro-input" />
       </div>
-
       <p *ngIf="cargando" class="estado-texto">Cargando usuarios...</p>
       <p *ngIf="error" class="estado-texto estado-error">{{ error }}</p>
       <p *ngIf="mensaje" class="estado-texto estado-ok">{{ mensaje }}</p>
-
       <table *ngIf="!cargando && !error && usuariosFiltrados.length > 0" class="usuarios-table">
         <thead>
           <tr>
@@ -27,6 +19,8 @@
             <th>DNI</th>
             <th>Rol</th>
             <th>Acción</th>
+            <th>Estado</th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -40,46 +34,40 @@
               </select>
             </td>
             <td>
-              <button
-                type="button"
-                class="guardar-btn"
+              <span [class]="usuario.estado === 'activo' ? 'badge-activo' : 'badge-eliminado'">
+                {{ usuario.estado === 'activo' ? 'Activo' : 'Eliminado' }}
+              </span>
+            </td>
+            <td class="acciones-col">
+              <button type="button" class="guardar-btn"
                 [disabled]="usuario.guardando || usuario.roleSeleccionado === usuario.role"
                 (click)="guardarRol(usuario)">
-                {{ usuario.guardando ? 'Guardando...' : (usuario.roleSeleccionado === 'chofer' && usuario.role !== 'chofer' ? 'Configurar chofer' : 'Guardar') }}
+                {{ usuario.guardando ? 'Guardando...' : (usuario.roleSeleccionado === 'chofer' && usuario.role !==
+                'chofer' ? 'Configurar chofer' : 'Guardar') }}
               </button>
-
+              <button type="button" class="accion-btn baja-btn"
+                [disabled]="usuario.actualizando || usuario.estado === 'eliminado'"
+                (click)="cambiarEstado(usuario, 'eliminado')">
+                Dar de baja
+              </button>
+              <button type="button" class="accion-btn alta-btn"
+                [disabled]="usuario.actualizando || usuario.estado === 'activo'"
+                (click)="cambiarEstado(usuario, 'activo')">
+                Dar de alta
+              </button>
               <div class="chofer-panel" *ngIf="usuario.mostrarPanelChofer">
                 <h4 class="chofer-title">Datos del transportista</h4>
-
                 <label class="chofer-label">Legajo</label>
-                <input
-                  type="text"
-                  class="chofer-input"
-                  [(ngModel)]="usuario.legajoChofer"
-                  placeholder="Ingresar legajo"
-                />
-
+                <input type="text" class="chofer-input" [(ngModel)]="usuario.legajoChofer"
+                  placeholder="Ingresar legajo" />
                 <label class="chofer-label">Estado transportista</label>
-                <input
-                  type="text"
-                  class="chofer-input"
-                  [(ngModel)]="usuario.estadoTransportistaChofer"
-                  readonly
-                />
-
+                <input type="text" class="chofer-input" [(ngModel)]="usuario.estadoTransportistaChofer" readonly />
                 <div class="chofer-actions">
-                  <button
-                    type="button"
-                    class="guardar-btn"
-                    [disabled]="usuario.guardando"
+                  <button type="button" class="guardar-btn" [disabled]="usuario.guardando"
                     (click)="confirmarAltaChofer(usuario)">
                     {{ usuario.guardando ? 'Guardando...' : 'Crear chofer' }}
                   </button>
-
-                  <button
-                    type="button"
-                    class="cancelar-btn"
-                    [disabled]="usuario.guardando"
+                  <button type="button" class="cancelar-btn" [disabled]="usuario.guardando"
                     (click)="cancelarAltaChofer(usuario)">
                     Cancelar
                   </button>
@@ -89,7 +77,6 @@
           </tr>
         </tbody>
       </table>
-
       <p class="estado-texto" *ngIf="!cargando && !error && usuarios.length === 0">No hay usuarios para mostrar.</p>
       <p class="estado-texto" *ngIf="!cargando && !error && usuarios.length > 0 && usuariosFiltrados.length === 0">
         No hay resultados para el filtro aplicado.
