@@ -1,84 +1,356 @@
-/* Fondo general */
-.viajes-container {
-    background-color: #f4f7f6;
+/* Página general */
+.viajes-page {
     min-height: 100vh;
-    padding-bottom: 60px; /* Espacio para el botón flotante */
+    background-color: #052c4f;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 2rem 1rem;
 }
 
-/* Barra de título */
-.header-bar {
-    border-left: 5px solid #0d6efd;
+.viajes-wrapper {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
 }
 
-/* Estilos de la Tarjeta Principal */
+/* Título */
+.title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.page-title {
+    color: #f4f0e6;
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.back-link {
+    text-decoration: none;
+    color: #052c4f;
+    background-color: #f4f0e6;
+    border-radius: 8px;
+    padding: 0.5rem 0.9rem;
+    font-weight: 600;
+}
+
+.estado-texto {
+    color: #f4f0e6;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+/* Card vacía */
+.content-card {
+    background-color: #f4f0e6;
+    border-radius: 10px;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
+    padding: 1.5rem;
+    color: #052c4f;
+}
+
+.empty-card h4 {
+    margin: 0 0 0.5rem;
+    font-weight: 700;
+}
+
+.empty-card p {
+    margin: 0;
+    color: #555;
+}
+
+/* Tarjeta de viaje */
 .viaje-card {
+    background-color: #f4f0e6;
     border-radius: 12px;
-    overflow: hidden; /* Para que el header redondeado no se salga */
-    transition: all 0.3s ease;
-    background-color: #ffffff;
+    box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.25);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .viaje-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+    transform: translateY(-3px);
+    box-shadow: 6px 6px 18px rgba(0, 0, 0, 0.35);
 }
 
-/* Header de la tarjeta */
-.card-header-custom {
-    background: linear-gradient(45deg, #0b5ed7, #0a58ca);
-    color: white;
-    padding: 15px 20px;
-    border-bottom: none;
+/* Header */
+.viaje-header {
+    background: linear-gradient(135deg, #0b3d6e, #052c4f);
+    color: #f4f0e6;
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-/* Secciones internas */
-.dato-label {
-    font-size: 0.85rem;
-    color: #6c757d;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.dato-valor {
+.viaje-id {
+    font-weight: 700;
     font-size: 1.1rem;
-    color: #212529;
+}
+
+.viaje-badge {
+    display: inline-block;
+    border-radius: 999px;
+    padding: 0.25rem 0.75rem;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+.badge-pendiente {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.badge-activo {
+    background-color: #d8f0de;
+    color: #1d6b3a;
+}
+
+.badge-finalizado {
+    background-color: #d6d8db;
+    color: #383d41;
+}
+
+/* Body */
+.viaje-body {
+    padding: 1.5rem;
+}
+
+.viaje-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.viaje-col {
+    min-width: 0;
+}
+
+.col-title {
+    color: #052c4f;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin: 0 0 0.8rem;
+    letter-spacing: 0.3px;
+}
+
+/* Ruta box */
+.ruta-box {
+    background-color: #ffffff;
+    border-left: 4px solid #6c757d;
+    border-radius: 6px;
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+}
+
+.ruta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.ruta-label {
+    color: #6c757d;
+    font-weight: 700;
+    font-size: 0.75rem;
+}
+
+.ruta-valor {
+    color: #052c4f;
+    font-size: 1.05rem;
     font-weight: 500;
 }
 
-/* Caja de Ruta (Origen/Destino) */
-.ruta-box {
-    background-color: #f8f9fa;
-    border-left: 4px solid #6c757d;
+.ruta-divider {
+    border: none;
+    border-top: 1px solid #ddd;
+    margin: 0.5rem 0;
 }
 
-/* Sección de Unidades */
-.unidades-container {
-    max-height: 400px;
-    overflow-y: auto;
-    padding-right: 5px;
+/* Datos lista */
+.datos-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
-.unidad-item {
-    border-left: 4px solid #0d6efd !important;
-    background-color: #fdfdfe;
+.dato-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid #e0ddd3;
+    color: #052c4f;
+    font-size: 0.9rem;
 }
 
-/* Estilos del Mapa */
+.dato-row:last-child {
+    border-bottom: none;
+}
+
+.dato-highlight {
+    background-color: #fff;
+    border-radius: 6px;
+    padding: 0.5rem 0.6rem;
+    margin-top: 0.3rem;
+}
+
+.distancia-badge {
+    display: inline-block;
+    background-color: #0b3d6e;
+    color: #f4f0e6;
+    border-radius: 999px;
+    padding: 0.15rem 0.6rem;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+/* Unidad card */
+.unidad-card {
+    background-color: #ffffff;
+    border-left: 4px solid #0b3d6e;
+    border-radius: 6px;
+    padding: 0.8rem;
+}
+
+.unidad-title {
+    color: #0b3d6e;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin: 0 0 0.6rem;
+}
+
+.unidad-dato {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #052c4f;
+}
+
+.unidad-label {
+    font-weight: 700;
+}
+
+.unidad-valor {
+    background-color: #f4f0e6;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 0.2rem 0.5rem;
+    font-weight: 500;
+}
+
+.no-unidades {
+    background-color: #e8f4fd;
+    color: #0b3d6e;
+    border-radius: 6px;
+    padding: 0.7rem;
+    font-size: 0.9rem;
+}
+
+/* Mapa */
 .map-wrapper {
-    height: 350px;
+    height: 280px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #ddd;
+    background-color: #e9ecef;
     position: relative;
-    background-color: #e9ecef; /* Color de fondo mientras carga */
 }
 
 .map-container {
     height: 100%;
     width: 100%;
-    z-index: 1; /* Asegura que se vea */
+    z-index: 1;
 }
 
-/* Utilidades de Bootstrap personalizadas */
-.border-end-lg {
-    @media (min-width: 992px) {
-        border-right: 1px solid #dee2e6;
+/* Footer */
+.viaje-footer {
+    padding: 0.8rem 1.5rem 1.2rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.footer-actions {
+    display: flex;
+    gap: 0.6rem;
+}
+
+.accion-btn {
+    border: none;
+    border-radius: 8px;
+    padding: 0.6rem 1.2rem;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+}
+
+.accion-btn:hover {
+    opacity: 0.85;
+}
+
+.iniciar-btn {
+    background-color: #0b3d6e;
+    color: #f4f0e6;
+}
+
+.cancelar-btn {
+    background-color: #a81818;
+    color: #f4f0e6;
+}
+
+.finalizar-btn {
+    background-color: #1d6b3a;
+    color: #f4f0e6;
+}
+
+/* Paginación */
+.paginacion {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+}
+
+.pag-btn {
+    background-color: #f4f0e6;
+    color: #052c4f;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.pag-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pag-info {
+    color: #f4f0e6;
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .viaje-columns {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .title-row {
+        flex-direction: column;
+        align-items: flex-start;
     }
 }

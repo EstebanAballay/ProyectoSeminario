@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ViajeService } from '../services/viaje.service';
 import { Router } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import * as L from 'leaflet';
 import { DatePipe, CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -9,7 +10,7 @@ import * as jwt_decode from 'jwt-decode'; // Asegúrate de tener esto instalado
 @Component({
   selector: 'app-menucamionero',
   standalone: true,
-  imports: [CommonModule, DatePipe, FormsModule],
+  imports: [CommonModule, DatePipe, FormsModule, RouterModule],
   templateUrl: './menucamionero.component.html',
   styleUrls: ['./menucamionero.component.css']
 })
@@ -17,14 +18,14 @@ export class MenuCamioneroComponent implements OnInit {
 
   // Variables alineadas con tu HTML
   viajes: any[] = [];
-  usuario: any = {}; 
+  usuario: any = {};
   loading: boolean = true;
   viajeParaCancelar: any = null;
-  
+
   //Variables para paginación
-  viajesPaginados: any[] = []; 
+  viajesPaginados: any[] = [];
   paginaActual: number = 1;
-  itemsPorPagina: number = 10; 
+  itemsPorPagina: number = 10;
   totalPaginas: number = 1;
 
   // Diccionario para guardar referencias a múltiples mapas
@@ -44,14 +45,14 @@ export class MenuCamioneroComponent implements OnInit {
       const data = await this.viajeService.getViajesChofer();
       console.log('--- DATA RECIBIDA ---', data);
 
-      this.viajes = data.filter((v: any) => 
-        v.estadoViaje?.nombre === 'Pago confirmado' || 
+      this.viajes = data.filter((v: any) =>
+        v.estadoViaje?.nombre === 'Pago confirmado' ||
         v.estadoViaje?.nombre === 'En viaje'
       );
 
       //actualizar paginación despues de cargar los datos
       this.actualizarPaginacion();
-      
+
       // 3. Inicializamos los mapas (con retardo para que el HTML exista)
       setTimeout(() => {
         this.inicializarMapas(this.viajes);
@@ -68,11 +69,11 @@ export class MenuCamioneroComponent implements OnInit {
   actualizarPaginacion() {
     // 1. Calculamos cuántas páginas habrá en total
     this.totalPaginas = Math.ceil(this.viajes.length / this.itemsPorPagina);
-    
+
     // 2. Calculamos desde dónde y hasta dónde cortar la lista
     const indiceInicio = (this.paginaActual - 1) * this.itemsPorPagina;
     const indiceFin = indiceInicio + this.itemsPorPagina;
-    
+
     // 3. Recortamos la lista original y la guardamos en la nueva variable
     this.viajesPaginados = this.viajes.slice(indiceInicio, indiceFin);
 
@@ -91,10 +92,10 @@ export class MenuCamioneroComponent implements OnInit {
 
   async iniciarViaje(viaje: any) {
     if (!confirm('¿Estás listo para iniciar el viaje?')) return;
-    
+
     try {
       await this.viajeService.iniciarViaje(viaje.ViajeId);
-      
+
       // Actualizamos localmente el estado para que cambien los botones
       viaje.estadoViaje.nombre = 'En viaje';
       alert('¡Buen viaje! Estado actualizado a "En viaje".');
@@ -109,7 +110,7 @@ export class MenuCamioneroComponent implements OnInit {
 
     try {
       await this.viajeService.finalizarViaje(viajeId);
-      
+
       // Eliminar de la lista visualmente
       this.viajes = this.viajes.filter(v => v.ViajeId !== viajeId);
       this.verificarPaginaVacia();
@@ -126,12 +127,12 @@ export class MenuCamioneroComponent implements OnInit {
     try {
       // Llamamos al servicio directo
       await this.viajeService.cancelarViaje(viajeId);
-      
+
       // Eliminar de la lista visualmente
       this.viajes = this.viajes.filter(v => v.ViajeId !== viajeId);
       this.verificarPaginaVacia();
       alert('Viaje cancelado.');
-      
+
     } catch (error) {
       console.error('Error al cancelar:', error);
       alert('Error al cancelar el viaje.');
@@ -154,7 +155,7 @@ export class MenuCamioneroComponent implements OnInit {
 
       // Solo creamos el mapa si el div existe y no ha sido creado antes
       if (container && !this.maps[v.ViajeId]) {
-        
+
         // Coordenadas seguras (con valores por defecto si fallan)
         const latOr = parseFloat(v.CoordYOrigen) || -34.6;
         const lngOr = parseFloat(v.CoordXOrigen) || -58.3;
