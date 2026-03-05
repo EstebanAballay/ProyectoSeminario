@@ -8,107 +8,62 @@ import { AuthMiddleware } from './auth.middleware';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
 
+    // URLs de los servicios (configurables por entorno)
+    const USERS_URL = process.env.USERS_SERVICE_URL || 'http://localhost:3003';
+    const UNIDAD_URL = process.env.UNIDAD_SERVICE_URL || 'http://localhost:3002';
+    const VIAJE_URL = process.env.VIAJE_SERVICE_URL || 'http://localhost:3004';
+    const COBRO_URL = process.env.COBRO_SERVICE_URL || 'http://localhost:3001';
+    const MP_URL = process.env.MP_SERVICE_URL || 'http://localhost:3005';
 
     consumer
       .apply(AuthMiddleware)
       .exclude(
-        // Excluimos las rutas públicas (Login, Registro y Webhooks)
         { path: 'api/users/login', method: RequestMethod.POST },
         { path: 'api/users/register', method: RequestMethod.POST },
         { path: 'webhooks/mercadopago', method: RequestMethod.POST }
       )
       .forRoutes({ path: 'api/*', method: RequestMethod.ALL });
 
-
-    // 2. CONFIGURAR LOS PROXIES (Ruteo interno de Docker)
-    // Usuarios (Puerto 3003)
+    // Usuarios — localhost:3003 (misma VM)
     consumer.apply(createProxyMiddleware({
-      target: 'http://users-service:3003/users',
+      target: `${USERS_URL}/users`,
       changeOrigin: true,
-      logger: console, 
-      on: {
-        proxyReq: (proxyReq, req, res) => {
-          console.log(`[PROXY DEBUG] ${req.method} ${req.url} -> ${proxyReq.path}`);
-        },
-        error: (err, req, res) => {
-          console.error('[PROXY ERROR]', err);
-        }
-      },
+      logger: console,
     })).forRoutes('api/users');
 
-    // Unidades / Camiones (Puerto 3002)
+    // Unidades — VM2 via flycast
     consumer.apply(createProxyMiddleware({
-      target: 'http://unidad-service:3002/unidad',
+      target: `${UNIDAD_URL}/unidad`,
       changeOrigin: true,
-      logger: console, 
-      on: {
-        proxyReq: (proxyReq, req, res) => {
-          console.log(`[PROXY DEBUG] ${req.method} ${req.url} -> ${proxyReq.path}`);
-        },
-        error: (err, req, res) => {
-          console.error('[PROXY ERROR]', err);
-        }
-      },
+      logger: console,
     })).forRoutes('api/unidad');
 
-    // Viajes (Puerto 3004)
+    // Viajes — VM2 via flycast
     consumer.apply(createProxyMiddleware({
-      target: 'http://viaje-service:3004/viaje',
+      target: `${VIAJE_URL}/viaje`,
       changeOrigin: true,
-      logger: console, 
-      on: {
-        proxyReq: (proxyReq, req, res) => {
-          console.log(`[PROXY DEBUG] ${req.method} ${req.url} -> ${proxyReq.path}`);
-        },
-        error: (err, req, res) => {
-          console.error('[PROXY ERROR]', err);
-        }
-      },
+      logger: console,
     })).forRoutes('api/viaje');
 
-    // Cobros (Puerto 3001)
+    // Cobros — VM2 via flycast
     consumer.apply(createProxyMiddleware({
-      target: 'http://cobro-service:3001/cobros',
+      target: `${COBRO_URL}/cobros`,
       changeOrigin: true,
-      logger: console, 
-      on: {
-        proxyReq: (proxyReq, req, res) => {
-          console.log(`[PROXY DEBUG] ${req.method} ${req.url} -> ${proxyReq.path}`);
-        },
-        error: (err, req, res) => {
-          console.error('[PROXY ERROR]', err);
-        }
-      },
+      logger: console,
     })).forRoutes('api/cobros');
 
-    // Mercado Pago API interna (Puerto 3005)
+    // MercadoPago — VM3 via flycast
     consumer.apply(createProxyMiddleware({
-      target: 'http://mercadopago-service:3005/mercadopago',
+      target: `${MP_URL}/mercadopago`,
       changeOrigin: true,
-      logger: console, 
-      on: {
-        proxyReq: (proxyReq, req, res) => {
-          console.log(`[PROXY DEBUG] ${req.method} ${req.url} -> ${proxyReq.path}`);
-        },
-        error: (err, req, res) => {
-          console.error('[PROXY ERROR]', err);
-        }
-      },
+      logger: console,
     })).forRoutes('api/mercadopago');
 
-    // Webhooks de Mercado Pago desde Ngrok (Puerto 3005)
+    // Webhooks de MercadoPago
     consumer.apply(createProxyMiddleware({
-      target: 'http://mercadopago-service:3005/mercadopago',
+      target: `${MP_URL}/mercadopago`,
       changeOrigin: true,
-      logger: console, 
-      on: {
-        proxyReq: (proxyReq, req, res) => {
-          console.log(`[PROXY DEBUG] ${req.method} ${req.url} -> ${proxyReq.path}`);
-        },
-        error: (err, req, res) => {
-          console.error('[PROXY ERROR]', err);
-        }
-      },
+      logger: console,
     })).forRoutes('webhooks/mercadopago');
   }
 }

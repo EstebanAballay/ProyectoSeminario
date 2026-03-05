@@ -1,0 +1,38 @@
+FROM node:20-alpine AS builder
+
+# Chromium para Puppeteer (cobro lo necesita para generar PDFs)
+RUN apk add --no-cache chromium nss freetype harfbuzz ca-certificates ttf-freefont
+
+WORKDIR /app
+
+# Instalar dependencias
+COPY package*.json ./
+RUN npm install --legacy-peer-deps
+
+# Copiar todo el código fuente
+COPY . .
+
+# Variable que define qué app compilar (se pasa como build arg)
+ARG APP
+RUN npx nest build ${APP}
+
+# ---- Imagen final (más liviana, sin devDependencies ni fuentes) ----
+FROM node:20-alpine
+
+RUN apk add --no-cache chromium nss freetype harfbuzz ca-certificates ttf-freefont
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+ENV CHROMIUM_PATH=/usr/bin/chromium-browser
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install --legacy-peer-deps --omit=dev
+
+COPY --from=builder /app/dist ./dist
+
+ARG APP
+ENV APP_NAME=${APP}
+
+EXPOSE 3000
+
+CMD node dist/apps/${APP_NAME}/main.js

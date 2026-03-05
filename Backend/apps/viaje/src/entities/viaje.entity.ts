@@ -41,28 +41,27 @@ export class Viaje {
   distancia: number;
 
   @Column("jsonb", { nullable: true, name: 'unidades' })
-  unidades: number[] = []; 
-
+  unidades: number[] = [];
 
   @Column({ name: 'estadoViajeId', nullable: true })
   estadoViajeId: number;
 
   @ManyToOne(() => EstadoViaje, (estado) => estado.viajes, { eager: true })
-  @JoinColumn({ name: 'estadoViajeId' }) 
+  @JoinColumn({ name: 'estadoViajeId' })
   estadoViaje: EstadoViaje;
 
   @Column({ name: 'usuarioId' })
   usuarioId: number;
 
-  @Column({type: 'double precision', nullable: true})
+  @Column({ type: 'double precision', nullable: true })
   CoordXOrigen: number;
 
-  @Column({type: 'double precision', nullable: true})
+  @Column({ type: 'double precision', nullable: true })
   CoordYOrigen: number;
 
-  @Column({type: 'double precision', nullable: true})
+  @Column({ type: 'double precision', nullable: true })
   CoordXDestino: number;
 
-  @Column({type: 'double precision', nullable: true})
+  @Column({ type: 'double precision', nullable: true })
   CoordYDestino: number;
 }

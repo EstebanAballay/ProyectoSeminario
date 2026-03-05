@@ -6,7 +6,8 @@ async function bootstrap() {
 
   // Habilitamos CORS para que Angular pueda comunicarse con el Gateway
   app.enableCors({
-    origin: ['http://localhost:4200', 'https://localhost:4200'], // Asegúrate de que este sea el puerto de tu frontend
+    origin: ['http://localhost:4200', 'https://localhost:4200',
+              process.env.FRONTEND_URL || 'https://tu-proyecto.vercel.app'], // Asegúrate de que este sea el puerto de tu frontend
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });

@@ -1,0 +1,136 @@
+services:
+
+  # ============================================================
+  # API GATEWAY — Punto de entrada único para el frontend
+  # Puerto 3000 expuesto al exterior
+  # ============================================================
+  api-gateway:
+    build:
+      context: ./apps/api-gateway
+      dockerfile: Dockerfile.prod
+    container_name: api-gateway
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      # URLs internas de Docker (los nombres de los servicios actúan como hostnames)
+      - USERS_SERVICE_URL=http://users-service:3003
+      - UNIDAD_SERVICE_URL=http://unidad-service:3002
+      - VIAJE_SERVICE_URL=http://viaje-service:3004
+      - COBRO_SERVICE_URL=http://cobro-service:3001
+      - MP_SERVICE_URL=http://mercadopago-service:3005
+      # URL del frontend en Vercel (para CORS)
+      - FRONTEND_URL=${FRONTEND_URL}
+      # Clave JWT para que AuthMiddleware valide tokens
+      - JWT_SECRET=${JWT_SECRET}
+    networks:
+      - backend-network
+    depends_on:
+      - users-service
+      - unidad-service
+      - viaje-service
+      - cobro-service
+      - mercadopago-service
+
+  # ============================================================
+  # USERS SERVICE — Puerto 3003 (solo interno)
+  # ============================================================
+  users-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+      args:
+        APP: users
+    container_name: users-service
+    restart: always
+    environment:
+      - PORT=3003
+      - DATABASE_URL=${DATABASE_URL}
+      - JWT_SECRET=${JWT_SECRET}
+    networks:
+      - backend-network
+
+  # ============================================================
+  # UNIDAD SERVICE — Puerto 3002 (solo interno)
+  # ============================================================
+  unidad-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+      args:
+        APP: unidad
+    container_name: unidad-service
+    restart: always
+    environment:
+      - PORT=3002
+      - DATABASE_URL=${DATABASE_URL}
+    networks:
+      - backend-network
+
+  # ============================================================
+  # VIAJE SERVICE — Puerto 3004 (solo interno)
+  # ============================================================
+  viaje-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+      args:
+        APP: viaje
+    container_name: viaje-service
+    restart: always
+    environment:
+      - PORT=3004
+      - DATABASE_URL=${DATABASE_URL}
+      - USERS_SERVICE_URL=http://users-service:3003
+      - UNIDAD_SERVICE_URL=http://unidad-service:3002
+    networks:
+      - backend-network
+    depends_on:
+      - users-service
+      - unidad-service
+
+  # ============================================================
+  # COBRO SERVICE — Puerto 3001 (solo interno)
+  # ============================================================
+  cobro-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+      args:
+        APP: cobro
+    container_name: cobro-service
+    restart: always
+    environment:
+      - PORT=3001
+      - DATABASE_URL=${DATABASE_URL}
+      - MP_SERVICE_URL=http://mercadopago-service:3005
+    networks:
+      - backend-network
+    depends_on:
+      - mercadopago-service
+
+  # ============================================================
+  # MERCADOPAGO SERVICE — Puerto 3005 (expuesto para webhooks)
+  # ============================================================
+  mercadopago-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+      args:
+        APP: mercadopago
+    container_name: mercadopago-service
+    restart: always
+    ports:
+      - "3005:3005"   # Expuesto para recibir webhooks de MercadoPago directamente
+    environment:
+      - PORT=3005
+      - DATABASE_URL=${DATABASE_URL}
+      - MP_ACCESS_TOKEN=${MP_ACCESS_TOKEN}
+      - COBRO_SERVICE_URL=http://cobro-service:3001
+    networks:
+      - backend-network
+
+networks:
+  backend-network:
+    driver: bridge
