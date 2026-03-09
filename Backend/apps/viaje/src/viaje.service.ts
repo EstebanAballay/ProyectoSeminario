@@ -1,7 +1,7 @@
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateViajeDto } from './dto/create-viaje.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { LessThanOrEqual,LessThan,MoreThan, MoreThanOrEqual, Repository, Not, In} from 'typeorm';
+import { LessThanOrEqual, LessThan, MoreThan, MoreThanOrEqual, Repository, Not, In } from 'typeorm';
 import { EstadoViaje } from './entities/estadoViaje.entity';
 import { Viaje } from './entities/viaje.entity';
 import { HttpService } from '@nestjs/axios';
@@ -22,7 +22,7 @@ export class ViajeService {
     private readonly httpService: HttpService,
 
     private readonly mailService: MailService, // ✅ TU MailService
-  ) {}
+  ) { }
 
   async testConnection() {
     try {
@@ -39,18 +39,18 @@ export class ViajeService {
 
   async createViaje(data: CreateViajeDto, user) {
     console.log('Creando viaje con datos:', data);
-    
+
     // BLINDAJE: Buscamos el estado, pero si falla usamos ID 1 (PreCargado)
     let estadoDefault = await this.estadoViajeRepository.findOne({ where: { nombre: 'PreCargado' } });
     if (!estadoDefault) {
-        estadoDefault = { id: 1 } as EstadoViaje;
+      estadoDefault = { id: 1 } as EstadoViaje;
     }
 
     const { fecha, hora } = await this.calcularFechaRegreso(data.origenCoords, data.destinoCoords, BASE_COORDS, data.fechaInicio, TIEMPO_MUERTO);
-    
+
     const viaje = this.viajeRepository.create({
       fechaReserva: new Date(),
-      fechaInicio: new Date(data.fechaInicio), 
+      fechaInicio: new Date(data.fechaInicio),
       destinoInicio: data.destinoInicio,
       horaSalida: data.horaSalida.length === 5 ? `${data.horaSalida}:00` : data.horaSalida,
       fechaFin: fecha,
@@ -68,17 +68,17 @@ export class ViajeService {
       CoordYDestino: data.destinoCoords.lng,
       unidades: []
     });
- 
+
     const savedViaje = await this.viajeRepository.save(viaje);
-    
+
     // Procesamiento de unidades
     if (data.unidades && data.unidades.length > 0) {
       for (const unidad of data.unidades) {
         const nuevaUnidad = await this.agregarUnidad(unidad, savedViaje.ViajeId);
-        
+
         //multiplico y divido por 100 para quedarme con 2 decimales
         const subtotalCalculado = Math.trunc((nuevaUnidad.subtotal * data.distancia) * 100) / 100;
-        console.log('subtotal: ',typeof(subtotalCalculado));
+        console.log('subtotal: ', typeof (subtotalCalculado));
         savedViaje.unidades.push(nuevaUnidad.id);
         savedViaje.total = Number(savedViaje.total) + Number(subtotalCalculado);
       }
@@ -86,7 +86,7 @@ export class ViajeService {
 
     savedViaje.sena = Math.trunc((savedViaje.total * 0.1) * 100) / 100;
     savedViaje.resto = Math.trunc((savedViaje.total - savedViaje.sena) * 100) / 100;
-    console.log('el viaje guardado quedo asi: ',savedViaje);
+    console.log('el viaje guardado quedo asi: ', savedViaje);
     await this.viajeRepository.save(savedViaje);
 
     // ✅ ENVÍO DE MAIL (NO BLOQUEANTE)
@@ -101,19 +101,19 @@ export class ViajeService {
   }
 
   async confirmarPagoViajeSenia(viajeId: number) {
-    await this.viajeRepository.update(viajeId, { 
-      estadoViaje: { id: 2 } 
+    await this.viajeRepository.update(viajeId, {
+      estadoViaje: { id: 2 }
     });
-    
+
     console.log(`✅ Viaje ${viajeId} actualizado a estado: Pendiente de confirmacion`);
     return { success: true };
   }
 
   async confirmarPagoViajeResto(viajeId: number) {
-    await this.viajeRepository.update(viajeId, { 
-      estadoViaje: { id: 5 } 
+    await this.viajeRepository.update(viajeId, {
+      estadoViaje: { id: 5 }
     });
-    
+
     console.log(`✅ Viaje ${viajeId} actualizado a estado: Pago Confirmado`);
     return { success: true };
   }
@@ -122,11 +122,11 @@ export class ViajeService {
   // ===============================
   // UNIDADES
   // ===============================
- 
+
   async agregarUnidad(unidad: any, viajeId: number) {
     try {
       const response = await firstValueFrom(
-        this.httpService.post('http://unidad-service:3002/unidad', { ...unidad, viajeId })
+        this.httpService.post(`${process.env.UNIDAD_SERVICE_URL}/unidad`, { ...unidad, viajeId })
       );
       return { id: response.data.UnidadId, subtotal: response.data.subtotal };
     } catch (error) {
@@ -135,26 +135,26 @@ export class ViajeService {
     }
   }
 
-  async buscarUnidadesDisponibles(fechaInicio: Date, dtoViaje:any) {
+  async buscarUnidadesDisponibles(fechaInicio: Date, dtoViaje: any) {
     console.log(dtoViaje);
-    const {fecha,hora} = await this.calcularFechaRegreso(dtoViaje.dto.origenCoords,dtoViaje.dto.destinoCoords,BASE_COORDS,fechaInicio,TIEMPO_MUERTO);
-    
+    const { fecha, hora } = await this.calcularFechaRegreso(dtoViaje.dto.origenCoords, dtoViaje.dto.destinoCoords, BASE_COORDS, fechaInicio, TIEMPO_MUERTO);
+
     const viajesEnRango = await this.viajeRepository.find({
       where: [
-        { fechaInicio: LessThanOrEqual(new Date(fecha)), fechaFin: MoreThanOrEqual(fechaInicio)},
+        { fechaInicio: LessThanOrEqual(new Date(fecha)), fechaFin: MoreThanOrEqual(fechaInicio) },
       ]
     });
-    
+
     const unidadesOcupadas = viajesEnRango.flatMap(v => v.unidades || []);
-    
+
     try {
       const dto = { unidadesOcupadas: unidadesOcupadas, camiones: dtoViaje.camiones };
       const response = await firstValueFrom(
-        this.httpService.post('http://unidad-service:3002/unidad/unidadesDisponibles', dto)
+        this.httpService.post(`${process.env.UNIDAD_SERVICE_URL}/unidad/unidadesDisponibles`, dto)
       );
       console.log(response.data);
       return response.data;
-      
+
     } catch (error) {
       console.error('Error al buscar la unidad:', error.message);
       return [];
@@ -170,10 +170,10 @@ export class ViajeService {
       const duracionTransitoSegundos = response.data.routes[0].duration;
       const tiempoTotalSegundos = duracionTransitoSegundos + (tiempoMuerto * 3600);
       const fechaCompleta = new Date(new Date(fechaInicio).getTime() + (tiempoTotalSegundos * 1000));
-      
-      return { 
-        fecha: fechaCompleta.toISOString().split('T')[0], 
-        hora: fechaCompleta.toTimeString().split(' ')[0] 
+
+      return {
+        fecha: fechaCompleta.toISOString().split('T')[0],
+        hora: fechaCompleta.toTimeString().split(' ')[0]
       };
     } catch (error) {
       console.error('Error calculando ruteo:', error);
@@ -223,12 +223,12 @@ export class ViajeService {
     // 1. Buscamos el viaje
     const viaje = await this.viajeRepository.findOne({
       where: { ViajeId: id },
-      relations: ['estadoViaje'], 
+      relations: ['estadoViaje'],
     });
 
     if (!viaje) return null;
 
-    let idsUnidades = viaje.unidades.map((unidad:any) => Number(unidad))
+    let idsUnidades = viaje.unidades.map((unidad: any) => Number(unidad))
 
     let unidadesEncontradas: any[] = [];
 
@@ -239,7 +239,7 @@ export class ViajeService {
         try {
           // SOLUCIÓN: Usamos firstValueFrom para resolver el Observable y pedimos el .data
           const response = await firstValueFrom(
-            this.httpService.get(`http://unidad-service:3002/unidad/${idUnidad}`)
+            this.httpService.get(`${process.env.UNIDAD_SERVICE_URL}/unidad/${idUnidad}`)
           );
           console.log(response.data);
           unidadesEncontradas.push(response.data);
@@ -254,8 +254,8 @@ export class ViajeService {
     }
     console.log('las unidades encontradas son:', unidadesEncontradas);
     // 4. Asignamos TODAS las unidades encontradas juntas, fuera del bucle
-    (viaje as any).unidades = unidadesEncontradas; 
-    
+    (viaje as any).unidades = unidadesEncontradas;
+
     console.log('✅ Viaje procesado con sus unidades completas:', viaje.unidades);
     return viaje;
   }
@@ -288,7 +288,7 @@ export class ViajeService {
     //peticion a unidad-service para actualizar el estado del viaje en las unidades asociadas
     try {
       const response = await firstValueFrom(
-        this.httpService.patch(`http://unidad-service:3002/unidad/iniciarEstadoViaje/${viaje.ViajeId}`)
+        this.httpService.patch(`${process.env.UNIDAD_SERVICE_URL}/unidad/iniciarEstadoViaje/${viaje.ViajeId}`)
       );
       console.log('Respuesta de unidad-service:', response.data);
     }
@@ -328,7 +328,7 @@ export class ViajeService {
     //peticion a unidad-service para actualizar el estado del viaje en las unidades asociadas
     try {
       const response = await firstValueFrom(
-        this.httpService.patch(`http://unidad-service:3002/unidad/finalizarEstadoViaje/${viaje.ViajeId}`)
+        this.httpService.patch(`${process.env.UNIDAD_SERVICE_URL}/unidad/finalizarEstadoViaje/${viaje.ViajeId}`)
       );
       console.log('Respuesta de unidad-service:', response.data);
     }
@@ -342,7 +342,7 @@ export class ViajeService {
     };
   }
 
-  async cancelarViaje(viajeId: number,user: any) {
+  async cancelarViaje(viajeId: number, user: any) {
     const viaje = await this.viajeRepository.findOne({
       where: { ViajeId: viajeId },
       relations: ['estadoViaje'],
@@ -367,14 +367,14 @@ export class ViajeService {
     //cambiar el estado de las unidades asociadas al viaje,usamos la misma funcion que en finalizar viaje
     try {
       const response = await firstValueFrom(
-        this.httpService.patch(`http://unidad-service:3002/unidad/finalizarEstadoViaje/${viaje.ViajeId}`)
+        this.httpService.patch(`${process.env.UNIDAD_SERVICE_URL}/unidad/finalizarEstadoViaje/${viaje.ViajeId}`)
       );
       console.log('Respuesta de unidad-service:', response.data);
-      
+
       // ✅ ENVÍO DE MAIL CON TU SERVICIO REAL
       this.mailService.enviarMailCancelacion(
-      user.email,
-      viaje).catch(e => console.error('❌ Error mail cancelación:', e));
+        user.email,
+        viaje).catch(e => console.error('❌ Error mail cancelación:', e));
     }
 
     catch (error) {
@@ -385,20 +385,20 @@ export class ViajeService {
       viaje: viajeGuardado,
     };
   }
-     
+
   async getViajesPendientesPago(user) {
     // 1. Busco el estado Pendiente de pago
     const estadoPendientePago = await this.estadoViajeRepository.findOne({ where: { id: 4 } });
-    
+
     // 2. Busco los viajes en ese estado y del usuario
-    const viajes = await this.viajeRepository.find({ where: { estadoViaje: estadoPendientePago, usuarioId: user.id  } });
+    const viajes = await this.viajeRepository.find({ where: { estadoViaje: estadoPendientePago, usuarioId: user.id } });
 
     // 3. "Hidratamos" cada viaje buscando sus unidades en el otro microservicio
     const viajesConUnidades = await Promise.all(viajes.map(async (viaje) => {
-      try { 
+      try {
         // Hacemos la petición al servicio de unidades
         const { data: unidades } = await lastValueFrom(
-          this.httpService.get(`http://unidad-service:3002/unidad/unidades-de-viaje/${viaje.ViajeId}`)
+          this.httpService.get(`${process.env.UNIDAD_SERVICE_URL}/unidad/unidades-de-viaje/${viaje.ViajeId}`)
         );
 
         // 4. Retornamos el viaje original + el array de unidades real
@@ -437,7 +437,7 @@ export class ViajeService {
   async getViajesPendientes() {
     // 1. Busco el estado Pendiente
     const estadoPendiente = await this.estadoViajeRepository.findOne({ where: { id: 2 } });
-    
+
     // 2. Busco los viajes (Metadata básica)
     const viajes = await this.viajeRepository.find({ where: { estadoViaje: estadoPendiente } });
 
@@ -446,8 +446,8 @@ export class ViajeService {
       try {
         // Hacemos la petición al servicio de unidades
         const { data: unidades } = await lastValueFrom(
-          this.httpService.get('http://unidad-service:3002/unidad/', {
-            params: { idViaje: viaje.ViajeId } 
+          this.httpService.get(`${process.env.UNIDAD_SERVICE_URL}/unidad/`, {
+            params: { idViaje: viaje.ViajeId }
           })
         );
 
@@ -471,18 +471,18 @@ export class ViajeService {
   async getChoferesDisponibles(fechaInicio: Date, fechaFin: Date) {
     //Busco los viajes en el rango y que no esten cancelados
     const viajesEnRango = await this.viajeRepository.find({
-      where: 
-        { fechaInicio: LessThanOrEqual(fechaFin), fechaFin: MoreThanOrEqual(fechaInicio),estadoViaje: {id: Not(3)} } //solo los viajes asignados,
-      
+      where:
+        { fechaInicio: LessThanOrEqual(fechaFin), fechaFin: MoreThanOrEqual(fechaInicio), estadoViaje: { id: Not(3) } } //solo los viajes asignados,
+
     });
     console.log('Viajes en el rango para choferes:', viajesEnRango);
     try {
       const response = await firstValueFrom(
-        this.httpService.post('http://unidad-service:3002/unidad/choferesDisponibles', viajesEnRango)
+        this.httpService.post(`${process.env.UNIDAD_SERVICE_URL}/unidad/choferesDisponibles`, viajesEnRango)
       );
       console.log('Choferes disponibles:', response.data);
       return response.data;
-    }  
+    }
     catch (error) {
       console.error('Error al buscar los choferes:', error.message);
     }
@@ -498,35 +498,35 @@ export class ViajeService {
     });
   }
 
-  async asignarChoferes(viajeId:number, asignaciones: {unidadId: number, choferId: number}[]) {
+  async asignarChoferes(viajeId: number, asignaciones: { unidadId: number, choferId: number }[]) {
     // Lllamar al servicio de unidad para actualizar los choferes asignados
     try {
       console.log(asignaciones);
       const response = await firstValueFrom(
-        this.httpService.post('http://unidad-service:3002/unidad/asignarChoferes',{asignaciones})
+        this.httpService.post(`${process.env.UNIDAD_SERVICE_URL}/unidad/asignarChoferes`, { asignaciones })
       );
       //Actualizo el viaje solo si logro asignar los choferes
-      await this.viajeRepository.update(viajeId, {estadoViaje: {id:4}}); //cambio el estado pendiente de pago
+      await this.viajeRepository.update(viajeId, { estadoViaje: { id: 4 } }); //cambio el estado pendiente de pago
       console.log('choferes asignados y viaje actualizado')
-      
-    }  
+
+    }
     catch (error) {
       console.error('Error al asignar los choferes:', error.message);
     }
   }
 
   async rechazarViaje(viajeId: number) {
-    await this.viajeRepository.update(viajeId, { estadoViaje: { id: 3 } }); 
+    await this.viajeRepository.update(viajeId, { estadoViaje: { id: 3 } });
   }
 
 
 
-  async getViajesDelChofer(choferId:number) {
+  async getViajesDelChofer(choferId: number) {
     try {
       console.log('Consultando unidades para el chofer con ID:', choferId);
 
       const response = await firstValueFrom(
-        this.httpService.get('http://unidad-service:3002/unidad/por-chofer', {
+        this.httpService.get(`${process.env.UNIDAD_SERVICE_URL}/unidad/por-chofer`, {
           params: { choferId: choferId } // Asegúrate que tu authService inyecta el ID del chofer en el token y que el guard lo extrae correctamente
         })
       );
@@ -596,7 +596,7 @@ export class ViajeService {
     //cambiar el estado de las unidades asociadas al viaje,usamos la misma funcion que en finalizar viaje
     try {
       const response = await firstValueFrom(
-        this.httpService.patch(`http://unidad-service:3002/unidad/finalizarEstadoViaje/${viaje.ViajeId}`)
+        this.httpService.patch(`${process.env.UNIDAD_SERVICE_URL}/unidad/finalizarEstadoViaje/${viaje.ViajeId}`)
       );
       console.log('Respuesta de unidad-service:', response.data);
     }
@@ -610,10 +610,10 @@ export class ViajeService {
   }
 
   async confirmarPagoViaje(viajeId: number) {
-    await this.viajeRepository.update(viajeId, { 
-      estadoViaje: { id: 2 } 
+    await this.viajeRepository.update(viajeId, {
+      estadoViaje: { id: 2 }
     });
-    
+
     console.log(`✅ Viaje ${viajeId} actualizado a estado: Confirmado`);
     return { success: true };
   }

@@ -36,18 +36,18 @@ export class UnidadService {
     @InjectRepository(EstadoAcoplado) private EstadoAcopladoRepository: Repository<EstadoAcoplado>,
     @InjectRepository(estadoTransportista) private estadoTransportistaRepository: Repository<estadoTransportista>,
     @InjectRepository(Transportista) private transportistaRepository: Repository<Transportista>,
-  ) {}
+  ) { }
 
-  async testConnection() 
-        {try {
-          const count = await this.UnidadRepository.count();
-          console.log('DB connection works, Unidad count:', count);
-          await this.asegurarEstadoEnEsperaParaTransportistas();
-          } 
-         catch (error){
-            console.error('DB connection failed:', error);
-            }
-        }
+  async testConnection() {
+    try {
+      const count = await this.UnidadRepository.count();
+      console.log('DB connection works, Unidad count:', count);
+      await this.asegurarEstadoEnEsperaParaTransportistas();
+    }
+    catch (error) {
+      console.error('DB connection failed:', error);
+    }
+  }
 
   //Funcion para obtener un item random de un array
   private getRandomItem<T>(items: T[]): T {
@@ -83,21 +83,21 @@ export class UnidadService {
         throw new NotFoundException(`Acoplado con id ${dto.acopladoId} no encontrado`);
       }
     }
-    
-    const subtotal = (semirremolque?.precio ?? 0) + (camion?.precio ?? 0 ) + (acoplado?.precio ?? 0);
+
+    const subtotal = (semirremolque?.precio ?? 0) + (camion?.precio ?? 0) + (acoplado?.precio ?? 0);
     // Crear la unidad
     const unidad = this.UnidadRepository.create({
       idViaje: dto.viajeId,
-      camion:camion,
+      camion: camion,
       semiremolque: semirremolque || null,
       acoplado: acoplado || null,
-      subtotal:subtotal
+      subtotal: subtotal
     });
 
     // Guardar
     return this.UnidadRepository.save(unidad);
   }
-  
+
   consultarTiposAcoplados(): Promise<Tipo[]> {
     return this.tipoRepository.find();
   }
@@ -110,41 +110,42 @@ export class UnidadService {
   //Busca las unidades disponibles
   async findDisponibles(unidadesOcupadas: number[]): Promise<{
     camiones: Camion[];
-    acoplados:any;
-    semirremolques: any;}> 
-    {
-      const unidades = await this.UnidadRepository.find({
-        where: { UnidadId: In(unidadesOcupadas) },
-        relations: ['camion', 'acoplado', 'semiremolque'],
-      });
+    acoplados: any;
+    semirremolques: any;
+  }> {
+    const unidades = await this.UnidadRepository.find({
+      where: { UnidadId: In(unidadesOcupadas) },
+      relations: ['camion', 'acoplado', 'semiremolque'],
+    });
 
-      const camionesOcupados = unidades.map(u => u.camion?.id).filter(Boolean);
-      const acopladosOcupados = unidades.map(u => u.acoplado?.id).filter(Boolean);
-      const semirremolquesOcupados = unidades.map(u => u.semiremolque?.id).filter(Boolean);
+    const camionesOcupados = unidades.map(u => u.camion?.id).filter(Boolean);
+    const acopladosOcupados = unidades.map(u => u.acoplado?.id).filter(Boolean);
+    const semirremolquesOcupados = unidades.map(u => u.semiremolque?.id).filter(Boolean);
 
-      const camionesDisponibles =( await this.CamionRepository.find({
-        where: { id: Not(In(camionesOcupados))},
-      })).map(c => ({ ...c, tipo: c.tipoCamion.nombre }));;
+    const camionesDisponibles = (await this.CamionRepository.find({
+      where: { id: Not(In(camionesOcupados)) },
+    })).map(c => ({ ...c, tipo: c.tipoCamion.nombre }));;
 
-      const acopladosDisponibles = (await this.acopladoRepository.find({
-        where: { id: Not(In(acopladosOcupados))},
-      })).map(c => ({ ...c, tipo: c.tipo.nombre }));;
+    const acopladosDisponibles = (await this.acopladoRepository.find({
+      where: { id: Not(In(acopladosOcupados)) },
+    })).map(c => ({ ...c, tipo: c.tipo.nombre }));;
 
-      const semirremolquesDisponibles = (await this.semirremolqueRepository.find({
-        where: { id: Not(In(semirremolquesOcupados))},
-      })).map(c => ({ ...c, tipo: c.tipo.nombre }));;
+    const semirremolquesDisponibles = (await this.semirremolqueRepository.find({
+      where: { id: Not(In(semirremolquesOcupados)) },
+    })).map(c => ({ ...c, tipo: c.tipo.nombre }));;
 
-      return {
-        camiones: camionesDisponibles,
-        acoplados: acopladosDisponibles,
-        semirremolques: semirremolquesDisponibles,
-      };
-    }
-  
+    return {
+      camiones: camionesDisponibles,
+      acoplados: acopladosDisponibles,
+      semirremolques: semirremolquesDisponibles,
+    };
+  }
+
 
   //Gran funcion para encontrar unidades disponibles segun el tipo pedido
-  findUnidadesDisponiblesByTipoRandom(camionesPedidos: any[],unidadesDisponibles: any): {
-    unidadesFormadas: any[]; errores: string[];} {
+  findUnidadesDisponiblesByTipoRandom(camionesPedidos: any[], unidadesDisponibles: any): {
+    unidadesFormadas: any[]; errores: string[];
+  } {
     console.log('Camiones pedidos:', camionesPedidos);
     const { camiones, acoplados, semirremolques } = unidadesDisponibles;
     const unidadesFormadas: any[] = [];
@@ -161,26 +162,26 @@ export class UnidadService {
       const index = Math.floor(Math.random() * array.length);
       return array[index];
     };
-    
+
     //lo hice para debugear nomas
     if (!camionesPedidos || !Array.isArray(camionesPedidos)) {
       console.error('camionesPedidos no está definido o no es un array:', camionesPedidos);
-      return { unidadesFormadas: [], errores: ['camionesPedidos no está definido o no es un array']};
+      return { unidadesFormadas: [], errores: ['camionesPedidos no está definido o no es un array'] };
     }
-  
+
     for (const [index, pedido] of camionesPedidos.entries()) {
       const { tipo, semirremolque, acoplado } = pedido;
-      console.log('El tipo del camion pedido es',tipo);
+      console.log('El tipo del camion pedido es', tipo);
 
       // --- Buscar camiones disponibles del tipo pedido ---
       const camionesDisponibles = camiones.filter(c => c.tipoCamion.nombre === tipo && !usadosCamiones.has(c.id));
       const camion = elegirRandom(camionesDisponibles) as Camion || undefined;
-      console.log('el camion es:',camion);
+      console.log('el camion es:', camion);
       if (!camion) {
         errores.push(`No se encontró camión disponible del tipo "${tipo}" (pedido ${index + 1}).`);
         continue;
       }
-      
+
       usadosCamiones.add(camion.id);
 
       // --- Buscar semirremolques disponibles ---
@@ -210,7 +211,7 @@ export class UnidadService {
           a.tipo.trim().toLowerCase() === tipoAcoplado && !usadosAcoplados.has(a.id)
         );
 
-        console.log('los usados son: ',usadosAcoplados);
+        console.log('los usados son: ', usadosAcoplados);
         console.log('los acoplados disponibles son:', acopladosDisponibles);
         console.log('🔎 Buscando tipo:', tipoAcoplado);
         console.log('📦 Disponibles:', acopladosDisponibles.map(a => a.id));
@@ -241,8 +242,8 @@ export class UnidadService {
       });
     }
     console.log('Unidades formadas:', unidadesFormadas);
-    return { unidadesFormadas, errores};
-}
+    return { unidadesFormadas, errores };
+  }
 
   async getChoferesDisponibles(idViajesEnRango: number[]) {
     // Si no hay viajes, no hay unidades que buscar, entonces devuelvo todos los choferes
@@ -252,20 +253,20 @@ export class UnidadService {
       const idsParaSolicitar = allChoferes.map(c => c.idUsuario);
 
       const { data } = await lastValueFrom(
-        this.httpService.get('http://users-service:3003/users/by-ids', {
+        this.httpService.get(`${process.env.USERS_SERVICE_URL}/users/by-ids`, {
           params: {
             ids: idsParaSolicitar.join(',') // Ahora sí es un string "1,2,3"
           }
         })
       );
-      console.log('los choferes son:',data);
+      console.log('los choferes son:', data);
       return data;
     }
 
     // Buscar unidades asociadas a los viajes en el rango
     const unidadesEnRango = await this.UnidadRepository.find({
       where: { idViaje: In(idViajesEnRango) },
-      relations: ['transportista'] 
+      relations: ['transportista']
     });
 
     // Busco los IDs de los choferes ocupados
@@ -291,40 +292,40 @@ export class UnidadService {
     const idsParaSolicitar = choferesDisponibles.map(c => c.idUsuario);
 
     const { data } = await lastValueFrom(
-      this.httpService.get('http://users-service:3003/users/by-ids', {
+      this.httpService.get(`${process.env.USERS_SERVICE_URL}/users/by-ids`, {
         params: {
-          ids: idsParaSolicitar.join(',') 
+          ids: idsParaSolicitar.join(',')
         }
       })
     );
-  
+
     return data;
   }
 
-  asignarChoferes(asignaciones:{unidadId: number, choferId: number}[]) {
+  asignarChoferes(asignaciones: { unidadId: number, choferId: number }[]) {
     for (const asignacion of asignaciones)
-      this.UnidadRepository.update(asignacion.unidadId,{transportista: { idUsuario: asignacion.choferId }});
+      this.UnidadRepository.update(asignacion.unidadId, { transportista: { idUsuario: asignacion.choferId } });
   }
-  
-/*
-   async findUnityByDriver(idusuario: number): Promise<Unidad[]> {
-    return this.UnidadesRepository.find({
-      where: { idTransportista: idusuario },
-    });
-  }
-*/
+
+  /*
+     async findUnityByDriver(idusuario: number): Promise<Unidad[]> {
+      return this.UnidadesRepository.find({
+        where: { idTransportista: idusuario },
+      });
+    }
+  */
 
   async find(id: number) {
-    const unidad = await this.UnidadRepository.find({where: {idViaje:id}, relations:['camion','semiremolque','acoplado']});
+    const unidad = await this.UnidadRepository.find({ where: { idViaje: id }, relations: ['camion', 'semiremolque', 'acoplado'] });
     console.log(unidad);
     return unidad;
-  }  
+  }
 
   async findOne(id: number) {
-    const unidad = await this.UnidadRepository.findOne({where: {idViaje:id}, relations:['camion','semiremolque','acoplado']});
+    const unidad = await this.UnidadRepository.findOne({ where: { idViaje: id }, relations: ['camion', 'semiremolque', 'acoplado'] });
     console.log(unidad);
     return unidad;
-  }  
+  }
 
   async createVehicle(createUnidadDto: CreateVehicleDto) {
     if (createUnidadDto.unidadTipo.toLowerCase() === 'camion') {
@@ -367,12 +368,12 @@ export class UnidadService {
 
   async findUnityByDriver(idviaje: number): Promise<any[]> {
     return this.UnidadRepository.find({
-      where: { idViaje: idviaje }, 
+      where: { idViaje: idviaje },
     });
   }
 
   //funcion para cambiar el estado de todos los vehiculos adentro de la unidad asignada al viaje (sin pasar el estado)
-   //funcion para cambiar el estado de todos los vehiculos adentro de la unidad asignada al viaje
+  //funcion para cambiar el estado de todos los vehiculos adentro de la unidad asignada al viaje
   async iniciarEstadoViaje(viajeId: number): Promise<void> {
     const unidades = await this.UnidadRepository.find({
       where: { idViaje: viajeId },
@@ -383,7 +384,7 @@ export class UnidadService {
     const estadoSemirremolque = await this.EstadoSemirremolqueRepository.findOne({ where: { nombre: 'enViaje' } });
     const estadoAcoplado = await this.EstadoAcopladoRepository.findOne({ where: { nombre: 'enViaje' } });
     const estadoTransportista = await this.estadoTransportistaRepository.findOne({ where: { nombre: 'enViaje' } });
- 
+
     //obtener cada de vehiculo de cada unidad y cambiar su estado
 
     for (const unidad of unidades) {

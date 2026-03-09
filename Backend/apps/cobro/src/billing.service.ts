@@ -15,19 +15,19 @@ export class BillingService {
     constructor(
         @InjectRepository(Cobro) private readonly cobroRepo: Repository<Cobro>,
         @InjectRepository(Abonante) private readonly abonanteRepo: Repository<Abonante>
-    ) {}
+    ) { }
 
     async generarFactura(cobroId: number, viajeId: number): Promise<Buffer> {
-        
-        const cobro = await this.getCobro(cobroId); 
-        const viaje = await this.getViaje(viajeId); 
+
+        const cobro = await this.getCobro(cobroId);
+        const viaje = await this.getViaje(viajeId);
         console.log('obtencion exitosa del cobro:', cobro.abonante);
         if (!cobro || !viaje) throw new NotFoundException('Cobro o Viaje no encontrado');
 
         // Determinar montos según si es Seña o Total
-        const esSenia = cobro.tipo === 'senia'; 
-        const montoPagado = Number(cobro.monto); 
-        
+        const esSenia = cobro.tipo === 'senia';
+        const montoPagado = Number(cobro.monto);
+
         // Cálculos de IVA (10.5% Transporte)
         const tasaIva = 1.105;
         const netoGravado = Number((montoPagado / tasaIva).toFixed(2));
@@ -40,11 +40,11 @@ export class BillingService {
             const nombreSemi = item.semiremolque?.tipo?.nombre ? ` + ${item.semiremolque.tipo.nombre}` : '';
             const nombreAcoplado = item.acoplado?.tipo?.nombre ? ` + ${item.acoplado.tipo.nombre}` : '';
 
-            return  `
+            return `
                 <tr>
                     <td class="center">${index + 1}</td>
                     <td>Unidad: ${nombreCamion}${nombreSemi}${nombreAcoplado}</td>
-                    <td class="right">$${item.subtotal*viaje.distancia}</td>
+                    <td class="right">$${item.subtotal * viaje.distancia}</td>
                     <td class="center">1</td> </tr>
                 </tr>
                 `}).join('');
@@ -158,17 +158,17 @@ export class BillingService {
 
         try {
             console.log('Iniciando Puppeteer para generar el PDF...');
-            
+
             // Lanzamos el navegador invisible. Los args son clave para entornos de servidor/Linux
             const browser = await puppeteer.launch({
                 headless: true,
                 // ESTA ES LA CLAVE: Ignoramos el caché y apuntamos al binario de Alpine
                 executablePath: '/usr/bin/chromium-browser',
-                args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage','--disable-gpu','--single-process']
+                args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu', '--single-process']
             });
-            
+
             const page = await browser.newPage();
-            
+
             // Cargamos el HTML en la página
             await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
             console.log('html cargado exitosamente');
@@ -189,15 +189,15 @@ export class BillingService {
             // Guardado en disco (Misma lógica que tenías)
             const nombreArchivo = `Factura_Viaje${viajeId}_Cobro${cobroId}.pdf`;
             const dirFacturas = path.join(__dirname, '..', 'Facturas');
-            
+
             if (!fs.existsSync(dirFacturas)) {
                 fs.mkdirSync(dirFacturas, { recursive: true });
             }
-            
+
             const rutaDestino = path.join(dirFacturas, nombreArchivo);
             fs.writeFileSync(rutaDestino, resultBuffer);
             console.log(`✅ ¡Factura guardada físicamente en: ${rutaDestino}!`);
-            
+
             return resultBuffer;
 
         } catch (error) {
@@ -208,17 +208,17 @@ export class BillingService {
 
     // Funciones originales mantenidas exactamente igual
     private async getCobro(cobroId: number) {
-        const cobro = await this.cobroRepo.findOne({where: { id: Number(cobroId)},relations:['abonante']});
+        const cobro = await this.cobroRepo.findOne({ where: { id: Number(cobroId) }, relations: ['abonante'] });
         console.log('el cobro es:', cobro)
         const abonanteId = (cobro.abonante as any).id || cobro.abonante;
-        const abonante = await this.abonanteRepo.findOne({where:{id: abonanteId}});
+        const abonante = await this.abonanteRepo.findOne({ where: { id: abonanteId } });
         //asingo el objeto del abonante entero al cobro
         cobro.abonante = abonante;
-        return cobro 
+        return cobro
     }
-  
+
     private async getViaje(id: number) {
-        const viaje = await axios.get(`http://viaje-service:3004/viaje/viaje-con-unidades/${id}`)
+        const viaje = await axios.get(`${process.env.VIAJE_SERVICE_URL}/viaje/viaje-con-unidades/${id}`)
         return viaje.data
     }
 }
