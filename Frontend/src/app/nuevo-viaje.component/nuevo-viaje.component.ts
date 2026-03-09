@@ -3,9 +3,10 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UnidadService } from '../services/unidad.service';
 import { LoadingService } from '../services/loading.service';
-import * as L from 'leaflet';
-import 'leaflet-routing-machine';
-import  {ViajeService} from '../services/viaje.service';
+// Usamos el L global cargado desde angular.json (scripts), NO el del módulo ES.
+// leaflet-routing-machine se adjunta al L global, no al importado por módulo.
+declare const L: any;
+import { ViajeService } from '../services/viaje.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { CobroService } from '../services/cobro.service';
 import Swal from 'sweetalert2';
@@ -31,7 +32,7 @@ L.Marker.prototype.options.icon = iconDefault;
   selector: 'app-nuevo-viaje',
   standalone: true,
   imports: [FormsModule, CommonModule],
-  providers: [UnidadService,ViajeService],
+  providers: [UnidadService, ViajeService],
   templateUrl: './nuevo-viaje.component.html',
   styleUrls: ['./nuevo-viaje.component.css']
 })
@@ -40,22 +41,22 @@ export class NuevoViajeComponent implements AfterViewInit {
   private map!: L.Map;
   private routingControl: any;
   constructor(private unidadService: UnidadService,
-              private viajeService: ViajeService,
-              private loadingService: LoadingService,
-              private CobroService: CobroService,
-              private router: Router) {}
+    private viajeService: ViajeService,
+    private loadingService: LoadingService,
+    private CobroService: CobroService,
+    private router: Router) { }
 
   //atributo para el total del pedido
   public totalGeneral: number = 0;
 
   //variables para que el usuario pueda seleccionar
   public tiposCamion: string[] = [];
-  public tiposAcoplado : string[] = [];
-  public tiposSemirremolque : string[] = [];
+  public tiposAcoplado: string[] = [];
+  public tiposSemirremolque: string[] = [];
 
   //Variable que controla si mostrar la pantalla flotante
   public mostrarResumen = false;
-  
+
   //Variable que guarda las unidades seleccionadas para el resumen
   public unidadesSeleccionadas: any[] = [];
 
@@ -66,7 +67,7 @@ export class NuevoViajeComponent implements AfterViewInit {
 
   //variable para hora de salida
   public horaSalida: string = '';
-  
+
   //variable para la distancia
   public distancia: number = 0;
 
@@ -81,8 +82,8 @@ export class NuevoViajeComponent implements AfterViewInit {
     destino: '',
     fechaInicio: '',
     fechaFin: '',
-    horaInicio:'',
-    horaFin:'',
+    horaInicio: '',
+    horaFin: '',
     distancia: 0,
     origenCoords: { lat: 0, lng: 0 },
     destinoCoords: { lat: 0, lng: 0 },
@@ -227,11 +228,12 @@ export class NuevoViajeComponent implements AfterViewInit {
       const distanciaMetros = route.summary.totalDistance;
       const distanciaKm = distanciaMetros / 1000;
 
-      this.distancia = distanciaKm;});
+      this.distancia = distanciaKm;
+    });
 
   }
-  
-  
+
+
 
   async buscarViaje(event: Event): Promise<void> {
     event.preventDefault();
@@ -241,11 +243,11 @@ export class NuevoViajeComponent implements AfterViewInit {
     const fecha = this.fechaSalidaInput.nativeElement.value;
     const fechaInicio = new Date(fecha);
 
-    console.log("🚚 Datos del viaje:", { 
-      origen, 
-      destino, 
-      fecha, 
-      camiones: this.camionesSeleccionados, 
+    console.log("🚚 Datos del viaje:", {
+      origen,
+      destino,
+      fecha,
+      camiones: this.camionesSeleccionados,
       distancia: this.distancia
     });
     //rellleno data ahora
@@ -254,7 +256,7 @@ export class NuevoViajeComponent implements AfterViewInit {
     this.data.fechaInicio = fechaInicio;
     this.data.fechaFin = '';                //fecha lo dejo vacio,porque se calcula luego en el back
     this.data.horaSalida = this.horaSalida;
-    this.data.horaLlegada ='' ;             //hora lo dejo vacio,porque se calcula luego en el back
+    this.data.horaLlegada = '';             //hora lo dejo vacio,porque se calcula luego en el back
     this.data.distancia = this.distancia;
     this.data.origenCoords = { lat: this.origenCoords!.lat, lng: this.origenCoords!.lon };
     this.data.destinoCoords = { lat: this.destinoCoords!.lat, lng: this.destinoCoords!.lon };
@@ -275,29 +277,29 @@ export class NuevoViajeComponent implements AfterViewInit {
 
     //aca busco el viaje
     try {
-      const disponibles = await this.viajeService.getUnidadesDisponibles(fechaInicio, this.camionesSeleccionados,this.data.origenCoords,this.data.destinoCoords);
+      const disponibles = await this.viajeService.getUnidadesDisponibles(fechaInicio, this.camionesSeleccionados, this.data.origenCoords, this.data.destinoCoords);
       console.log("✅ Unidades disponibles encontradas:", disponibles.errores);
 
       //compruebo si llegaron todas las unidades que pedi, si solo una no llego, me lo dice en el array de errores del back
-      if (disponibles.errores.length > 0 || disponibles.errores==undefined) {
-          
-          // Ocultamos el loading antes de mostrar la alerta
-          this.loadingService.hide(); 
+      if (disponibles.errores.length > 0 || disponibles.errores == undefined) {
 
-          // Mostramos el "Cartel Rojo" usando SweetAlert2
-          await Swal.fire({
-            icon: 'error',
-            title: 'Sin disponibilidad',
-            text: 'No todos los tipos de vehiculos seleccionados estan disponibles para la fecha deseada. Por favor seleccione una nueva fecha',
-            confirmButtonText: 'Aceptar',
-            confirmButtonColor: '#d33', // Color rojo para el botón
-            allowOutsideClick: false,   // Obliga a dar click en Aceptar
-            allowEscapeKey: false
-          });
+        // Ocultamos el loading antes de mostrar la alerta
+        this.loadingService.hide();
 
-          // El 'return' es clave: detiene la ejecución aquí y no abre el resumen
-          return; 
-        }
+        // Mostramos el "Cartel Rojo" usando SweetAlert2
+        await Swal.fire({
+          icon: 'error',
+          title: 'Sin disponibilidad',
+          text: 'No todos los tipos de vehiculos seleccionados estan disponibles para la fecha deseada. Por favor seleccione una nueva fecha',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#d33', // Color rojo para el botón
+          allowOutsideClick: false,   // Obliga a dar click en Aceptar
+          allowEscapeKey: false
+        });
+
+        // El 'return' es clave: detiene la ejecución aquí y no abre el resumen
+        return;
+      }
 
       this.abrirResumen(disponibles);
     }
@@ -310,40 +312,41 @@ export class NuevoViajeComponent implements AfterViewInit {
       this.loadingService.hide();
     }
   }
-  
+
   abrirSelectorVehiculo() { this.mostrarSelector = true; }
   cerrarSelector() { this.mostrarSelector = false; }
 
   agregarCamion(): void {
     //comprueba si se seleccionaron todos los campos
     if (this.tipoCamionSeleccionado === 'tractoCamion' && this.semirremolqueSeleccionado === '' || this.tipoCamionSeleccionado === '') {
-        alert("❌ Debes seleccionar las unidades correctamente.");
-        return;
+      alert("❌ Debes seleccionar las unidades correctamente.");
+      return;
+    }
+    else {
+      //comprueba que si selecciono un tipo de camion simple,se seleccione el tipo sin semi y sin acoplado
+      if (this.tipoCamionSeleccionado !== 'tractoCamion') {
+        this.camionesSeleccionados.push({
+          tipo: this.tipoCamionSeleccionado,
+          semirremolque: 'Sin semirremolque',
+          acoplado: 'Sin acoplado',
+        })
       }
-    else  {
-        //comprueba que si selecciono un tipo de camion simple,se seleccione el tipo sin semi y sin acoplado
-        if (this.tipoCamionSeleccionado !== 'tractoCamion'){
-          this.camionesSeleccionados.push({
-            tipo: this.tipoCamionSeleccionado,
-            semirremolque: 'Sin semirremolque',
-            acoplado:  'Sin acoplado',
-          })
-        }
-        else{
+      else {
         this.camionesSeleccionados.push({
           tipo: this.tipoCamionSeleccionado,
           semirremolque: this.semirremolqueSeleccionado,
-          acoplado: this.quiereAcoplado ? this.acopladoSeleccionado : 'Sin acoplado'})
-        };
+          acoplado: this.quiereAcoplado ? this.acopladoSeleccionado : 'Sin acoplado'
+        })
+      };
 
-        //reiniciar las variables de seleccion
-        this.tipoCamionSeleccionado = '';
-        this.semirremolqueSeleccionado = '';
-        this.tipoSemirremolqueSeleccionado = '';
-        this.quiereSemirremolque = false;
-        this.quiereAcoplado = false;
-        this.cerrarSelector();
-      } 
+      //reiniciar las variables de seleccion
+      this.tipoCamionSeleccionado = '';
+      this.semirremolqueSeleccionado = '';
+      this.tipoSemirremolqueSeleccionado = '';
+      this.quiereSemirremolque = false;
+      this.quiereAcoplado = false;
+      this.cerrarSelector();
+    }
   }
 
   toggleSemirremolque(): void {
@@ -381,9 +384,9 @@ export class NuevoViajeComponent implements AfterViewInit {
   abrirResumen(disponibles: any) {
     this.mostrarResumen = true;
     this.unidadesSeleccionadas = disponibles.unidadesFormadas || [];
-    console.log('las unidades disponibles son:',this.unidadesSeleccionadas);
+    console.log('las unidades disponibles son:', this.unidadesSeleccionadas);
     this.actualizarTotalGeneral();
-    console.log('el total es:',this.totalGeneral)
+    console.log('el total es:', this.totalGeneral)
   }
 
   cerrarResumen() {
@@ -396,16 +399,16 @@ export class NuevoViajeComponent implements AfterViewInit {
     console.log(this.data.distancia);
     this.mostrarResumen = false;
     this.data.unidades = this.unidadesSeleccionadas.map((u: any) => {
-    return {
-      tractoCamionId: u.camion?.id || null,
-      semiremolqueId: u.semirremolque?.id || null,
-      acopladoId: u.acoplado?.id || null,
-      tieneSemirremolque: !!u.semirremolque, // true si existe semirremolque
-      tieneAcoplado: !!u.acoplado,           // true si existe acoplado
-      subtotal: u.subtotal * this.data.distancia
-    };
-  });
-  this.guardarViaje()
+      return {
+        tractoCamionId: u.camion?.id || null,
+        semiremolqueId: u.semirremolque?.id || null,
+        acopladoId: u.acoplado?.id || null,
+        tieneSemirremolque: !!u.semirremolque, // true si existe semirremolque
+        tieneAcoplado: !!u.acoplado,           // true si existe acoplado
+        subtotal: u.subtotal * this.data.distancia
+      };
+    });
+    this.guardarViaje()
   }
 
   async guardarViaje() {
@@ -419,18 +422,18 @@ export class NuevoViajeComponent implements AfterViewInit {
 
   actualizarTotalGeneral() {
     this.totalGeneral = this.unidadesSeleccionadas.reduce(
-      (acum, unidad) => Math.trunc((acum + (unidad.subtotal || 0)*this.data.distancia)*100)/100,
+      (acum, unidad) => Math.trunc((acum + (unidad.subtotal || 0) * this.data.distancia) * 100) / 100,
       0
     );
   }
 
   // Dentro de tu clase de componente
   eliminarCamion(index: number) {
-      // El método splice(posicion, cantidad) modifica el array original
-      this.camionesSeleccionados.splice(index, 1);
-      
-      // Opcional: Si necesitas disparar alguna validación extra al borrar
-      console.log('Unidad eliminada. Unidades restantes:', this.camionesSeleccionados.length);
+    // El método splice(posicion, cantidad) modifica el array original
+    this.camionesSeleccionados.splice(index, 1);
+
+    // Opcional: Si necesitas disparar alguna validación extra al borrar
+    console.log('Unidad eliminada. Unidades restantes:', this.camionesSeleccionados.length);
   }
 
   async cobrar(viajeId: number) {
@@ -438,7 +441,7 @@ export class NuevoViajeComponent implements AfterViewInit {
     let tipo = 'senia'
     try {
       // Esperamos la respuesta con 'await'
-      const res = await this.CobroService.generarCobro(tipo,viajeId);
+      const res = await this.CobroService.generarCobro(tipo, viajeId);
       //abrimos la ventana de mercado pago
       if (res && res.init_point) {
         //cerramos la pantallita
@@ -453,8 +456,8 @@ export class NuevoViajeComponent implements AfterViewInit {
 
   logout() {
     // 1. Limpiar datos de sesión (opcional pero recomendado)
-    localStorage.removeItem('token'); 
-    localStorage.clear(); 
+    localStorage.removeItem('token');
+    localStorage.clear();
 
     // 2. Redirigir al login
     this.router.navigate(['/login']);
