@@ -3,9 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UnidadService } from '../services/unidad.service';
 import { LoadingService } from '../services/loading.service';
-// Usamos el L global cargado desde angular.json (scripts), NO el del módulo ES.
-// leaflet-routing-machine se adjunta al L global, no al importado por módulo.
-declare const L: any;
+import * as L from 'leaflet';
 import { ViajeService } from '../services/viaje.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { CobroService } from '../services/cobro.service';
@@ -202,7 +200,7 @@ export class NuevoViajeComponent implements AfterViewInit {
       this.map.removeControl(this.routingControl);
     }
 
-    this.routingControl = L.Routing.control({
+    this.routingControl = (window as any).L.Routing.control({
       waypoints: [
         L.latLng(this.origenCoords.lat, this.origenCoords.lon),
         L.latLng(this.destinoCoords.lat, this.destinoCoords.lon)
