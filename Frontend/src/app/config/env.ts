@@ -1,11 +1,11 @@
 export const config = {
   //todos apuntan al mismo lugar porque usamos un api-gateway
-  services:{
-    user: 'http://localhost:3000/api',
-    cobros: 'http://localhost:3000/api',
-    unidad: 'http://localhost:3000/api',
-    viajes: 'http://localhost:3000/api',
-    mercadopago: 'http://localhost:3000/api'
+  services: {
+    user: 'https://api-gateway-681050609269.us-central1.run.app/api',
+    cobros: 'https://api-gateway-681050609269.us-central1.run.app/api',
+    unidad: 'https://api-gateway-681050609269.us-central1.run.app/api',
+    viajes: 'https://api-gateway-681050609269.us-central1.run.app/api',
+    mercadopago: 'https://api-gateway-681050609269.us-central1.run.app/api'
   },
   endpoints: {
     auth: {

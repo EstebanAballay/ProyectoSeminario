@@ -1,12 +1,7 @@
 FROM node:20-alpine
-
-WORKDIR /usr/src/app
-
 COPY package*.json ./
 RUN npm install --legacy-peer-deps
-
 COPY . .
-RUN npm run build
-
+RUN npx nest build viaje
 EXPOSE 8080
-CMD ["node", "dist/src/main.js"]
+CMD ["node", "dist/apps/viaje/src/main.js"]

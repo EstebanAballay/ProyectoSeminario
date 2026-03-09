@@ -1,0 +1,9 @@
+FROM node:20-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm install --legacy-peer-deps
+COPY . .
+RUN npx nest build mercadopago
+RUN echo "=== TODAS las rutas main.js ===" && find /app -name "main.js" -not -path "*/node_modules/*" -type f
+EXPOSE 8080
+CMD ["node", "dist/apps/mercadopago/main.js"]

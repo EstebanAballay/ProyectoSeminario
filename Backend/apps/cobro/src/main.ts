@@ -26,11 +26,11 @@ async function bootstrap() {
     // 2. Habilitar CORS (Importante para la comunicación de red)
     app.enableCors({
         origin: ['http://localhost:4200', 'https://localhost:4200', 'http://localhost:3000'],
-    credentials: true,
+        credentials: true,
     });
 
     // 3. Escuchar en el puerto definido
-    const port = process.env.PORT_COBRO || 3001;
+    const port = process.env.PORT || process.env.PORT_COBRO || 3001;
     await app.listen(port);
     logger.log(`🚀 Microservicio de Cobros corriendo en: http://localhost:${port}`);
 }
