@@ -37,7 +37,7 @@ L.Marker.prototype.options.icon = iconDefault;
 
 export class NuevoViajeComponent implements AfterViewInit {
   private map!: L.Map;
-  private routingControl: any;
+  private routePolyline: any = null; // Línea de la ruta dibujada en el mapa
   constructor(private unidadService: UnidadService,
     private viajeService: ViajeService,
     private loadingService: LoadingService,
@@ -193,42 +193,49 @@ export class NuevoViajeComponent implements AfterViewInit {
 
 
 
-  private dibujarRuta(): void {
+  private async dibujarRuta(): Promise<void> {
     if (!this.origenCoords || !this.destinoCoords) return;
 
-    if (this.routingControl) {
-      this.map.removeControl(this.routingControl);
+    // Removemos la ruta anterior si existe
+    if (this.routePolyline) {
+      this.map.removeLayer(this.routePolyline);
     }
 
-    this.routingControl = (window as any).L.Routing.control({
-      waypoints: [
-        L.latLng(this.origenCoords.lat, this.origenCoords.lon),
-        L.latLng(this.destinoCoords.lat, this.destinoCoords.lon)
-      ],
-      routeWhileDragging: true,
-      show: false, //evita mostrar el panel con las direccciones
-      addWaypoints: false,  // Evita que el usuario añada puntos extra haciendo clic
-      containerClassName: 'hidden-router-container',
-      lineOptions: {
-        styles: [{ color: 'blue', weight: 4, opacity: 0.7 }],
-        extendToWaypoints: true,
-        missingRouteTolerance: 1000
+    // Llamamos directamente a la API de OSRM (sin leaflet-routing-machine)
+    const url = `https://router.project-osrm.org/route/v1/driving/` +
+      `${this.origenCoords.lon},${this.origenCoords.lat};` +
+      `${this.destinoCoords.lon},${this.destinoCoords.lat}` +
+      `?overview=full&geometries=geojson`;
+
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (data.routes && data.routes.length > 0) {
+        const route = data.routes[0];
+
+        // Extraer distancia en km
+        const distanciaKm = route.distance / 1000;
+        this.distancia = distanciaKm;
+        console.log(`📏 Distancia calculada: ${distanciaKm.toFixed(1)} km`);
+
+        // Dibujar la ruta en el mapa usando las coordenadas GeoJSON
+        const coordinates = route.geometry.coordinates.map(
+          (coord: [number, number]) => L.latLng(coord[1], coord[0]) // GeoJSON usa [lon, lat]
+        );
+
+        this.routePolyline = L.polyline(coordinates, {
+          color: 'blue',
+          weight: 4,
+          opacity: 0.7
+        }).addTo(this.map);
+
+        // Ajustar el mapa para mostrar toda la ruta
+        this.map.fitBounds(this.routePolyline.getBounds());
       }
-    }).addTo(this.map);
-
-    this.map.fitBounds([
-      [this.origenCoords.lat, this.origenCoords.lon],
-      [this.destinoCoords.lat, this.destinoCoords.lon]
-    ]);
-    //Calcular la distancia cuando detecta que se seleccionaron los 2 puntos
-    this.routingControl.on('routesfound', (event: any) => {
-      const route = event.routes[0]; // primera ruta encontrada
-      const distanciaMetros = route.summary.totalDistance;
-      const distanciaKm = distanciaMetros / 1000;
-
-      this.distancia = distanciaKm;
-    });
-
+    } catch (error) {
+      console.error('Error al calcular la ruta con OSRM:', error);
+    }
   }
 
 
