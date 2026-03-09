@@ -34,14 +34,14 @@ export class MercadoPagoService {
           dni: result.payer.identification?.number, // El DNI suele estar aquí
           tipoDoc: result.payer.identification?.type, // Ej: "DNI"
           telefono: result.payer.phone?.number // A veces viene, a veces no   
-           }
-      } 
+        }
+      }
     }
     catch (error) {
       throw new Error(`Error al obtener detalles del pago ${paymentId}: ${error.message}`);
     }
-  } 
- 
+  }
+
   /** 
    * Genera el link de pago incluyendo la URL de notificación de Ngrok.
    */
@@ -66,12 +66,12 @@ export class MercadoPagoService {
         notification_url: notificationUrl,
 
         back_urls: {
-          success: 'https://localhost:4200/menu',
-          failure: 'https://localhost:4200/nuevoviaje'
+          success: 'https://proyecto-seminario-i9lqitu3d-estebanaballays-projects.vercel.app/menu',
+          failure: 'https://proyecto-seminario-i9lqitu3d-estebanaballays-projects.vercel.app/nuevoviaje'
         },
         auto_return: 'approved'
       },
     });
     return result;
-  } 
+  }
 } 

@@ -9,7 +9,7 @@ async function bootstrap() {
     origin: [
       'http://localhost:4200',
       'https://localhost:4200',
-      process.env.FRONTEND_URL || 'https://proyecto-seminario-c1zmjcznb-estebanaballays-projects.vercel.app/paginainicio',
+      process.env.FRONTEND_URL || 'https://proyecto-seminario-kgejynf00-estebanaballays-projects.vercel.app',
       /\.vercel\.app$/,  // Acepta CUALQUIER preview de Vercel (el hash cambia en cada deploy)
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
