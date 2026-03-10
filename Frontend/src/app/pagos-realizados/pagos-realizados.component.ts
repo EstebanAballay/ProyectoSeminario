@@ -3,15 +3,15 @@ import { CommonModule } from '@angular/common';
 import { CobroService } from '../services/cobro.service';
 
 //interfaz para poder hacer el foreach
-export interface Pagos{
-  id:number,
-  viaje:any,
-  monto:number,
-  fechaCreacion:any,
-  transactionId:any,
-  tipo:string,
-  estadoId:number,
-  abonanteId:number
+export interface Pagos {
+  id: number,
+  viaje: any,
+  monto: number,
+  fechaCreacion: any,
+  transactionId: any,
+  tipo: string,
+  estadoId: number,
+  abonanteId: number
 }
 
 @Component({
@@ -26,22 +26,20 @@ export class PagosRealizadosComponent implements OnInit {
   constructor(private cobroService: CobroService) { }
 
   //declaro la variable publica pagos del tipo de la interfaz
-  public pagos:Pagos[] = [];
+  public pagos: Pagos[] = [];
 
   async ngOnInit(): Promise<void> {
     this.pagos = await this.cobroService.buscarCobrosUsuario();
     console.log(this.pagos);
-    this.pagos.forEach( pago=> {
+    this.pagos.forEach(pago => {
       pago.viaje.destinoInicio = this.extraerUbicacionCorta(pago.viaje.destinoInicio);
       pago.viaje.destinoFin = this.extraerUbicacionCorta(pago.viaje.destinoFin);
-      pago.tipo = pago.tipo === 'senia'? 'Seña': "Pago Final";
+      pago.tipo = pago.tipo === 'senia' ? 'Seña' : "Pago Final";
     })
   }
 
-  async descargarFactura(cobroId:number) {
-    const urlDescarga = await this.cobroService.descargarFactura(cobroId);
-    // Esto abre la URL en modo descarga sin cambiar al usuario de pantalla
-    window.open(urlDescarga, '_blank');
+  async descargarFactura(cobroId: number) {
+    await this.cobroService.descargarFactura(cobroId);
   }
 
   extraerUbicacionCorta(direccion: string): string {

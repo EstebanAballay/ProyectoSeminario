@@ -49,9 +49,20 @@ export class CobroService {
         }
     }
 
-    // En tu componente de "Pago Exitoso" en Angular
-    async descargarFactura(cobroId: number) {
+    // Descarga la factura usando axios (que envía el JWT token automáticamente)
+    async descargarFactura(cobroId: number): Promise<void> {
         const url = `${this.apiUrl}/${cobroId}/factura`;
-        return url;
+        const response = await axios.get(url, { responseType: 'blob' });
+
+        // Crear un link temporal para forzar la descarga
+        const blob = new Blob([response.data], { type: 'application/pdf' });
+        const downloadUrl = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = `Factura_N${cobroId}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(downloadUrl);
     }
 }

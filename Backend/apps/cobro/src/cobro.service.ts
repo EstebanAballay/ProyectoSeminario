@@ -225,19 +225,22 @@ export class CobroService {
     }
 
     async descargarFacturaCobro(id: number, res: Response) {
-        console.log('intentando descargar factura')
+        console.log('intentando descargar factura desde GCS')
         // 1. Buscamos el cobro para saber el viajeId (necesario para el nombre del archivo)
         const cobro = await this.cobroRepo.findOne({ where: { id: id } });
 
         // 2. Reconstruimos el nombre exacto con el que lo guardó el billing.service
         const nombreArchivo = `Factura_Viaje${cobro.viajeId}_Cobro${cobro.id}.pdf`;
 
-        // 3. Calculamos la ruta. Ojo aquí: desde dist/apps/cobro hay que subir un par de niveles
-        const dirFacturas = path.join(__dirname, '..', 'Facturas');
-        const rutaDestino = path.join(dirFacturas, nombreArchivo);
+        // 3. Descargamos desde Google Cloud Storage
+        const { Storage } = require('@google-cloud/storage');
+        const storage = new Storage();
+        const bucketName = process.env.GCS_BUCKET || 'grafo-logistica-facturas';
+        const file = storage.bucket(bucketName).file(nombreArchivo);
 
-        // 4. Verificamos si Puppeteer ya terminó de crear el archivo
-        if (!fs.existsSync(rutaDestino)) {
+        // 4. Verificamos si el archivo existe en GCS
+        const [exists] = await file.exists();
+        if (!exists) {
             throw new NotFoundException('La factura aún se está generando. Por favor, aguarde unos segundos y vuelva a intentar.');
         }
 
@@ -247,8 +250,8 @@ export class CobroService {
             'Content-Disposition': `attachment; filename="Factura_Transporte_Grafo_N${cobro.id}.pdf"`,
         });
 
-        // 6. Enviamos el archivo como un stream
-        const fileStream = fs.createReadStream(rutaDestino);
-        fileStream.pipe(res);
+        // 6. Creamos un stream de lectura desde GCS y lo enviamos al navegador
+        const readStream = file.createReadStream();
+        readStream.pipe(res);
     }
 }

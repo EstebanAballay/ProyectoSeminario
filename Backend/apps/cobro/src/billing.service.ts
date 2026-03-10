@@ -186,17 +186,21 @@ export class BillingService {
             const resultBuffer = Buffer.from(pdfUint8Array);
             console.log('¡PDF generado exitosamente con Puppeteer!');
 
-            // Guardado en disco (Misma lógica que tenías)
+            // Subimos el PDF a Google Cloud Storage
+            const { Storage } = require('@google-cloud/storage');
+            const storage = new Storage();
+            const bucketName = process.env.GCS_BUCKET || 'grafo-logistica-facturas';
             const nombreArchivo = `Factura_Viaje${viajeId}_Cobro${cobroId}.pdf`;
-            const dirFacturas = path.join(__dirname, '..', 'Facturas');
 
-            if (!fs.existsSync(dirFacturas)) {
-                fs.mkdirSync(dirFacturas, { recursive: true });
-            }
+            const bucket = storage.bucket(bucketName);
+            const file = bucket.file(nombreArchivo);
 
-            const rutaDestino = path.join(dirFacturas, nombreArchivo);
-            fs.writeFileSync(rutaDestino, resultBuffer);
-            console.log(`✅ ¡Factura guardada físicamente en: ${rutaDestino}!`);
+            await file.save(resultBuffer, {
+                contentType: 'application/pdf',
+                metadata: { cacheControl: 'public, max-age=31536000' },
+            });
+
+            console.log(`✅ Factura subida a GCS: gs://${bucketName}/${nombreArchivo}`);
 
             return resultBuffer;
 
