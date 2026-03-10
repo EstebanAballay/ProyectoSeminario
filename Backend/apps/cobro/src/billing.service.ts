@@ -33,19 +33,34 @@ export class BillingService {
         const netoGravado = Number((montoPagado / tasaIva).toFixed(2));
         const montoIva = Number((montoPagado - netoGravado).toFixed(2));
 
+        // Debug: ver la estructura real del viaje y sus unidades
+        console.log('📋 Estructura del viaje para factura:', JSON.stringify(viaje, null, 2));
+        console.log('📋 Distancia del viaje:', viaje.distancia, typeof viaje.distancia);
+        if (viaje.unidades?.length > 0) {
+            console.log('📋 Primera unidad:', JSON.stringify(viaje.unidades[0], null, 2));
+        }
+
         // Generar filas de la tabla dinámicamente 
         const filasViaje = viaje.unidades.map((item, index) => {
             // Armamos la descripción de forma condicional para evitar los "undefined"
-            const nombreCamion = item.camion?.tipoCamion?.nombre || 'Unidad';
+            const nombreCamion = item.camion?.tipoCamion?.nombre || item.camion?.patente || 'Camión';
+            const patenteCamion = item.camion?.patente ? ` (${item.camion.patente})` : '';
             const nombreSemi = item.semiremolque?.tipo?.nombre ? ` + ${item.semiremolque.tipo.nombre}` : '';
             const nombreAcoplado = item.acoplado?.tipo?.nombre ? ` + ${item.acoplado.tipo.nombre}` : '';
+
+            // Convertimos a número explícitamente para evitar NaN
+            const subtotal = Number(item.subtotal) || 0;
+            const distancia = Number(viaje.distancia) || 0;
+            const importe = Math.trunc(subtotal * distancia * 100) / 100;
+
+            console.log(`📋 Unidad ${index + 1}: subtotal=${item.subtotal}(${typeof item.subtotal}), distancia=${viaje.distancia}(${typeof viaje.distancia}), importe=${importe}`);
 
             return `
                 <tr>
                     <td class="center">${index + 1}</td>
-                    <td>Unidad: ${nombreCamion}${nombreSemi}${nombreAcoplado}</td>
-                    <td class="right">$${item.subtotal * viaje.distancia}</td>
-                    <td class="center">1</td> </tr>
+                    <td>${nombreCamion}${patenteCamion}${nombreSemi}${nombreAcoplado}</td>
+                    <td class="right">$${importe.toLocaleString('es-AR')}</td>
+                    <td class="center">1</td>
                 </tr>
                 `}).join('');
 
