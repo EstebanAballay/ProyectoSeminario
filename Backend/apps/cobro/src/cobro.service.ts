@@ -195,32 +195,39 @@ export class CobroService {
     }
 
     async consultarCobrosUsuario(user: any) {
+        const userId = user.id || user.sub;
+
+        // 1. Buscamos todos los cobros pagados
         const estadoPagado = await this.estadoRepo.findOne({ where: { id: 2 } });
-        const cobros = await this.cobroRepo.find({ where: { abonante: user.id, estado: estadoPagado } });
-        if (cobros.length === 0) {
-            return [];
-        }
+        const cobros = await this.cobroRepo.find({
+            where: { estado: estadoPagado },
+            relations: ['abonante'],
+        });
+
+        if (cobros.length === 0) return [];
+
+        // 2. Obtenemos los viajes asociados desde viaje-service
         const idViajes = cobros.map((cobro: any) => cobro.viajeId);
-
-        // 1. Convertimos el array de IDs en un string separado por comas (Ej: "14,25,8")
         const idsQuery = idViajes.join(',');
-
-        // 2. Hacemos la petición GET al microservicio de Viajes. 
-        // (Ajustá el puerto y la ruta según cómo lo tengan configurado)
         const urlViajes = `${process.env.VIAJE_SERVICE_URL}/viaje/por-ids?ids=${idsQuery}`;
 
-        // Usamos firstValueFrom para esperar la respuesta HTTP
         const respuestaHttp = await firstValueFrom(this.httpService.get(urlViajes));
         const viajes = respuestaHttp.data;
 
-        // 3. Combinamos los datos: a cada cobro le adjuntamos la información de su viaje
-        const cobrosCompletos = cobros.map(cobro => {
-            const viajeAsociado = viajes.find((v: any) => v.ViajeId === cobro.viajeId);
-            return {
-                ...cobro,
-                viaje: viajeAsociado // Adjuntamos el objeto viaje completo
-            };
-        });
+        // 3. Filtramos: solo los viajes que pertenezcan al usuario logueado
+        const viajesDelUsuario = viajes.filter((v: any) => v.usuarioId === userId);
+        const idsViajesDelUsuario = viajesDelUsuario.map((v: any) => v.ViajeId);
+
+        // 4. Combinamos solo los cobros cuyos viajes pertenecen al usuario
+        const cobrosCompletos = cobros
+            .filter(cobro => idsViajesDelUsuario.includes(cobro.viajeId))
+            .map(cobro => {
+                const viajeAsociado = viajesDelUsuario.find((v: any) => v.ViajeId === cobro.viajeId);
+                return {
+                    ...cobro,
+                    viaje: viajeAsociado
+                };
+            });
         return cobrosCompletos;
     }
 

@@ -9,7 +9,7 @@
     <div class="card-header">
       <div class="route-info">
         <h2 class="route-title">{{ pago.viaje.destinoInicio }} &rarr; {{ pago.viaje.destinoFin }}</h2>
-        <p class="route-ids">Número de viaje: {{ pago.viaje.idViaje }} &nbsp;|&nbsp; ID Cobro: {{ pago.id }}</p>
+        <p class="route-ids">Número de viaje: {{ pago.viaje. }} &nbsp;|&nbsp; ID Cobro: {{ pago.id }}</p>
       </div>
       <div class="badges-container">
         <div class="badge">
@@ -20,7 +20,8 @@
         </div>
         <div class="badge distance-badge">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M20 8h-3V4H3v13h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM8 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm12 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm-2.5-5H17V9.5h2.5l1.96 2.5H17.5z"/>
+            <path
+              d="M20 8h-3V4H3v13h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM8 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm12 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm-2.5-5H17V9.5h2.5l1.96 2.5H17.5z" />
           </svg>
           <span>{{ pago.viaje.distancia }} Km</span>
         </div>
@@ -29,16 +30,16 @@
 
     <div class="card-body">
 
-    <div class="card-footer">
-      <div class="totals-section">
-        <div class="total-row">
-          <span class="total-label">Monto del Pago: </span>
-          <span class="total-value">{{ pago.monto | currency:'ARS':'symbol':'1.2-2' }}</span>
-        </div>
+      <div class="card-footer">
+        <div class="totals-section">
+          <div class="total-row">
+            <span class="total-label">Monto del Pago: </span>
+            <span class="total-value">{{ pago.monto | currency:'ARS':'symbol':'1.2-2' }}</span>
+          </div>
 
-      <div class="action-container">
-        <button class="btn-primary" (click)="descargarFactura(pago.id)">Descargar Factura</button>
+          <div class="action-container">
+            <button class="btn-primary" (click)="descargarFactura(pago.id)">Descargar Factura</button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>

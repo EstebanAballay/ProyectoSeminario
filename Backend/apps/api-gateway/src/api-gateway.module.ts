@@ -24,35 +24,35 @@ export class AppModule implements NestModule {
       )
       .forRoutes({ path: 'api/*', method: RequestMethod.ALL });
 
-    // Usuarios — localhost:3003 (misma VM)
+    // Usuarios — localhost:3003 
     consumer.apply(createProxyMiddleware({
       target: `${USERS_URL}/users`,
       changeOrigin: true,
       logger: console,
     })).forRoutes('api/users');
 
-    // Unidades — VM2 via flycast
+    // Unidades 
     consumer.apply(createProxyMiddleware({
       target: `${UNIDAD_URL}/unidad`,
       changeOrigin: true,
       logger: console,
     })).forRoutes('api/unidad');
 
-    // Viajes — VM2 via flycast
+    // Viajes 
     consumer.apply(createProxyMiddleware({
       target: `${VIAJE_URL}/viaje`,
       changeOrigin: true,
       logger: console,
     })).forRoutes('api/viaje');
 
-    // Cobros — VM2 via flycast
+    // Cobros 
     consumer.apply(createProxyMiddleware({
       target: `${COBRO_URL}/cobros`,
       changeOrigin: true,
       logger: console,
     })).forRoutes('api/cobros');
 
-    // MercadoPago — VM3 via flycast
+    // MercadoPago 
     consumer.apply(createProxyMiddleware({
       target: `${MP_URL}/mercadopago`,
       changeOrigin: true,

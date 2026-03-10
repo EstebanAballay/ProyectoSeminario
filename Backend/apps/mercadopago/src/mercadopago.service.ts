@@ -66,8 +66,8 @@ export class MercadoPagoService {
         notification_url: notificationUrl,
 
         back_urls: {
-          success: 'https://proyecto-seminario-i9lqitu3d-estebanaballays-projects.vercel.app/menu',
-          failure: 'https://proyecto-seminario-i9lqitu3d-estebanaballays-projects.vercel.app/nuevoviaje'
+          success: 'https://proyecto-seminario-git-deploy-estebanaballays-projects.vercel.app/menu',
+          failure: 'https://proyecto-seminario-git-deploy-estebanaballays-projects.vercel.app/nuevoviaje'
         },
         auto_return: 'approved'
       },
